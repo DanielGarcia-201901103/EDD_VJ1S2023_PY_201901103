@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	estructura "Estructura/Estructura"
+	"fmt"
+)
 
 //import estructura "Estructura/Estructura"
 
@@ -9,8 +12,9 @@ func login() {
 	for opcion != 2 {
 		fmt.Println(`
 --------- Login ---------
-	1. Iniciar Sesion
-	2. Salir del Sistema
+1. Iniciar Sesion
+2. Salir del Sistema
+-------------------------
 Elige una opción:`)
 
 		fmt.Scanln(&opcion)
@@ -45,15 +49,16 @@ func sesion() {
 
 func menuAdministrador() {
 	var opcion int
-	for opcion != 7 {
+	for opcion != 6 {
 		fmt.Println(`
 --------- Dashboard Administrador 201901103 ---------
-	1. Cargar Empleados
-	2. Cargar Imagenes
-	3. Cargar Usuarios
-	4. Actualizar Cola
-	5. Reportes Estructuras
-	6. Regresar
+1. Cargar Empleados
+2. Cargar Imagenes
+3. Cargar Usuarios
+4. Actualizar Cola
+5. Reportes Estructuras
+6. Cerrar Sesion
+-----------------------------------------------------
 Elige una opción:`)
 
 		fmt.Scanln(&opcion)
@@ -69,23 +74,18 @@ Elige una opción:`)
 			fmt.Print("Estoy en actualizar cola")
 		case 5:
 			fmt.Print("Estoy en reportes estructuras")
-		case 6:
-			login()
 		}
 	}
 }
 
 func main() {
-	login()
-	/*
-		listaSimple := &estructura.Lista{Inicio: nil, Longitud: 0}
-		listaSimple.Insertar(1)
-		listaSimple.Insertar(3)
-		listaSimple.Insertar(5)
-		listaSimple.Insertar(7)
-		listaSimple.Mostrar()
-	*/
-}
+	//login()
 
-//video de alura ver
-//https://www.youtube.com/watch?v=QUylEZSrRok
+	listaSimple := &estructura.Lista_simple{Inicio: nil, Longitud: 0}
+	listaSimple.Insertar("1229", "jaquelin Gomez", "Diseño", "1229_Diseño")
+	listaSimple.Insertar("3607", "Yadira Ruiz", "Diseño", "3607_Diseño")
+	listaSimple.Insertar("3518", "Paula Fuentes", "Ventas", "3518_Ventas")
+	listaSimple.Insertar("1211", "karla Alvarez", "Ventas", "1211_Ventas")
+	listaSimple.Mostrar()
+
+}

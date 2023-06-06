@@ -1,6 +1,6 @@
 package estructura
 
-type Nodo struct {
+type Nodo_Doble struct {
 	valor     int
 	siguiente *Nodo
 }
