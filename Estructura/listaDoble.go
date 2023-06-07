@@ -35,6 +35,7 @@ func (lista *Lista_doble) Insertar(name_Imagen string, cantidad_Capas int) {
 
 	if lista.estaVacia() {
 		lista.Inicio = &Nodo_Doble{data: imagen_c, siguiente: nil, anterior: nil}
+		lista.Final = &Nodo_Doble{data: imagen_c, siguiente: nil, anterior: nil}
 		lista.Longitud++
 	} else {
 		aux := lista.Inicio
@@ -76,7 +77,11 @@ func (lista *Lista_doble) reporte() {
 	text := "digraph lista{\n"
 	text += "rankdir = LR; \n"
 	text += "node[shape = record]; \n"
+	text += "nodonull1[label=\"null\"];\n"
+	text += "nodonull2[label=\"null\"];\n"
 	aux := lista.Inicio
+	contador := 0
+	text += "nodonull1->nodo0 [dir=back];\n"
 	for i := 0; i < lista.Longitud; i++ {
 		text += "nodo" + strconv.Itoa(i) + "[label =\" " + aux.data.name_Imagen + "\"]; \n"
 		aux = aux.siguiente
@@ -85,7 +90,9 @@ func (lista *Lista_doble) reporte() {
 		c := i + 1
 		text += "nodo" + strconv.Itoa(i) + "->nodo" + strconv.Itoa(c) + ";\n"
 		text += "nodo" + strconv.Itoa(c) + "->nodo" + strconv.Itoa(i) + ";\n"
+		contador = c
 	}
+	text += "nodo" + strconv.Itoa(contador) + "->nodonull2;\n"
 	text += "}"
 	crearArchivo(nombreArchivo)
 	escribirArchivo(text, nombreArchivo)

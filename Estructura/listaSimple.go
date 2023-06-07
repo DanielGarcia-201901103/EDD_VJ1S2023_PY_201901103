@@ -42,10 +42,6 @@ func (lista *Lista_simple) Insertar(id string, name string, cargo string, passwd
 	}
 }
 
-func (lista *Lista_simple) Eliminar() {
-
-}
-
 func (lista *Lista_simple) Mostrar() {
 	aux := lista.Inicio
 

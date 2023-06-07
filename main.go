@@ -1,15 +1,15 @@
 package main
 
 import (
-	estructura "Estructura/Estructura"
 	"encoding/csv"
 	"fmt"
+	"io"
 	"os"
 )
 
-//import estructura "Estructura/Estructura"
-
-func login() {
+// import estructura "Estructura/Estructura"
+// MENU PRINCIPAL
+func menuPrincipal() {
 	var opcion int
 	for opcion != 2 {
 		fmt.Println(`
@@ -45,12 +45,19 @@ func sesion() {
 		fmt.Println("Bienvenido a admin")
 		menuAdministrador()
 	} else {
+		//buscar entre los empleados guardados en la lista simple enlazada y si existe iniciar sesion en menu empleado
+		/*Se envia usuario y password por parametro al metodo buscar en la lista simple enlazada y si el usuario y el password
+		coinciden entonces devuelve true y inicia sesion, de lo contrario devuelve false y muestra el mensaje*/
+		//menuEmpleado()
+		//si no coincide entonces mostrar el siguiente mensaje
 		fmt.Println("El usuario no existe")
 	}
 }
 
+// MENU ADMINISTRADOR Y SUS FUNCIONES
 func menuAdministrador() {
 	var opcion int
+	var ruta string
 	for opcion != 6 {
 		fmt.Println(`
 --------- Dashboard Administrador 201901103 ---------
@@ -67,7 +74,9 @@ Elige una opción:`)
 
 		switch opcion {
 		case 1:
-			fmt.Print("Estoy en cargar empleados")
+			fmt.Print("Porfavor ingrese la ruta del archivo")
+			fmt.Scanln(&ruta)
+			cargarEmpleados(ruta)
 		case 2:
 			fmt.Print("Estoy en cargar imagenes")
 		case 3:
@@ -80,36 +89,68 @@ Elige una opción:`)
 	}
 }
 
-func cargarArchivo() {
-	file, err := os.Open("archivosPrueba/imagenes.csv")
+func cargarEmpleados(ruta string) {
+	file, err := os.Open(ruta)
 	if err != nil {
-		panic(err)
+		fmt.Println("Error al abrir el archivo")
+		return
 	}
 	defer file.Close()
 
 	reader := csv.NewReader(file)
-	//reader.Comma = ','
-	reader.FieldsPerRecord = 2
-	reader.Comment = '#'
-
+	reader.Comma = ','
+	//reader.FieldsPerRecord = 2
+	//reader.Comment = '#'
+	encabezado := true
 	for {
-		record, e := reader.Read()
-		if e != nil {
-			fmt.Println(e)
+		linea, err := reader.Read()
+		if err == io.EOF {
 			break
 		}
-		fmt.Println(record)
+		if err != nil {
+			fmt.Println("No se pudo leer la línea del archivo")
+			continue
+		}
+		if encabezado {
+			encabezado = false
+			continue
+		}
+		fmt.Println("Id: ", linea[0], "Nombre: ", linea[1], "Cargo: ", linea[2], "Password: ", linea[3])
 	}
 }
 
+// MENU EMPLEADO Y SUS FUNCIONES
+func menuEmpleado() {
+	var opcion int
+	for opcion != 3 {
+		fmt.Println(`
+--------- EDD Creative idEmpleado ---------
+1. Ver Imagenes Cargadas
+2. Realizar Pedido
+3. Cerrar Sesion
+-----------------------------------------------------
+Elige una opción:`)
+
+		fmt.Scanln(&opcion)
+
+		switch opcion {
+		case 1:
+			fmt.Print("Porfavor ingrese la ruta del archivo")
+		case 2:
+			fmt.Print("Estoy en realizar pedido")
+		}
+	}
+}
+
+// METODO MAIN
 func main() {
-	//login()
-
-	listaSimple := &estructura.Lista_simple{Inicio: nil, Longitud: 0}
-	listaSimple.Insertar("1229", "jaquelin Gomez", "Diseño", "1229_Diseño")
-	listaSimple.Insertar("3607", "Yadira Ruiz", "Diseño", "3607_Diseño")
-	listaSimple.Insertar("3518", "Paula Fuentes", "Ventas", "3518_Ventas")
-	listaSimple.Insertar("1211", "karla Alvarez", "Ventas", "1211_Ventas")
-	listaSimple.Mostrar()
-
+	menuPrincipal()
+	/*
+		listaSimple := &estructura.Lista_simple{Inicio: nil, Longitud: 0}
+		listaSimple.Insertar("1229", "jaquelin Gomez", "Diseño", "1229_Diseño")
+		listaSimple.Insertar("3607", "Yadira Ruiz", "Diseño", "3607_Diseño")
+		listaSimple.Insertar("3518", "Paula Fuentes", "Ventas", "3518_Ventas")
+		listaSimple.Insertar("1211", "karla Alvarez", "Ventas", "1211_Ventas")
+		listaSimple.Mostrar()
+	*/
 }
