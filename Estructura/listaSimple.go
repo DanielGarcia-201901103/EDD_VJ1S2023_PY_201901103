@@ -1,6 +1,8 @@
 package estructura
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Empleado struct {
 	id     string
@@ -26,7 +28,7 @@ func (lista *Lista_simple) estaVacia() bool {
 	return false
 }
 
-//Inserta al final
+// Inserta al final
 func (lista *Lista_simple) Insertar(id string, name string, cargo string, passwd string) {
 	empleado := &Empleado{id: id, name: name, cargo: cargo, passwd: passwd}
 	if lista.estaVacia() {
@@ -41,6 +43,16 @@ func (lista *Lista_simple) Insertar(id string, name string, cargo string, passwd
 		lista.Longitud++
 	}
 }
+func (lista *Lista_simple) Validar(usuario string, password string) bool {
+	aux := lista.Inicio
+	for aux != nil {
+		if usuario == aux.data.id && password == aux.data.passwd {
+			return true
+		}
+		aux = aux.siguiente
+	}
+	return false
+}
 
 func (lista *Lista_simple) Mostrar() {
 	aux := lista.Inicio
@@ -49,6 +61,10 @@ func (lista *Lista_simple) Mostrar() {
 		fmt.Println(aux.data.id, " ", aux.data.name, " ", aux.data.cargo, " ", aux.data.passwd)
 		aux = aux.siguiente
 	}
+}
+
+func NewListaSimple() *Lista_simple {
+	return &Lista_simple{nil, 0}
 }
 
 /*

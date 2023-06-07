@@ -1,11 +1,15 @@
 package main
 
 import (
+	estructura "Estructura/Estructura"
 	"encoding/csv"
 	"fmt"
-	"io"
 	"os"
 )
+
+// variables globales
+var listaSimple = estructura.NewListaSimple()
+var listaDoble = estructura.NewListaDoble()
 
 // import estructura "Estructura/Estructura"
 // MENU PRINCIPAL
@@ -45,19 +49,27 @@ func sesion() {
 		fmt.Println("Bienvenido a admin")
 		menuAdministrador()
 	} else {
+
+		validandoExistencia := listaSimple.Validar(usuario, password)
+
+		if validandoExistencia == true {
+
+			menuEmpleado(usuario)
+		} else {
+			fmt.Println("El usuario no existe")
+		}
 		//buscar entre los empleados guardados en la lista simple enlazada y si existe iniciar sesion en menu empleado
 		/*Se envia usuario y password por parametro al metodo buscar en la lista simple enlazada y si el usuario y el password
 		coinciden entonces devuelve true y inicia sesion, de lo contrario devuelve false y muestra el mensaje*/
 		//menuEmpleado()
 		//si no coincide entonces mostrar el siguiente mensaje
-		fmt.Println("El usuario no existe")
+		//fmt.Println("El usuario no existe")
 	}
 }
 
 // MENU ADMINISTRADOR Y SUS FUNCIONES
 func menuAdministrador() {
 	var opcion int
-	var ruta string
 	for opcion != 6 {
 		fmt.Println(`
 --------- Dashboard Administrador 201901103 ---------
@@ -74,9 +86,7 @@ Elige una opción:`)
 
 		switch opcion {
 		case 1:
-			fmt.Print("Porfavor ingrese la ruta del archivo")
-			fmt.Scanln(&ruta)
-			cargarEmpleados(ruta)
+			cargarEmpleados()
 		case 2:
 			fmt.Print("Estoy en cargar imagenes")
 		case 3:
@@ -89,47 +99,50 @@ Elige una opción:`)
 	}
 }
 
-func cargarEmpleados(ruta string) {
+func cargarEmpleados() {
+	var ruta string
+	fmt.Println("Ingrese la ruta del archivo: ")
+	fmt.Scanln(&ruta)
+
+	// Abre el archivo CSV
 	file, err := os.Open(ruta)
 	if err != nil {
-		fmt.Println("Error al abrir el archivo")
+		fmt.Println("Error al abrir el archivo:", err)
 		return
 	}
 	defer file.Close()
 
+	// Crea un nuevo lector CSV
 	reader := csv.NewReader(file)
-	reader.Comma = ','
-	//reader.FieldsPerRecord = 2
-	//reader.Comment = '#'
-	encabezado := true
-	for {
-		linea, err := reader.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			fmt.Println("No se pudo leer la línea del archivo")
-			continue
-		}
-		if encabezado {
-			encabezado = false
-			continue
-		}
-		fmt.Println("Id: ", linea[0], "Nombre: ", linea[1], "Cargo: ", linea[2], "Password: ", linea[3])
+
+	// Lee todas las líneas del archivo
+	lines, err := reader.ReadAll()
+	if err != nil {
+		fmt.Println("Error al leer el archivo:", err)
+		return
 	}
+
+	// Itera sobre las líneas y muestra los datos
+	for _, line := range lines {
+		if line[0] != "id" {
+			//fmt.Println(line[0], " ", line[1], " ", line[2], " ", line[3])
+			listaSimple.Insertar(line[0], line[1], line[2], line[3])
+		}
+	}
+	listaSimple.Mostrar()
 }
 
 // MENU EMPLEADO Y SUS FUNCIONES
-func menuEmpleado() {
+func menuEmpleado(usuario string) {
 	var opcion int
 	for opcion != 3 {
-		fmt.Println(`
---------- EDD Creative idEmpleado ---------
+		fmt.Printf(`
+--------- EDD Creative %s ---------
 1. Ver Imagenes Cargadas
 2. Realizar Pedido
 3. Cerrar Sesion
 -----------------------------------------------------
-Elige una opción:`)
+Elige una opción:`, usuario)
 
 		fmt.Scanln(&opcion)
 
@@ -145,12 +158,13 @@ Elige una opción:`)
 // METODO MAIN
 func main() {
 	menuPrincipal()
-	/*
-		listaSimple := &estructura.Lista_simple{Inicio: nil, Longitud: 0}
-		listaSimple.Insertar("1229", "jaquelin Gomez", "Diseño", "1229_Diseño")
-		listaSimple.Insertar("3607", "Yadira Ruiz", "Diseño", "3607_Diseño")
-		listaSimple.Insertar("3518", "Paula Fuentes", "Ventas", "3518_Ventas")
-		listaSimple.Insertar("1211", "karla Alvarez", "Ventas", "1211_Ventas")
-		listaSimple.Mostrar()
+	//menuAdministrador()
+	/*  ArchivoEmpleados.csv
+	listaSimple := &estructura.Lista_simple{Inicio: nil, Longitud: 0}
+	listaSimple.Insertar("1229", "jaquelin Gomez", "Diseño", "1229_Diseño")
+	listaSimple.Insertar("3607", "Yadira Ruiz", "Diseño", "3607_Diseño")
+	listaSimple.Insertar("3518", "Paula Fuentes", "Ventas", "3518_Ventas")
+	listaSimple.Insertar("1211", "karla Alvarez", "Ventas", "1211_Ventas")
+	listaSimple.Mostrar()
 	*/
 }

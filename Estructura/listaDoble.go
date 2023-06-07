@@ -98,3 +98,7 @@ func (lista *Lista_doble) reporte() {
 	escribirArchivo(text, nombreArchivo)
 	ejecutar(nombreImagen, nombreArchivo)
 }
+
+func NewListaDoble() *Lista_doble {
+	return &Lista_doble{nil, nil, 0}
+}
