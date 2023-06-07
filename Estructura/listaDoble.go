@@ -1,6 +1,93 @@
 package estructura
 
+import (
+	"fmt"
+	"strconv"
+)
+
+type Imagen struct {
+	name_Imagen    string
+	cantidad_Capas int
+}
+
 type Nodo_Doble struct {
-	valor     int
-	siguiente *Nodo
+	data      *Imagen
+	siguiente *Nodo_Doble
+	anterior  *Nodo_Doble
+}
+
+type Lista_doble struct {
+	Inicio   *Nodo_Doble
+	Final    *Nodo_Doble
+	Longitud int
+}
+
+func (lista *Lista_doble) estaVacia() bool {
+	if lista.Longitud == 0 {
+		return true
+	}
+	return false
+}
+
+// Inserta al final
+func (lista *Lista_doble) Insertar(name_Imagen string, cantidad_Capas int) {
+	imagen_c := &Imagen{name_Imagen: name_Imagen, cantidad_Capas: cantidad_Capas}
+
+	if lista.estaVacia() {
+		lista.Inicio = &Nodo_Doble{data: imagen_c, siguiente: nil, anterior: nil}
+		lista.Longitud++
+	} else {
+		aux := lista.Inicio
+		for aux.siguiente != nil { //esto simula un while
+			aux = aux.siguiente
+		}
+		aux.siguiente = &Nodo_Doble{data: imagen_c, siguiente: nil, anterior: aux}
+		//aux.siguiente.anterior = aux  esto va si en anterior va nil
+		lista.Longitud++
+	}
+}
+
+func (lista *Lista_doble) MostrarAscendente() {
+	aux := lista.Inicio
+	for aux != nil {
+		fmt.Print(aux.data.name_Imagen)
+		fmt.Println(" --> ", aux.data.cantidad_Capas)
+		aux = aux.siguiente
+	}
+}
+
+func (lista *Lista_doble) MostrarDescendente() {
+	aux := lista.Inicio
+	for aux.siguiente != nil {
+		//fmt.Print(aux.data.name_Imagen)
+		//fmt.Println(" --> ", aux.data.cantidad_Capas)
+		aux = aux.siguiente
+	}
+	for aux != nil {
+		fmt.Print(aux.data.name_Imagen)
+		fmt.Println(" --> ", aux.data.cantidad_Capas)
+		aux = aux.anterior
+	}
+}
+
+func (lista *Lista_doble) reporte() {
+	nombreArchivo := "./listadoble.dot"
+	nombreImagen := "./listadoble.jpg"
+	text := "digraph lista{\n"
+	text += "rankdir = LR; \n"
+	text += "node[shape = record]; \n"
+	aux := lista.Inicio
+	for i := 0; i < lista.Longitud; i++ {
+		text += "nodo" + strconv.Itoa(i) + "[label =\" " + aux.data.name_Imagen + "\"]; \n"
+		aux = aux.siguiente
+	}
+	for i := 0; i < lista.Longitud-1; i++ {
+		c := i + 1
+		text += "nodo" + strconv.Itoa(i) + "->nodo" + strconv.Itoa(c) + ";\n"
+		text += "nodo" + strconv.Itoa(c) + "->nodo" + strconv.Itoa(i) + ";\n"
+	}
+	text += "}"
+	crearArchivo(nombreArchivo)
+	escribirArchivo(text, nombreArchivo)
+	ejecutar(nombreImagen, nombreArchivo)
 }

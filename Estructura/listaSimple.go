@@ -26,6 +26,7 @@ func (lista *Lista_simple) estaVacia() bool {
 	return false
 }
 
+//Inserta al final
 func (lista *Lista_simple) Insertar(id string, name string, cargo string, passwd string) {
 	empleado := &Empleado{id: id, name: name, cargo: cargo, passwd: passwd}
 	if lista.estaVacia() {
@@ -41,6 +42,10 @@ func (lista *Lista_simple) Insertar(id string, name string, cargo string, passwd
 	}
 }
 
+func (lista *Lista_simple) Eliminar() {
+
+}
+
 func (lista *Lista_simple) Mostrar() {
 	aux := lista.Inicio
 
@@ -49,3 +54,9 @@ func (lista *Lista_simple) Mostrar() {
 		aux = aux.siguiente
 	}
 }
+
+/*
+Agregar nodo a la lista, al final o al inicio
+buscar nodo de la lista
+actualizar nodo de la lista, primero busca y luego actualiza
+borrar nodo de la lista,  primero busca y luego elimina*/

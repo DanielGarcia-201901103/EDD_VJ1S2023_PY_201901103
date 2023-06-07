@@ -2,7 +2,9 @@ package main
 
 import (
 	estructura "Estructura/Estructura"
+	"encoding/csv"
 	"fmt"
+	"os"
 )
 
 //import estructura "Estructura/Estructura"
@@ -75,6 +77,28 @@ Elige una opción:`)
 		case 5:
 			fmt.Print("Estoy en reportes estructuras")
 		}
+	}
+}
+
+func cargarArchivo() {
+	file, err := os.Open("archivosPrueba/imagenes.csv")
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	reader := csv.NewReader(file)
+	//reader.Comma = ','
+	reader.FieldsPerRecord = 2
+	reader.Comment = '#'
+
+	for {
+		record, e := reader.Read()
+		if e != nil {
+			fmt.Println(e)
+			break
+		}
+		fmt.Println(record)
 	}
 }
 
