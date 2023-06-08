@@ -88,7 +88,7 @@ Elige una opción:`)
 		case 1:
 			cargarEmpleados()
 		case 2:
-			fmt.Print("Estoy en cargar imagenes")
+			cargarImagenes()
 		case 3:
 			fmt.Print("Estoy en cargar usuarios")
 		case 4:
@@ -114,6 +114,7 @@ func cargarEmpleados() {
 
 	// Crea un nuevo lector CSV
 	reader := csv.NewReader(file)
+	reader.Comma = ','
 
 	// Lee todas las líneas del archivo
 	lines, err := reader.ReadAll()
@@ -130,6 +131,40 @@ func cargarEmpleados() {
 		}
 	}
 	listaSimple.Mostrar()
+}
+
+func cargarImagenes() {
+	var ruta string
+	fmt.Println("Ingrese la ruta del archivo: ")
+	fmt.Scanln(&ruta)
+
+	// Abre el archivo CSV
+	file, err := os.Open(ruta)
+	if err != nil {
+		fmt.Println("Error al abrir el archivo:", err)
+		return
+	}
+	defer file.Close()
+
+	// Crea un nuevo lector CSV
+	reader := csv.NewReader(file)
+	reader.Comma = ','
+
+	// Lee todas las líneas del archivo
+	lines, err := reader.ReadAll()
+	if err != nil {
+		fmt.Println("Error al leer el archivo:", err)
+		return
+	}
+
+	// Itera sobre las líneas y muestra los datos
+	for _, line := range lines {
+		if line[0] != "Imagen" {
+			//fmt.Println(line[0], " ", line[1], " ", line[2], " ", line[3])
+			listaDoble.Insertar(line[0], line[1])
+		}
+	}
+	listaDoble.MostrarAscendente()
 }
 
 // MENU EMPLEADO Y SUS FUNCIONES

@@ -7,7 +7,7 @@ import (
 
 type Imagen struct {
 	name_Imagen    string
-	cantidad_Capas int
+	cantidad_Capas string
 }
 
 type Nodo_Doble struct {
@@ -30,7 +30,7 @@ func (lista *Lista_doble) estaVacia() bool {
 }
 
 // Inserta al final
-func (lista *Lista_doble) Insertar(name_Imagen string, cantidad_Capas int) {
+func (lista *Lista_doble) Insertar(name_Imagen string, cantidad_Capas string) {
 	imagen_c := &Imagen{name_Imagen: name_Imagen, cantidad_Capas: cantidad_Capas}
 
 	if lista.estaVacia() {
