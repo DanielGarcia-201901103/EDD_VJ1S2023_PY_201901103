@@ -7,6 +7,9 @@ import (
 	"io"
 	"os"
 	"strings"
+
+	"golang.org/x/text/encoding/unicode"
+	"golang.org/x/text/transform"
 )
 
 // variables globales
@@ -115,8 +118,11 @@ func cargarEmpleados() {
 	}
 	defer file.Close()
 
+	// Crea un lector con transformador UTF-8
+	utf8Reader := transform.NewReader(file, unicode.UTF8.NewDecoder())
+
 	// Crea un nuevo lector CSV
-	reader := csv.NewReader(file)
+	reader := csv.NewReader(utf8Reader)
 	reader.Comma = ','
 
 	// Lee todas las líneas del archivo
@@ -149,8 +155,11 @@ func cargarImagenes() {
 	}
 	defer file.Close()
 
+	// Crea un lector con transformador UTF-8
+	utf8Reader := transform.NewReader(file, unicode.UTF8.NewDecoder())
+
 	// Crea un nuevo lector CSV
-	reader := csv.NewReader(file)
+	reader := csv.NewReader(utf8Reader)
 	reader.Comma = ','
 	encabezado := true
 
@@ -186,8 +195,11 @@ func cargarUsuarios() {
 	}
 	defer file.Close()
 
+	// Crea un lector con transformador UTF-8
+	utf8Reader := transform.NewReader(file, unicode.UTF8.NewDecoder())
+
 	// Crea un nuevo lector CSV
-	reader := csv.NewReader(file)
+	reader := csv.NewReader(utf8Reader)
 	reader.Comma = ','
 	encabezado := true
 
@@ -234,7 +246,7 @@ Elige una opción:`, usuario)
 
 // METODO MAIN
 func main() {
-	//menuPrincipal()
+	menuPrincipal()
 	//menuAdministrador()
 	/*  ArchivoEmpleados.csv
 	listaSimple := &estructura.Lista_simple{Inicio: nil, Longitud: 0}
