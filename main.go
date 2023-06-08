@@ -4,12 +4,15 @@ import (
 	estructura "Estructura/Estructura"
 	"encoding/csv"
 	"fmt"
+	"io"
 	"os"
+	"strings"
 )
 
 // variables globales
 var listaSimple = estructura.NewListaSimple()
 var listaDoble = estructura.NewListaDoble()
+var listaCircular = estructura.NewListaCircular()
 
 // import estructura "Estructura/Estructura"
 // MENU PRINCIPAL
@@ -90,7 +93,7 @@ Elige una opción:`)
 		case 2:
 			cargarImagenes()
 		case 3:
-			fmt.Print("Estoy en cargar usuarios")
+			cargarUsuarios()
 		case 4:
 			fmt.Print("Estoy en actualizar cola")
 		case 5:
@@ -127,7 +130,7 @@ func cargarEmpleados() {
 	for _, line := range lines {
 		if line[0] != "id" {
 			//fmt.Println(line[0], " ", line[1], " ", line[2], " ", line[3])
-			listaSimple.Insertar(line[0], line[1], line[2], line[3])
+			listaSimple.Insertar(strings.TrimSpace(line[0]), strings.TrimSpace(line[1]), strings.TrimSpace(line[2]), strings.TrimSpace(line[3]))
 		}
 	}
 	listaSimple.Mostrar()
@@ -149,22 +152,61 @@ func cargarImagenes() {
 	// Crea un nuevo lector CSV
 	reader := csv.NewReader(file)
 	reader.Comma = ','
+	encabezado := true
 
-	// Lee todas las líneas del archivo
-	lines, err := reader.ReadAll()
-	if err != nil {
-		fmt.Println("Error al leer el archivo:", err)
-		return
-	}
-
-	// Itera sobre las líneas y muestra los datos
-	for _, line := range lines {
-		if line[0] != "Imagen" {
-			//fmt.Println(line[0], " ", line[1], " ", line[2], " ", line[3])
-			listaDoble.Insertar(line[0], line[1])
+	for {
+		lines, err := reader.Read()
+		if err == io.EOF {
+			break
 		}
+		if err != nil {
+			fmt.Println("Error al leer la linea del archivo")
+			continue
+		}
+		if encabezado {
+			encabezado = false
+			continue
+		}
+		listaDoble.Insertar(strings.TrimSpace(lines[0]), strings.TrimSpace(lines[1]))
 	}
 	listaDoble.MostrarAscendente()
+	//listaDoble.MostrarDescendente()
+}
+
+func cargarUsuarios() {
+	var ruta string
+	fmt.Println("Ingrese la ruta del archivo: ")
+	fmt.Scanln(&ruta)
+
+	// Abre el archivo CSV
+	file, err := os.Open(ruta)
+	if err != nil {
+		fmt.Println("Error al abrir el archivo:", err)
+		return
+	}
+	defer file.Close()
+
+	// Crea un nuevo lector CSV
+	reader := csv.NewReader(file)
+	reader.Comma = ','
+	encabezado := true
+
+	for {
+		lines, err := reader.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			fmt.Println("Error al leer la linea del archivo")
+			continue
+		}
+		if encabezado {
+			encabezado = false
+			continue
+		}
+		listaCircular.Insertar(strings.TrimSpace(lines[0]), strings.TrimSpace(lines[1]))
+	}
+	listaCircular.Mostrar()
 }
 
 // MENU EMPLEADO Y SUS FUNCIONES
@@ -192,7 +234,7 @@ Elige una opción:`, usuario)
 
 // METODO MAIN
 func main() {
-	menuPrincipal()
+	//menuPrincipal()
 	//menuAdministrador()
 	/*  ArchivoEmpleados.csv
 	listaSimple := &estructura.Lista_simple{Inicio: nil, Longitud: 0}
