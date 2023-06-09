@@ -2,6 +2,7 @@ package estructura
 
 import (
 	"fmt"
+	"strconv"
 )
 
 type Empleado struct {
@@ -61,6 +62,35 @@ func (lista *Lista_simple) Mostrar() {
 		fmt.Println(aux.data.id, " ", aux.data.name, " ", aux.data.cargo, " ", aux.data.passwd)
 		aux = aux.siguiente
 	}
+}
+
+func (lista *Lista_simple) ReporteSimple() {
+	nombreArchivo := "./listasimple.dot"
+	nombreImagen := "./listadosimple.jpg"
+	text := "digraph lista{\n"
+	text += "rankdir = LR; \n"
+	text += "node[shape = record]; \n"
+	text += "nodonull1[label=\"null\"];\n"
+	text += "nodonull2[label=\"null\"];\n"
+	aux := lista.Inicio
+	//contador := 0
+	text += "nodonull1->nodo0 [dir=back];\n"
+	for i := 0; i < lista.Longitud; i++ {
+		text += "nodo" + strconv.Itoa(i) + "[label =\" " + aux.data.name + "\"]; \n"
+		aux = aux.siguiente
+	}
+	/*
+		for i := 0; i < lista.Longitud-1; i++ {
+			c := i + 1
+			text += "nodo" + strconv.Itoa(i) + "->nodo" + strconv.Itoa(c) + ";\n"
+			text += "nodo" + strconv.Itoa(c) + "->nodo" + strconv.Itoa(i) + ";\n"
+			contador = c
+		}*/
+	//text += "nodo" + strconv.Itoa(contador) + "->nodonull2;\n"
+	text += "}"
+	crearArchivo(nombreArchivo)
+	escribirArchivo(text, nombreArchivo)
+	ejecutar(nombreImagen, nombreArchivo)
 }
 
 func NewListaSimple() *Lista_simple {

@@ -34,8 +34,6 @@ Elige una opción:`)
 		switch opcion {
 		case 1:
 			sesion()
-		case 2:
-			break
 		}
 	}
 
@@ -76,30 +74,34 @@ func sesion() {
 // MENU ADMINISTRADOR Y SUS FUNCIONES
 func menuAdministrador() {
 	var opcion int
-	for opcion != 6 {
+	for opcion != 7 {
 		fmt.Println(`
 --------- Dashboard Administrador 201901103 ---------
 1. Cargar Empleados
 2. Cargar Imagenes
 3. Cargar Usuarios
-4. Actualizar Cola
-5. Reportes Estructuras
-6. Cerrar Sesion
+4. Cargar Clientes
+5. Actualizar Cola
+6. Reportes Estructuras
+7. Cerrar Sesion
 -----------------------------------------------------
 Elige una opción:`)
 
 		fmt.Scanln(&opcion)
-
 		switch opcion {
 		case 1:
 			cargarEmpleados()
 		case 2:
 			cargarImagenes()
 		case 3:
-			cargarUsuarios()
-		case 4:
 			fmt.Print("Estoy en actualizar cola")
+		case 4:
+			cargarClientes()
 		case 5:
+			fmt.Print("Estoy en actualizar cola")
+		case 6:
+			listaSimple.ReporteSimple()
+			listaDoble.ReporteDoble()
 			fmt.Print("Estoy en reportes estructuras")
 		}
 	}
@@ -182,7 +184,7 @@ func cargarImagenes() {
 	//listaDoble.MostrarDescendente()
 }
 
-func cargarUsuarios() {
+func cargarClientes() {
 	var ruta string
 	fmt.Println("Ingrese la ruta del archivo: ")
 	fmt.Scanln(&ruta)
@@ -255,5 +257,8 @@ func main() {
 	listaSimple.Insertar("3518", "Paula Fuentes", "Ventas", "3518_Ventas")
 	listaSimple.Insertar("1211", "karla Alvarez", "Ventas", "1211_Ventas")
 	listaSimple.Mostrar()
+
+
+	https://drive.google.com/file/d/1Mu40-ZEfP-CMmgPoNtdIBWNoCNng1JYb/view
 	*/
 }

@@ -71,7 +71,7 @@ func (lista *Lista_doble) MostrarDescendente() {
 	}
 }
 
-func (lista *Lista_doble) reporte() {
+func (lista *Lista_doble) ReporteDoble() {
 	nombreArchivo := "./listadoble.dot"
 	nombreImagen := "./listadoble.jpg"
 	text := "digraph lista{\n"
