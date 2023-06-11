@@ -17,6 +17,7 @@ var listaSimple = estructura.NewListaSimple()
 var listaDoble = estructura.NewListaDoble()
 var listaCircular = estructura.NewListaCircular()
 var listaUsuarios = estructura.NewListaSimple()
+var clientesCola = estructura.NewCola()
 
 // import estructura "Estructura/Estructura"
 // MENU PRINCIPAL
@@ -98,11 +99,12 @@ Elige una opción:`)
 		case 4:
 			cargarClientes()
 		case 5:
-			fmt.Print("Estoy en actualizar cola")
+			cargarActualizarCola()
 		case 6:
 			//listaSimple.ReporteSimple()
 			//listaDoble.ReporteDoble()
-			listaCircular.ReporteCircular()
+			//listaCircular.ReporteCircular()
+			clientesCola.ReporteCola()
 			//fmt.Print("Estoy en reportes estructuras")
 		}
 	}
@@ -259,6 +261,45 @@ func cargarClientes() {
 		listaCircular.Insertar(strings.TrimSpace(lines[0]), strings.TrimSpace(lines[1]))
 	}
 	listaCircular.Mostrar()
+}
+
+func cargarActualizarCola() {
+	var ruta string
+	fmt.Println("Ingrese la ruta del archivo: ")
+	fmt.Scanln(&ruta)
+
+	// Abre el archivo CSV
+	file, err := os.Open(ruta)
+	if err != nil {
+		fmt.Println("Error al abrir el archivo:", err)
+		return
+	}
+	defer file.Close()
+
+	// Crea un lector con transformador UTF-8
+	utf8Reader := transform.NewReader(file, unicode.UTF8.NewDecoder())
+
+	// Crea un nuevo lector CSV
+	reader := csv.NewReader(utf8Reader)
+	reader.Comma = ','
+	encabezado := true
+
+	for {
+		lines, err := reader.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			fmt.Println("Error al leer la linea del archivo")
+			continue
+		}
+		if encabezado {
+			encabezado = false
+			continue
+		}
+		clientesCola.Encolar(strings.TrimSpace(lines[0]), strings.TrimSpace(lines[1]))
+	}
+
 }
 
 // MENU EMPLEADO Y SUS FUNCIONES
