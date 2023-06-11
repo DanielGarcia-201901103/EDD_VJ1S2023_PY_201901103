@@ -16,6 +16,7 @@ import (
 var listaSimple = estructura.NewListaSimple()
 var listaDoble = estructura.NewListaDoble()
 var listaCircular = estructura.NewListaCircular()
+var listaUsuarios = estructura.NewListaSimple()
 
 // import estructura "Estructura/Estructura"
 // MENU PRINCIPAL
@@ -54,10 +55,9 @@ func sesion() {
 		menuAdministrador()
 	} else {
 
-		validandoExistencia := listaSimple.Validar(usuario, password)
+		validandoExistencia := listaUsuarios.Validar(usuario, password)
 
 		if validandoExistencia == true {
-
 			menuEmpleado(usuario)
 		} else {
 			fmt.Println("El usuario no existe")
@@ -94,15 +94,16 @@ Elige una opción:`)
 		case 2:
 			cargarImagenes()
 		case 3:
-			fmt.Print("Estoy en actualizar cola")
+			cargarUsuarios()
 		case 4:
 			cargarClientes()
 		case 5:
 			fmt.Print("Estoy en actualizar cola")
 		case 6:
-			listaSimple.ReporteSimple()
-			listaDoble.ReporteDoble()
-			fmt.Print("Estoy en reportes estructuras")
+			//listaSimple.ReporteSimple()
+			//listaDoble.ReporteDoble()
+			listaCircular.ReporteCircular()
+			//fmt.Print("Estoy en reportes estructuras")
 		}
 	}
 }
@@ -182,6 +183,43 @@ func cargarImagenes() {
 	}
 	listaDoble.MostrarAscendente()
 	//listaDoble.MostrarDescendente()
+}
+
+func cargarUsuarios() {
+	var ruta string
+	fmt.Println("Ingrese la ruta del archivo: ")
+	fmt.Scanln(&ruta)
+
+	// Abre el archivo CSV
+	file, err := os.Open(ruta)
+	if err != nil {
+		fmt.Println("Error al abrir el archivo:", err)
+		return
+	}
+	defer file.Close()
+
+	// Crea un lector con transformador UTF-8
+	utf8Reader := transform.NewReader(file, unicode.UTF8.NewDecoder())
+
+	// Crea un nuevo lector CSV
+	reader := csv.NewReader(utf8Reader)
+	reader.Comma = ','
+
+	// Lee todas las líneas del archivo
+	lines, err := reader.ReadAll()
+	if err != nil {
+		fmt.Println("Error al leer el archivo:", err)
+		return
+	}
+
+	// Itera sobre las líneas y muestra los datos
+	for _, line := range lines {
+		if line[0] != "id" {
+			//fmt.Println(line[0], " ", line[1], " ", line[2], " ", line[3])
+			listaUsuarios.Insertar(strings.TrimSpace(line[0]), strings.TrimSpace(line[1]), strings.TrimSpace(line[2]), strings.TrimSpace(line[3]))
+		}
+	}
+	listaUsuarios.Mostrar()
 }
 
 func cargarClientes() {

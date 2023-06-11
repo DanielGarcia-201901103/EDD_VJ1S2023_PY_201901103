@@ -1,6 +1,9 @@
 package estructura
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 type Cliente struct {
 	id_cliente   string
@@ -52,6 +55,35 @@ func (lista *Lista_CircularS) Mostrar() {
 		fmt.Println(aux.data.id_cliente, " ", aux.data.name_cliente)
 		aux = aux.siguiente
 	}
+}
+
+func (lista *Lista_CircularS) ReporteCircular() {
+	nombreArchivo := "./listaCircularSimple.dot"
+	nombreImagen := "./listadoCircularSimple.jpg"
+	text := "digraph lista{\n"
+	text += "rankdir = LR; \n"
+	text += "node[shape = record]; \n"
+	//text += "nodonull1[label=\"null\"];\n"
+	//text += "nodonull2[label=\"null\"];\n"
+	aux := lista.Inicio
+	contador := 0
+	//text += "nodonull1->nodo0 [dir=back];\n"
+	for i := 0; i < lista.Longitud; i++ {
+		text += "nodo" + strconv.Itoa(i) + "[label =\" ID:" + aux.data.id_cliente + "\\" + "n Nombre: " + aux.data.name_cliente + "\"]; \n"
+		aux = aux.siguiente
+	}
+
+	for i := 0; i < lista.Longitud-1; i++ {
+		c := i + 1
+		text += "nodo" + strconv.Itoa(i) + "->nodo" + strconv.Itoa(c) + ";\n"
+		//text += "nodo" + strconv.Itoa(c) + "->nodo" + strconv.Itoa(i) + ";\n"
+		contador = c
+	}
+	text += "nodo" + strconv.Itoa(contador) + "->nodo0;\n"
+	text += "}"
+	crearArchivo(nombreArchivo)
+	escribirArchivo(text, nombreArchivo)
+	ejecutar(nombreImagen, nombreArchivo)
 }
 
 func NewListaCircular() *Lista_CircularS {
