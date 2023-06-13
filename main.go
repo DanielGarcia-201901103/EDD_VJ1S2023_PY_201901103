@@ -16,7 +16,6 @@ import (
 var listaSimple = estructura.NewListaSimple()
 var listaDoble = estructura.NewListaDoble()
 var listaCircular = estructura.NewListaCircular()
-var listaUsuarios = estructura.NewListaSimple()
 var clientesCola = estructura.NewCola()
 
 // import estructura "Estructura/Estructura"
@@ -56,12 +55,12 @@ func sesion() {
 		menuAdministrador()
 	} else {
 
-		validandoExistencia := listaUsuarios.Validar(usuario, password)
+		validandoExistencia := listaSimple.Validar(usuario, password)
 
 		if validandoExistencia == true {
 			menuEmpleado(usuario)
 		} else {
-			fmt.Println("El usuario no existe")
+			fmt.Println("El usuario no existe o ingresó mal el usuario.")
 		}
 		//buscar entre los empleados guardados en la lista simple enlazada y si existe iniciar sesion en menu empleado
 		/*Se envia usuario y password por parametro al metodo buscar en la lista simple enlazada y si el usuario y el password
@@ -75,16 +74,15 @@ func sesion() {
 // MENU ADMINISTRADOR Y SUS FUNCIONES
 func menuAdministrador() {
 	var opcion int
-	for opcion != 7 {
+	for opcion != 6 {
 		fmt.Println(`
 --------- Dashboard Administrador 201901103 ---------
 1. Cargar Empleados
 2. Cargar Imagenes
 3. Cargar Usuarios
-4. Cargar Clientes
-5. Actualizar Cola
-6. Reportes Estructuras
-7. Cerrar Sesion
+4. Actualizar Cola
+5. Reportes Estructuras
+6. Cerrar Sesion
 -----------------------------------------------------
 Elige una opción:`)
 
@@ -95,12 +93,10 @@ Elige una opción:`)
 		case 2:
 			cargarImagenes()
 		case 3:
-			cargarUsuarios()
-		case 4:
 			cargarClientes()
-		case 5:
+		case 4:
 			cargarActualizarCola()
-		case 6:
+		case 5:
 			//listaSimple.ReporteSimple()
 			//listaDoble.ReporteDoble()
 			//listaCircular.ReporteCircular()
@@ -185,43 +181,6 @@ func cargarImagenes() {
 	}
 	listaDoble.MostrarAscendente()
 	//listaDoble.MostrarDescendente()
-}
-
-func cargarUsuarios() {
-	var ruta string
-	fmt.Println("Ingrese la ruta del archivo: ")
-	fmt.Scanln(&ruta)
-
-	// Abre el archivo CSV
-	file, err := os.Open(ruta)
-	if err != nil {
-		fmt.Println("Error al abrir el archivo:", err)
-		return
-	}
-	defer file.Close()
-
-	// Crea un lector con transformador UTF-8
-	utf8Reader := transform.NewReader(file, unicode.UTF8.NewDecoder())
-
-	// Crea un nuevo lector CSV
-	reader := csv.NewReader(utf8Reader)
-	reader.Comma = ','
-
-	// Lee todas las líneas del archivo
-	lines, err := reader.ReadAll()
-	if err != nil {
-		fmt.Println("Error al leer el archivo:", err)
-		return
-	}
-
-	// Itera sobre las líneas y muestra los datos
-	for _, line := range lines {
-		if line[0] != "id" {
-			//fmt.Println(line[0], " ", line[1], " ", line[2], " ", line[3])
-			listaUsuarios.Insertar(strings.TrimSpace(line[0]), strings.TrimSpace(line[1]), strings.TrimSpace(line[2]), strings.TrimSpace(line[3]))
-		}
-	}
-	listaUsuarios.Mostrar()
 }
 
 func cargarClientes() {
@@ -341,3 +300,23 @@ func main() {
 	https://drive.google.com/file/d/1Mu40-ZEfP-CMmgPoNtdIBWNoCNng1JYb/view
 	*/
 }
+
+/*
+Inicio de sesion de un empleado
+
+ver imagenes
+	mostrar el nombre de las imagenes
+		1. imagen1
+		2. imagen2
+		...
+	Seleccionar una imagen
+	despues de seleccionar se muestra la visualizacion previa
+
+Realizar Pedido:
+	solicitar id del cliente atendido actualmente
+	(si el cliente atendido no está registrado, crear un id unico y retornarlo)
+	obtener el id del empleado que inició sesión
+	obtener el nombre de la imagen o su id
+	guardar en la pila
+https://github.com/CristianMejia2198/EDD_1S_JUNIO_2023
+*/
