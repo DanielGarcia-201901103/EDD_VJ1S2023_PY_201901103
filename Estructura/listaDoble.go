@@ -71,6 +71,30 @@ func (lista *Lista_doble) MostrarDescendente() {
 	}
 }
 
+func (lista *Lista_doble) ListarDatos() {
+	aux := lista.Inicio
+	var contador int = 1
+	for aux != nil {
+		fmt.Println(strconv.Itoa(contador)+". ", aux.data.name_Imagen)
+		aux = aux.siguiente
+		contador++
+	}
+}
+
+func (lista *Lista_doble) BuscarImagen(opcion string) string {
+	aux := lista.Inicio
+	var contador int = 1
+	for aux != nil {
+		if opcion == strconv.Itoa(contador) {
+			return aux.data.name_Imagen
+		}
+		//fmt.Println(strconv.Itoa(contador)+". ", aux.data.name_Imagen)
+		aux = aux.siguiente
+		contador++
+	}
+	return "No se encuentra la opción elegida"
+}
+
 func (lista *Lista_doble) ReporteDoble() {
 	nombreArchivo := "./listadoble.dot"
 	nombreImagen := "./listadoble.jpg"

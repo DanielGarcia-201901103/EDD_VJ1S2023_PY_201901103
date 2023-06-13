@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 	"strings"
 
 	"golang.org/x/text/encoding/unicode"
@@ -37,9 +38,6 @@ Elige una opción:`)
 			sesion()
 		}
 	}
-
-	//fmt.Scanf("%s\n", &name)
-	//fmt.Printf("Bienvenido %s", name)
 }
 
 func sesion() {
@@ -277,27 +275,38 @@ Elige una opción:`, usuario)
 
 		switch opcion {
 		case 1:
-			fmt.Print("Porfavor ingrese la ruta del archivo")
+			visualizarImagenes()
 		case 2:
 			fmt.Print("Estoy en realizar pedido")
 		}
 	}
 }
 
+func visualizarImagenes() {
+	var opcion int
+	fmt.Println("\n###################Listado de Imagenes###################")
+	listaDoble.ListarDatos()
+	fmt.Println("\n Elige una opción:")
+	fmt.Scanln(&opcion)
+	nameImagen := listaDoble.BuscarImagen(strconv.Itoa(opcion))
+	fmt.Println("La imagen elegida fue: ", nameImagen, "\nMostrando visualizacion previa")
+
+}
+
 // METODO MAIN
 func main() {
 	menuPrincipal()
 	//menuAdministrador()
-	/*  ArchivoEmpleados.csv
-	listaSimple := &estructura.Lista_simple{Inicio: nil, Longitud: 0}
-	listaSimple.Insertar("1229", "jaquelin Gomez", "Diseño", "1229_Diseño")
-	listaSimple.Insertar("3607", "Yadira Ruiz", "Diseño", "3607_Diseño")
-	listaSimple.Insertar("3518", "Paula Fuentes", "Ventas", "3518_Ventas")
-	listaSimple.Insertar("1211", "karla Alvarez", "Ventas", "1211_Ventas")
-	listaSimple.Mostrar()
+	/*
+		listaSimple := &estructura.Lista_simple{Inicio: nil, Longitud: 0}
+		listaSimple.Insertar("1229", "jaquelin Gomez", "Diseño", "1229_Diseño")
+		listaSimple.Insertar("3607", "Yadira Ruiz", "Diseño", "3607_Diseño")
+		listaSimple.Insertar("3518", "Paula Fuentes", "Ventas", "3518_Ventas")
+		listaSimple.Insertar("1211", "karla Alvarez", "Ventas", "1211_Ventas")
+		listaSimple.Mostrar()
 
 
-	https://drive.google.com/file/d/1Mu40-ZEfP-CMmgPoNtdIBWNoCNng1JYb/view
+		https://drive.google.com/file/d/1Mu40-ZEfP-CMmgPoNtdIBWNoCNng1JYb/view
 	*/
 }
 
