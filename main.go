@@ -5,6 +5,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"io"
+	"math/rand"
 	"os"
 	"strconv"
 	"strings"
@@ -275,22 +276,71 @@ Elige una opción:`, usuario)
 
 		switch opcion {
 		case 1:
-			visualizarImagenes()
+			nameImagen := visualizarImagenes()
+			fmt.Println("La imagen elegida fue: ", nameImagen, "\nMostrando visualizacion previa")
 		case 2:
-			fmt.Print("Estoy en realizar pedido")
+			realizarPedidos()
 		}
 	}
 }
 
-func visualizarImagenes() {
+func visualizarImagenes() string {
 	var opcion int
 	fmt.Println("\n###################Listado de Imagenes###################")
 	listaDoble.ListarDatos()
 	fmt.Println("\n Elige una opción:")
 	fmt.Scanln(&opcion)
 	nameImagen := listaDoble.BuscarImagen(strconv.Itoa(opcion))
-	fmt.Println("La imagen elegida fue: ", nameImagen, "\nMostrando visualizacion previa")
+	return nameImagen
+	//Falta la opcion de visualizar la imagen
+}
 
+func realizarPedidos() {
+	for {
+		idcolaClientes := clientesCola.ObtenerClienteId()
+		nameColaClientes := clientesCola.ObtenerClienteName()
+		longi := clientesCola.ObtenerLongitud()
+		if longi != 0 {
+			fmt.Println("Atendiendo al cliente con id: ", idcolaClientes, " y nombre: ", nameColaClientes)
+
+			if strings.ToUpper(idcolaClientes) == "X" {
+				// CUANDO EES IGUAL A X VALIDAR UN ID RANDOM Y
+				valor := (rand.Intn(1000)) + 10000
+
+				existe := clientesCola.ValidarRepetidos(strconv.Itoa(valor))
+				if existe == true {
+					//repetir el aleatorio
+				} else {
+					// guardar el aleatorio como nuevo id y agregarlo a la lista circular junto al nombre del cliente
+				}
+
+			} else {
+				existe := clientesCola.ValidarRepetidos(strings.TrimSpace(idcolaClientes))
+				if existe == true {
+					//solo descolar
+				}
+				// guardar el id y el nombre del cliente en la lista circular
+
+			}
+			clientesCola.Descolar()
+			fmt.Println("Finaliza atención a cliente actual y quedan:", strconv.Itoa(longi))
+		} else {
+			break
+		}
+	}
+	fmt.Print("bucle finalizado")
+	/*
+		1.Buscar el primer cliente y obtener su id en la cola
+		y retornarlo
+
+		2.validar si el id es igual a x, entonces
+		crear un id aleatorio y que sea diferente a los id existentes en la lista circular y luego retornar el id
+		y agregar el nombre y el nuevo id a la lista circular
+		y imprimir en pantalla el id del cliente y su respectivo nombre
+		3. si no es igual a x, entonces continuar con el paso 4
+		4. Tomar el Id de cliente, id de empleado, nombre de la imagen y guardarlo dentro de la pila
+
+	*/
 }
 
 // METODO MAIN
