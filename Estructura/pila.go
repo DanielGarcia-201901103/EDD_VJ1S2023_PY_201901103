@@ -8,7 +8,6 @@ type Pedido struct {
 	idCliente  string
 	idEmpleado string
 	nameImagen string
-	idImagen   string
 }
 
 type NodoPila struct {
@@ -21,8 +20,8 @@ type Pila struct {
 	Longitud int
 }
 
-func (pila *Pila) Push(idCliente string, idEmpleado string, nameImagen string, idImagen string) {
-	nuevoPedido := &Pedido{idCliente: idCliente, idEmpleado: idEmpleado, nameImagen: nameImagen, idImagen: idImagen}
+func (pila *Pila) Push(idCliente string, idEmpleado string, nameImagen string) {
+	nuevoPedido := &Pedido{idCliente: idCliente, idEmpleado: idEmpleado, nameImagen: nameImagen}
 	if pila.Longitud == 0 {
 		nuevoN := &NodoPila{data: nuevoPedido, siguiente: nil}
 		pila.Primero = nuevoN
@@ -53,7 +52,7 @@ func (pila *Pila) ReportePila() {
 	text += "nodo0 [label=\""
 	//text += "nodonull1->nodo0 [dir=back];\n"
 	for i := 0; i < pila.Longitud; i++ {
-		text += "|(ID Cliente: " + aux.data.idCliente + "\\" + "n Imagen:" + aux.data.nameImagen +
+		text += "|(ID Cliente: " + aux.data.idCliente + "\\" + "n Imagen: " + aux.data.nameImagen +
 			")"
 		aux = aux.siguiente
 	}
@@ -61,4 +60,8 @@ func (pila *Pila) ReportePila() {
 	crearArchivo(nombreArchivo)
 	escribirArchivo(text, nombreArchivo)
 	ejecutar(nombreImagen, nombreArchivo)
+}
+
+func NewPila() *Pila {
+	return &Pila{nil, 0}
 }

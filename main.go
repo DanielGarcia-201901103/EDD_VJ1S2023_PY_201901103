@@ -19,6 +19,7 @@ var listaSimple = estructura.NewListaSimple()
 var listaDoble = estructura.NewListaDoble()
 var listaCircular = estructura.NewListaCircular()
 var clientesCola = estructura.NewCola()
+var pedidosPila = estructura.NewPila()
 
 // import estructura "Estructura/Estructura"
 // MENU PRINCIPAL
@@ -96,9 +97,9 @@ Elige una opción:`)
 		case 4:
 			cargarActualizarCola()
 		case 5:
-			//listaSimple.ReporteSimple()
-			//listaDoble.ReporteDoble()
-			//listaCircular.ReporteCircular()
+			listaSimple.ReporteSimple()
+			listaDoble.ReporteDoble()
+			listaCircular.ReporteCircular()
 			clientesCola.ReporteCola()
 			//fmt.Print("Estoy en reportes estructuras")
 		}
@@ -279,7 +280,8 @@ Elige una opción:`, usuario)
 			nameImagen := visualizarImagenes()
 			fmt.Println("La imagen elegida fue: ", nameImagen, "\nMostrando visualizacion previa")
 		case 2:
-			realizarPedidos()
+			realizarPedidos(usuario)
+			pedidosPila.ReportePila()
 		}
 	}
 }
@@ -295,40 +297,58 @@ func visualizarImagenes() string {
 	//Falta la opcion de visualizar la imagen
 }
 
-func realizarPedidos() {
+func realizarPedidos(usuario string) {
 	for {
 		idcolaClientes := clientesCola.ObtenerClienteId()
 		nameColaClientes := clientesCola.ObtenerClienteName()
 		longi := clientesCola.ObtenerLongitud()
 		if longi != 0 {
-			fmt.Println("Atendiendo al cliente con id: ", idcolaClientes, " y nombre: ", nameColaClientes)
+			fmt.Println("\nAtendiendo al cliente con id: ", idcolaClientes, " y nombre: ", nameColaClientes)
 
 			if strings.ToUpper(idcolaClientes) == "X" {
-				// CUANDO EES IGUAL A X VALIDAR UN ID RANDOM Y
-				valor := (rand.Intn(1000)) + 10000
+				// CUANDO ES IGUAL A X VALIDAR UN ID RANDOM Y
+				for {
+					valor := (rand.Intn(10000)) + 1000
 
-				existe := clientesCola.ValidarRepetidos(strconv.Itoa(valor))
-				if existe == true {
-					//repetir el aleatorio
-				} else {
-					// guardar el aleatorio como nuevo id y agregarlo a la lista circular junto al nombre del cliente
+					existe := listaCircular.ValidarRepetidos(strconv.Itoa(valor))
+					if existe == true {
+						//repetir el aleatorio y no guardar nada
+					} else {
+						// guardar el aleatorio como nuevo id y agregarlo a la lista circular junto al nombre del cliente
+						nombreImagenElegida := visualizarImagenes()
+						//Sino existe en la lista circular agregar al cliente en la lista circular
+						listaCircular.Insertar(strconv.Itoa(valor), nameColaClientes)
+						pedidosPila.Push(strconv.Itoa(valor), usuario, nombreImagenElegida)
+						//agregar el id del cliente, id del empleado, y nombre de la imagen elegida
+						fmt.Println("\nEl nuevo id: ", strconv.Itoa(valor), "corresponde al cliente: ", nameColaClientes)
+						clientesCola.Descolar()
+						break
+					}
 				}
 
 			} else {
-				existe := clientesCola.ValidarRepetidos(strings.TrimSpace(idcolaClientes))
+				existe := listaCircular.ValidarRepetidos(strings.TrimSpace(idcolaClientes))
 				if existe == true {
-					//solo descolar
+					// si el cliente existe en la lista circular de clientes
+					nombreImagenElegida := visualizarImagenes()
+					pedidosPila.Push(idcolaClientes, usuario, nombreImagenElegida)
+					//agregar el id del cliente, id del empleado, y nombre de la imagen elegida
+					clientesCola.Descolar()
+				} else {
+					nombreImagenElegida := visualizarImagenes()
+					//Sino existe en la lista circular agregar al cliente en la lista circular
+					listaCircular.Insertar(idcolaClientes, nameColaClientes)
+					pedidosPila.Push(idcolaClientes, usuario, nombreImagenElegida)
+					//agregar el id del cliente, id del empleado, y nombre de la imagen elegida
+					clientesCola.Descolar()
 				}
-				// guardar el id y el nombre del cliente en la lista circular
 
 			}
-			clientesCola.Descolar()
-			fmt.Println("Finaliza atención a cliente actual y quedan:", strconv.Itoa(longi))
+			fmt.Println("\nFinaliza atención a cliente actual y quedan:", strconv.Itoa(longi-1))
 		} else {
 			break
 		}
 	}
-	fmt.Print("bucle finalizado")
 	/*
 		1.Buscar el primer cliente y obtener su id en la cola
 		y retornarlo

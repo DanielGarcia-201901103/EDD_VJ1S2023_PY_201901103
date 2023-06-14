@@ -57,6 +57,17 @@ func (lista *Lista_CircularS) Mostrar() {
 	}
 }
 
+func (lista *Lista_CircularS) ValidarRepetidos(idcolaClientes string) bool {
+	aux := lista.Inicio
+	for iterar := 0; iterar < lista.Longitud; iterar++ {
+		if idcolaClientes == aux.data.id_cliente {
+			return true
+		}
+		aux = aux.siguiente
+	}
+	return false
+}
+
 func (lista *Lista_CircularS) ReporteCircular() {
 	nombreArchivo := "./listaCircularSimple.dot"
 	nombreImagen := "./listadoCircularSimple.jpg"

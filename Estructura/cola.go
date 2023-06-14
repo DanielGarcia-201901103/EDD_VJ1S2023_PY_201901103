@@ -66,17 +66,6 @@ func (cola *Cola) ObtenerLongitud() int {
 	return cola.Longitud
 }
 
-func (cola *Cola) ValidarRepetidos(idcolaClientes string) bool {
-	aux := cola.Primero
-	for aux != nil {
-		if idcolaClientes == aux.data.id_cola {
-			return true
-		}
-		aux = aux.siguiente
-	}
-	return false
-}
-
 func (cola *Cola) ReporteCola() {
 	nombreArchivo := "./cola.dot"
 	nombreImagen := "./cola.jpg"
