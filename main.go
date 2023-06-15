@@ -407,4 +407,9 @@ Realizar Pedido:
 	obtener el nombre de la imagen o su id
 	guardar en la pila
 https://github.com/CristianMejia2198/EDD_1S_JUNIO_2023
+
+
+https://www.markdownguide.org/basic-syntax/#images-1
+https://markdown.es/sintaxis-markdown/
+https://github.com/CristianMejia2198/S1EDD-C/tree/main/Clase6
 */
