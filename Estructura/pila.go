@@ -62,6 +62,46 @@ func (pila *Pila) ReportePila() {
 	ejecutar(nombreImagen, nombreArchivo)
 }
 
+func (pila *Pila) ReporteJson() {
+	nombreArchivo := "./pedidos.json"
+	text := "{\n"
+	text += "\t\"pedidos\":[\n"
+	aux := pila.Primero
+	for i := 0; i < pila.Longitud; i++ {
+		text += "\t\t{\n"
+		text += "\t\t\t\"id_cliente\": " + aux.data.idCliente + ",\n"
+		text += "\t\t\t\"imagen\": \"" + aux.data.nameImagen + "\"\n"
+		text += "\t\t},\n"
+		aux = aux.siguiente
+	}
+
+	text += "\t]\n"
+	text += "}"
+	crearArchivo(nombreArchivo)
+	escribirArchivo(text, nombreArchivo)
+	/*
+		{
+		"pedidos":[
+			{
+				"id_cliente": 12,
+				"imagen": "bmo"
+			},
+			{
+				"id_cliente": 12,
+				"imagen": "mario"
+			},
+			{
+				"id_cliente": 12,
+				"imagen": "deadpool"
+			},
+			{
+				"id_cliente": 12,
+				"imagen": "ave"
+			}
+		]
+	}*/
+}
+
 func NewPila() *Pila {
 	return &Pila{nil, 0}
 }

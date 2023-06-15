@@ -284,6 +284,7 @@ Elige una opción:`, usuario)
 		case 2:
 			realizarPedidos(usuario)
 			pedidosPila.ReportePila()
+			pedidosPila.ReporteJson()
 		}
 	}
 }
@@ -302,7 +303,7 @@ func visualizarImagenes() string {
 func previaVisualizacion(nameImagen string) {
 	matrizImages.LeerInicial("csv/"+nameImagen+"/inicial.csv", nameImagen)
 	matrizImages.GenerarImagen(nameImagen)
-	matrizImages = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
+	//matrizImages = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
 }
 
 func realizarPedidos(usuario string) {
