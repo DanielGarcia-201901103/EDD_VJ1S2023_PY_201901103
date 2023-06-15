@@ -67,7 +67,7 @@ func (lista *Lista_simple) Mostrar() {
 func (lista *Lista_simple) ReporteSimple() {
 	nombreArchivo := "./listasimple.dot"
 	nombreImagen := "./listadosimple.jpg"
-	text := "digraph lista{\n"
+	text := "digraph listaSimple{\n"
 	text += "rankdir = LR; \n"
 	text += "node[shape = record]; \n"
 	//text += "nodonull1[label=\"null\"];\n"

@@ -98,7 +98,7 @@ func (lista *Lista_doble) BuscarImagen(opcion string) string {
 func (lista *Lista_doble) ReporteDoble() {
 	nombreArchivo := "./listadoble.dot"
 	nombreImagen := "./listadoble.jpg"
-	text := "digraph lista{\n"
+	text := "digraph listaDoble{\n"
 	text += "rankdir = LR; \n"
 	text += "node[shape = record]; \n"
 	text += "nodonull1[label=\"null\"];\n"

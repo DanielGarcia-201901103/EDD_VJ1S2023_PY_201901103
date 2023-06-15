@@ -2,6 +2,7 @@ package estructura
 
 import (
 	"fmt"
+	"strings"
 )
 
 type Pedido struct {
@@ -65,41 +66,20 @@ func (pila *Pila) ReportePila() {
 func (pila *Pila) ReporteJson() {
 	nombreArchivo := "./pedidos.json"
 	text := "{\n"
-	text += "\t\"pedidos\":[\n"
+	text += "\t\"pedidos\":["
 	aux := pila.Primero
 	for i := 0; i < pila.Longitud; i++ {
-		text += "\t\t{\n"
+		text += "\n\t\t{\n"
 		text += "\t\t\t\"id_cliente\": " + aux.data.idCliente + ",\n"
 		text += "\t\t\t\"imagen\": \"" + aux.data.nameImagen + "\"\n"
-		text += "\t\t},\n"
+		text += "\t\t},"
 		aux = aux.siguiente
 	}
+	nuevoText := strings.TrimSuffix(text, string(text[len(text)-1]))
+	nuevoText += "\n\t]\n}"
 
-	text += "\t]\n"
-	text += "}"
 	crearArchivo(nombreArchivo)
-	escribirArchivo(text, nombreArchivo)
-	/*
-		{
-		"pedidos":[
-			{
-				"id_cliente": 12,
-				"imagen": "bmo"
-			},
-			{
-				"id_cliente": 12,
-				"imagen": "mario"
-			},
-			{
-				"id_cliente": 12,
-				"imagen": "deadpool"
-			},
-			{
-				"id_cliente": 12,
-				"imagen": "ave"
-			}
-		]
-	}*/
+	escribirArchivo(nuevoText, nombreArchivo)
 }
 
 func NewPila() *Pila {
