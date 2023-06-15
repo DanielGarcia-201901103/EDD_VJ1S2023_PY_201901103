@@ -9,7 +9,7 @@ EDD Creative es un proyecto que permite la interacción con el usuario a traves 
 > Cuando se inicia el programa solamente podrá acceder al menú administrador con el siguiente usuario: ADMIN_201901103 y con la contraseña: Admin.
 > Al momento de presionar enter, podrá visualizar el menú administrador, ver sección.
 > Cuenta con dos opciones, las cuales se muestran en la siguiente imagen.
-> ![menu login!](imgManuales\login.jpg)
+> ![menu login!](imgManuales/login.jpg)
 >
 
 > #### Administrador
