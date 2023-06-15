@@ -20,6 +20,7 @@ var listaDoble = estructura.NewListaDoble()
 var listaCircular = estructura.NewListaCircular()
 var clientesCola = estructura.NewCola()
 var pedidosPila = estructura.NewPila()
+var matrizImages = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
 
 // import estructura "Estructura/Estructura"
 // MENU PRINCIPAL
@@ -279,6 +280,7 @@ Elige una opción:`, usuario)
 		case 1:
 			nameImagen := visualizarImagenes()
 			fmt.Println("La imagen elegida fue: ", nameImagen, "\nMostrando visualizacion previa")
+			previaVisualizacion(nameImagen)
 		case 2:
 			realizarPedidos(usuario)
 			pedidosPila.ReportePila()
@@ -295,6 +297,12 @@ func visualizarImagenes() string {
 	nameImagen := listaDoble.BuscarImagen(strconv.Itoa(opcion))
 	return nameImagen
 	//Falta la opcion de visualizar la imagen
+}
+
+func previaVisualizacion(nameImagen string) {
+	matrizImages.LeerInicial("csv/"+nameImagen+"/inicial.csv", nameImagen)
+	matrizImages.GenerarImagen(nameImagen)
+	matrizImages = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
 }
 
 func realizarPedidos(usuario string) {
