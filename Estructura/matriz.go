@@ -336,7 +336,10 @@ func (m *Matriz) GenerarImagen(nombre_imagen string) {
 			x++
 		}
 		x_pixel = 0
-		auxFila = auxFila.Abajo
+		if auxFila.Abajo != nil {
+			auxFila = auxFila.Abajo
+		}
+
 		if auxFila != nil {
 			auxColumna = auxFila.Siguiente
 		}
