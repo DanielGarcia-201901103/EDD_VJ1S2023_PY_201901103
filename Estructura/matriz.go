@@ -301,7 +301,7 @@ func (m *Matriz) LeerInicial(ruta string, imagen string) {
 	}
 }
 
-func (m *Matriz) LeerInicial1(ruta string, imagen string) {
+func (m *Matriz) LeerInicial1(ruta string, imagen string, listaCapasMatriz *Lista_simpleCapa) {
 	file, err := os.Open(ruta)
 	if err != nil {
 		fmt.Println("No pude abrir el archivo")
@@ -328,9 +328,44 @@ func (m *Matriz) LeerInicial1(ruta string, imagen string) {
 		if linea[0] == "0" {
 			m.leerConfig("csv/" + imagen + "/" + linea[1]) /*csv/mario/config.csv*/
 		} else {
-			m.LeerArchivo("csv/" + imagen + "/" + linea[1])
-			m.Reporte(linea[1])
-			m.Raiz = nil
+			//m.LeerArchivo("csv/" + imagen + "/" + linea[1])
+			//m.Reporte(linea[1])
+			listaCapasMatriz.InsertarCapa(strings.TrimSpace(linea[0]), strings.TrimSpace(linea[1]))
+		}
+	}
+}
+
+func (m *Matriz) LeerInicialYCapaElegida(ruta string, imagen string, capaelegida string) {
+	file, err := os.Open(ruta)
+	if err != nil {
+		fmt.Println("No pude abrir el archivo")
+		return
+	}
+	defer file.Close()
+
+	lectura := csv.NewReader(file)
+	lectura.Comma = ','
+	encabezado := true
+	for {
+		linea, err := lectura.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			fmt.Println("No pude leer la linea del csv")
+			continue
+		}
+		if encabezado {
+			encabezado = false
+			continue
+		}
+		if linea[0] == "0" {
+			m.leerConfig("csv/" + imagen + "/" + linea[1]) /*csv/mario/config.csv*/
+		} else {
+			if capaelegida == linea[1] {
+				m.LeerArchivo("csv/" + imagen + "/" + linea[1])
+				m.Reporte(linea[1])
+			}
 		}
 	}
 }
@@ -369,7 +404,7 @@ func (m *Matriz) leerConfig(ruta string) {
 
 func (m *Matriz) GenerarImagen(nombre_imagen string) {
 	archivoCSS := "csv/" + nombre_imagen + "/" + nombre_imagen + ".css" // csv/mario/mario.css
-	contenidoCSS := "body{\n background: #333333; \n height: 100vh; \n display: flex; \n justify-content: center; \n align-items: center; \n } \n"
+	contenidoCSS := "body{\n background: #636363; \n background: -webkit-linear-gradient(to right, #636363, #a2ab58);\n background: linear-gradient(to right, #636363, #a2ab58);  \n height: 100vh; \n display: flex; \n justify-content: center; \n align-items: center; \n } \n"
 	contenidoCSS += ".canvas{ \n width: " + strconv.Itoa(m.ImageWidth*m.PixelWidth) + "px; \n"
 	contenidoCSS += "height: " + strconv.Itoa(m.ImageHeight*m.PixelHeight) + "px; \n }"
 	contenidoCSS += ".pixel{ \n width: " + strconv.Itoa(m.PixelWidth) + "px; \n"

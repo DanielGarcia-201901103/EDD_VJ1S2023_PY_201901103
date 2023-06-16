@@ -381,7 +381,19 @@ func realizarPedidos(usuario string) {
 }
 func realizarCapa(nameImagen string) {
 	var matrizImages1 = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
-	matrizImages1.LeerInicial1("csv/"+nameImagen+"/inicial.csv", nameImagen)
+	var listaCapasMatriz = estructura.NewListaSimpleCapa()
+	matrizImages1.LeerInicial1("csv/"+nameImagen+"/inicial.csv", nameImagen, listaCapasMatriz)
+	matrizImages1 = &estructura.Matriz{Raiz: nil}
+
+	var opcion int
+	fmt.Println("\n=================Listado de Capas=================")
+	listaCapasMatriz.ListarDatosCapa()
+	fmt.Println("\n Elige una opción:")
+	fmt.Scanln(&opcion)
+	nameCapa := listaCapasMatriz.BuscarCapa(strconv.Itoa(opcion))
+	matrizImages1 = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
+	matrizImages1.LeerInicialYCapaElegida("csv/"+nameImagen+"/inicial.csv", nameImagen, nameCapa)
+	matrizImages1 = &estructura.Matriz{Raiz: nil}
 	/*
 		leer el archivo inicial con cada capa
 		leer la capa de configuración
@@ -394,40 +406,11 @@ func realizarCapa(nameImagen string) {
 // METODO MAIN
 func main() {
 	menuPrincipal()
-	//menuAdministrador()
-	/*
-		listaSimple := &estructura.Lista_simple{Inicio: nil, Longitud: 0}
-		listaSimple.Insertar("1229", "jaquelin Gomez", "Diseño", "1229_Diseño")
-		listaSimple.Insertar("3607", "Yadira Ruiz", "Diseño", "3607_Diseño")
-		listaSimple.Insertar("3518", "Paula Fuentes", "Ventas", "3518_Ventas")
-		listaSimple.Insertar("1211", "karla Alvarez", "Ventas", "1211_Ventas")
-		listaSimple.Mostrar()
-
-
-		https://drive.google.com/file/d/1Mu40-ZEfP-CMmgPoNtdIBWNoCNng1JYb/view
-	*/
 }
 
 /*
-Inicio de sesion de un empleado
-
-ver imagenes
-	mostrar el nombre de las imagenes
-		1. imagen1
-		2. imagen2
-		...
-	Seleccionar una imagen
-	despues de seleccionar se muestra la visualizacion previa
-
-Realizar Pedido:
-	solicitar id del cliente atendido actualmente
-	(si el cliente atendido no está registrado, crear un id unico y retornarlo)
-	obtener el id del empleado que inició sesión
-	obtener el nombre de la imagen o su id
-	guardar en la pila
+https://drive.google.com/file/d/1Mu40-ZEfP-CMmgPoNtdIBWNoCNng1JYb/view
 https://github.com/CristianMejia2198/EDD_1S_JUNIO_2023
-
-
 https://www.markdownguide.org/basic-syntax/#images-1
 https://markdown.es/sintaxis-markdown/
 https://github.com/CristianMejia2198/S1EDD-C/tree/main/Clase6
