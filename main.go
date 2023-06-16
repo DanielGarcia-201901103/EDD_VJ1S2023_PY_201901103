@@ -303,6 +303,7 @@ func visualizarImagenes() string {
 func previaVisualizacion(nameImagen string) {
 	matrizImages.LeerInicial("csv/"+nameImagen+"/inicial.csv", nameImagen)
 	matrizImages.GenerarImagen(nameImagen)
+	matrizImages.Raiz = nil
 	//matrizImages = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
 }
 

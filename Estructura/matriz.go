@@ -366,11 +366,11 @@ func (m *Matriz) generarHTML(nombre_imagen string) {
 	escribirArchivo(contenidoHTML, archivoHTML)
 }
 
-/*
 func NewMatriz() *Matriz {
 	return &Matriz{nil, 0, 0, 0, 0}
 }
 
+/*
 func Inicializar() *NodoMatriz {
 	return &NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}
 }*/
