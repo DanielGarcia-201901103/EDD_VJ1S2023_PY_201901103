@@ -72,5 +72,24 @@ EDD Creative es un proyecto que permite la interacción con el usuario a traves 
 
 EDD Creative maneja la información por medio de carga masiva de archivos de tipo csv, los cuales contienen la información necesaria para la interacción con los empleados.
 
+```go
+    func menuPrincipal() {
+	var opcion int
+	for opcion != 2 {
+		fmt.Println(`
+--------- Login ---------
+1. Iniciar Sesion
+2. Salir del Sistema
+-------------------------
+Elige una opción:`)
 
+		fmt.Scanln(&opcion)
+
+		switch opcion {
+		case 1:
+			sesion()
+		}
+	}
+}
+```
 
