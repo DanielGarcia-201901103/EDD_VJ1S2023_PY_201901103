@@ -28,43 +28,61 @@ type Matriz struct {
 }
 
 func (m *Matriz) buscarColumna(x int) *NodoMatriz {
+	//accede a la raiz
 	aux := m.Raiz
+	//valida si es diferente de nulo
 	for aux != nil {
+		// valida si la posicion en x es igual a la posicion de la columna
 		if aux.PosicionX == x {
+			//retorna el nodo de la matriz
 			return aux
 		}
+		// pasa a la siguiente columna
 		aux = aux.Siguiente
 	}
+	//si es nulo retorna nil
 	return nil
 }
 
 func (m *Matriz) buscarFila(y int) *NodoMatriz {
+	//accede a la raiz de la matriz
 	aux := m.Raiz
+	//valida si el nodo es diferente de nulo realiza el bucle
 	for aux != nil {
+		//valida si la posicion de la fila coincide con la posicion y
 		if aux.PosicionY == y {
+			//retorna el nodo de la matriz
 			return aux
 		}
+		//pasa a la siguiente fila
 		aux = aux.Abajo
 	}
+	//si es nulo retorna nil
 	return nil
 }
 
 func (m *Matriz) insertarColumna(nuevoNodo *NodoMatriz, nodoRaiz *NodoMatriz) *NodoMatriz {
+	// accede al nodo raiz de la matriz
 	temp := nodoRaiz
+	// se inicializa el pivote que servira
 	piv := false
 	for { // while(true) [2][2][2][5][5] -> [N]
+		//valida si la posicion en x es igual a la nueva posicion en x del nuevo nodo
 		if temp.PosicionX == nuevoNodo.PosicionX {
+			//la posicion en la fila obtiene la posicion de y
 			temp.PosicionY = nuevoNodo.PosicionY
+			// al nodo se le asigna el color
 			temp.Color = nuevoNodo.Color
+			//retorna el nodo
 			return temp
-		} else if temp.PosicionX > nuevoNodo.PosicionX {
+		} else if temp.PosicionX > nuevoNodo.PosicionX { //Si la posicion en x es mayor que la posicion del nuevo nodo
 			piv = true
 			break
 		}
-		if temp.Siguiente != nil {
-			temp = temp.Siguiente
-		} else {
-			break
+		if temp.Siguiente != nil { // si el siguiente es diferente de nulo
+			temp = temp.Siguiente // pasa al siguiente nodo
+		} else { //cuando el siguiente es nulo
+			break //finaliza el bucle
 		}
 	}
 	if piv {
@@ -74,10 +92,10 @@ func (m *Matriz) insertarColumna(nuevoNodo *NodoMatriz, nodoRaiz *NodoMatriz) *N
 		nuevoNodo.Anterior = temp.Anterior  // Anterior Raiz
 		temp.Anterior = nuevoNodo           //
 	} else {
-		temp.Siguiente = nuevoNodo
-		nuevoNodo.Anterior = temp
+		temp.Siguiente = nuevoNodo //nodo siguiente apunta al nuevo nodo
+		nuevoNodo.Anterior = temp  // el anterior del nuevo nodo apunta al nodo
 	}
-	return nuevoNodo
+	return nuevoNodo //retorna el nuevo nodo
 }
 
 func (m *Matriz) insertarFila(nuevoNodo *NodoMatriz, nodoRaiz *NodoMatriz) *NodoMatriz {
@@ -112,23 +130,24 @@ func (m *Matriz) insertarFila(nuevoNodo *NodoMatriz, nodoRaiz *NodoMatriz) *Nodo
 }
 
 func (m *Matriz) nuevaColumna(x int) *NodoMatriz {
-	col := "C" + strconv.Itoa(x) // C1
-	nuevoNodo := &NodoMatriz{PosicionX: x, PosicionY: -1, Color: col}
-	columna := m.insertarColumna(nuevoNodo, m.Raiz)
+	col := "C" + strconv.Itoa(x)                                      // C1
+	nuevoNodo := &NodoMatriz{PosicionX: x, PosicionY: -1, Color: col} //encabezado de las columnas
+	columna := m.insertarColumna(nuevoNodo, m.Raiz)                   //agrega la columna
 	return columna
 }
 
 func (m *Matriz) nuevaFila(y int) *NodoMatriz {
-	col := "F" + strconv.Itoa(y) // C1
-	nuevoNodo := &NodoMatriz{PosicionX: -1, PosicionY: y, Color: col}
-	fila := m.insertarFila(nuevoNodo, m.Raiz)
+	col := "F" + strconv.Itoa(y)                                      // C1
+	nuevoNodo := &NodoMatriz{PosicionX: -1, PosicionY: y, Color: col} // encabezado de las filas
+	fila := m.insertarFila(nuevoNodo, m.Raiz)                         // agrega a la fila
 	return fila
 }
 
 func (m *Matriz) Insertar_Elemento(x int, y int, color string) {
+	// agregando posicion en x y y, con color al nuevo nodo
 	nuevoNodo := &NodoMatriz{PosicionX: x, PosicionY: y, Color: color}
-	nodoColumna := m.buscarColumna(x)
-	nodoFila := m.buscarFila(y)
+	nodoColumna := m.buscarColumna(x) // busca la posicion de la columna
+	nodoFila := m.buscarFila(y)       //busca la posicion de la fila
 	/*
 		1. Columna y Fila no Existe
 		2. Columna si existe pero Fila no
@@ -161,10 +180,10 @@ func (m *Matriz) Insertar_Elemento(x int, y int, color string) {
 	}
 }
 
-func (m *Matriz) Reporte() {
+func (m *Matriz) Reporte(nameCapa string) {
 	texto := ""
-	nombre_archivo := "./matriz.dot"
-	nombre_imagen := "matriz.jpg"
+	nombre_archivo := "./" + nameCapa + ".dot"
+	nombre_imagen := "./" + nameCapa + ".jpg"
 	aux1 := m.Raiz
 	aux2 := m.Raiz
 	aux3 := m.Raiz
@@ -215,7 +234,9 @@ func (m *Matriz) Reporte() {
 	ejecutar(nombre_imagen, nombre_archivo)
 }
 
+// Funcion para leer la capa
 func (m *Matriz) LeerArchivo(ruta string) {
+
 	//listaAux := &ListaCircular{Inicio: nil, Longitud: 0}
 	file, err := os.Open(ruta)
 	if err != nil {
@@ -276,6 +297,39 @@ func (m *Matriz) LeerInicial(ruta string, imagen string) {
 			m.leerConfig("csv/" + imagen + "/" + linea[1]) /*csv/mario/config.csv*/
 		} else {
 			m.LeerArchivo("csv/" + imagen + "/" + linea[1])
+		}
+	}
+}
+
+func (m *Matriz) LeerInicial1(ruta string, imagen string) {
+	file, err := os.Open(ruta)
+	if err != nil {
+		fmt.Println("No pude abrir el archivo")
+		return
+	}
+	defer file.Close()
+
+	lectura := csv.NewReader(file)
+	lectura.Comma = ','
+	encabezado := true
+	for {
+		linea, err := lectura.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			fmt.Println("No pude leer la linea del csv")
+			continue
+		}
+		if encabezado {
+			encabezado = false
+			continue
+		}
+		if linea[0] == "0" {
+			m.leerConfig("csv/" + imagen + "/" + linea[1]) /*csv/mario/config.csv*/
+		} else {
+			m.LeerArchivo("csv/" + imagen + "/" + linea[1])
+			m.Reporte(linea[1])
 		}
 	}
 }

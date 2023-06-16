@@ -141,7 +141,7 @@ func cargarEmpleados() {
 			listaSimple.Insertar(strings.TrimSpace(line[0]), strings.TrimSpace(line[1]), strings.TrimSpace(line[2]), strings.TrimSpace(line[3]))
 		}
 	}
-	listaSimple.Mostrar()
+	//listaSimple.Mostrar()
 }
 
 func cargarImagenes() {
@@ -180,7 +180,7 @@ func cargarImagenes() {
 		}
 		listaDoble.Insertar(strings.TrimSpace(lines[0]), strings.TrimSpace(lines[1]))
 	}
-	listaDoble.MostrarAscendente()
+	//listaDoble.MostrarAscendente()
 	//listaDoble.MostrarDescendente()
 }
 
@@ -220,7 +220,7 @@ func cargarClientes() {
 		}
 		listaCircular.Insertar(strings.TrimSpace(lines[0]), strings.TrimSpace(lines[1]))
 	}
-	listaCircular.Mostrar()
+	//listaCircular.Mostrar()
 }
 
 func cargarActualizarCola() {
@@ -265,12 +265,13 @@ func cargarActualizarCola() {
 // MENU EMPLEADO Y SUS FUNCIONES
 func menuEmpleado(usuario string) {
 	var opcion int
-	for opcion != 3 {
+	for opcion != 4 {
 		fmt.Printf(`
 --------- EDD Creative %s ---------
 1. Ver Imagenes Cargadas
 2. Realizar Pedido
-3. Cerrar Sesion
+3. Capas
+4. Cerrar Sesion
 -----------------------------------------------------
 Elige una opción:`, usuario)
 
@@ -285,7 +286,12 @@ Elige una opción:`, usuario)
 			realizarPedidos(usuario)
 			pedidosPila.ReportePila()
 			pedidosPila.ReporteJson()
+		case 3:
+			nameImagen := visualizarImagenes()
+			fmt.Println("La imagen elegida fue: ", nameImagen, "\nMostrando visualizacion previa")
+			realizarCapa(nameImagen)
 		}
+
 	}
 }
 
@@ -303,7 +309,7 @@ func visualizarImagenes() string {
 func previaVisualizacion(nameImagen string) {
 	matrizImages.LeerInicial("csv/"+nameImagen+"/inicial.csv", nameImagen)
 	matrizImages.GenerarImagen(nameImagen)
-	matrizImages.Raiz = nil
+	matrizImages = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
 	//matrizImages = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
 }
 
@@ -370,6 +376,17 @@ func realizarPedidos(usuario string) {
 		3. si no es igual a x, entonces continuar con el paso 4
 		4. Tomar el Id de cliente, id de empleado, nombre de la imagen y guardarlo dentro de la pila
 
+	*/
+}
+func realizarCapa(nameImagen string) {
+	var matrizImages1 = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
+	matrizImages1.LeerInicial1("csv/"+nameImagen+"/inicial.csv", nameImagen)
+	/*
+		leer el archivo inicial con cada capa
+		leer la capa de configuración
+		guardar cada una de las capas en una lista
+		recorrer la lista y mostrar las opciones de las capas, luego preguntar cual capa elige
+		enviar el nombre de la capa al metodo LeerArchivo
 	*/
 }
 
