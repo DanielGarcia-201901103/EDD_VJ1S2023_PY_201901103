@@ -70,13 +70,18 @@ EDD Creative es un proyecto que permite la interacción con el usuario a traves 
 
 ## **MANUAL TECNICO**
 
-EDD Creative maneja la información por medio de carga masiva de archivos de tipo csv, los cuales contienen la información necesaria para la interacción con los empleados.
+EDD Creative maneja la información por medio de carga masiva de archivos de tipo csv, los cuales contienen la información necesaria para la interacción con los empleados. 
+Para la creación del software se utiliza el lenguaje de programación go.
+
+> ### Metodo para el menu principal
+>
+> Para comenzar con la estructura del software se realiza el menú principal tomando en cuenta el inicio de sesión, por lo que se utiliza un bucle para permitir elegir diversas opciones, además  se muestra en pantalla las opciones, y con Scanln se ingresa la opción tecleada por el usuario, de tal manera que accede a la posision de memoria para asignar el dato leído desde consola, luego con el switch evalúa la opcion elegida por el usuario, si es la opcion 1 accede al metodo sesion.
 
 ```go
-    func menuPrincipal() {
-	var opcion int
-	for opcion != 2 {
-		fmt.Println(`
+func menuPrincipal() {
+    var opcion int
+    for opcion != 2 {
+	    fmt.Println(`
 --------- Login ---------
 1. Iniciar Sesion
 2. Salir del Sistema
@@ -85,11 +90,44 @@ Elige una opción:`)
 
 		fmt.Scanln(&opcion)
 
-		switch opcion {
-		case 1:
-			sesion()
+	    switch opcion {
+		    case 1:
+			    sesion()
 		}
 	}
 }
 ```
 
+> ### Metodo para sesion
+>
+
+```go
+func sesion() {
+	var usuario string
+	var password string
+	fmt.Println("\nIngrese Usuario: ")
+	fmt.Scanln(&usuario)
+	fmt.Println("Password: ")
+	fmt.Scanln(&password)
+
+	if usuario == "ADMIN_201901103" && password == "Admin" {
+		fmt.Println("Bienvenido a admin")
+		menuAdministrador()
+	} else {
+
+		validandoExistencia := listaSimple.Validar(usuario, password)
+
+		if validandoExistencia == true {
+			menuEmpleado(usuario)
+		} else {
+			fmt.Println("El usuario no existe o ingresó mal el usuario.")
+		}
+		//buscar entre los empleados guardados en la lista simple enlazada y si existe iniciar sesion en menu empleado
+		/*Se envia usuario y password por parametro al metodo buscar en la lista simple enlazada y si el usuario y el password
+		coinciden entonces devuelve true y inicia sesion, de lo contrario devuelve false y muestra el mensaje*/
+		//menuEmpleado()
+		//si no coincide entonces mostrar el siguiente mensaje
+		//fmt.Println("El usuario no existe")
+	}
+}
+```
