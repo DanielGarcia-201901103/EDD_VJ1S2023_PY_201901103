@@ -76,7 +76,7 @@ Para la creación del software se utiliza el lenguaje de programación go.
 > ### Metodo para el menu principal
 >
 > Para comenzar con la estructura del software se realiza el menú principal tomando en cuenta el inicio de sesión, por lo que se utiliza un bucle para permitir elegir diversas opciones, además  se muestra en pantalla las opciones, y con Scanln se ingresa la opción tecleada por el usuario, de tal manera que accede a la posision de memoria para asignar el dato leído desde consola, luego con el switch evalúa la opcion elegida por el usuario, si es la opcion 1 accede al metodo sesion.
-
+>
 ```go
 func menuPrincipal() {
     var opcion int
@@ -100,7 +100,8 @@ Elige una opción:`)
 
 > ### Metodo para sesion
 >
-
+> Se crean las variables para el usuario y para la contraseña, se muestra en pantalla los mensajes para ingresarlos, luego se compara con un if si el usuario y la contraseña son los predeterminados para el administrador, si esto es correcto, entonces se abre el menu de administrador, de lo contrario se abre el menu de empleados, por lo tanto se debe validar si el usuario y la contraseña existen en el sistema, por lo cual se envian los datos como parametro hacia la funcion validar para así verificar la existencia de los mismos, por lo que si los datos existen, la función devuelve true, y si no existen en la lista devuelve false, y si devuelve false se muestra un mensaje indicando que el usuario no existe o que se ingresaron mal los datos del mismo. 
+>
 ```go
 func sesion() {
 	var usuario string
@@ -122,12 +123,231 @@ func sesion() {
 		} else {
 			fmt.Println("El usuario no existe o ingresó mal el usuario.")
 		}
-		//buscar entre los empleados guardados en la lista simple enlazada y si existe iniciar sesion en menu empleado
-		/*Se envia usuario y password por parametro al metodo buscar en la lista simple enlazada y si el usuario y el password
-		coinciden entonces devuelve true y inicia sesion, de lo contrario devuelve false y muestra el mensaje*/
-		//menuEmpleado()
-		//si no coincide entonces mostrar el siguiente mensaje
-		//fmt.Println("El usuario no existe")
 	}
 }
+```
+
+> ### Metodo para menu administrador
+>
+> Se crea la variable para seleccionar la opcion, luego se crea un bucle para mantenerse dentro de la sesión, y se muestran las opciones imprimiendolas en consola, luego con la funcion Scanln se recibe la opción para así poder validar a traves del switch a que opción corresponde, por lo que se accede a diferentes metodos los cuales se explicarán más adelante. 
+>
+```go
+func menuAdministrador() {
+	var opcion int
+	for opcion != 6 {
+		fmt.Println(`
+--------- Dashboard Administrador 201901103 ---------
+1. Cargar Empleados
+2. Cargar Imagenes
+3. Cargar Usuarios
+4. Actualizar Cola
+5. Reportes Estructuras
+6. Cerrar Sesion
+-----------------------------------------------------
+Elige una opción:`)
+
+		fmt.Scanln(&opcion)
+		switch opcion {
+		case 1:
+			cargarEmpleados()
+		case 2:
+			cargarImagenes()
+		case 3:
+			cargarClientes()
+		case 4:
+			cargarActualizarCola()
+		case 5:
+			listaSimple.ReporteSimple()
+			listaDoble.ReporteDoble()
+			listaCircular.ReporteCircular()
+			clientesCola.ReporteCola()
+		}
+	}
+}
+```
+
+> ### Metodo para cargar empleados
+>
+> Se cre
+>
+```go
+func cargarEmpleados() {
+	var ruta string
+	fmt.Println("Ingrese la ruta del archivo: ")
+	fmt.Scanln(&ruta)
+
+	// Abre el archivo CSV
+	file, err := os.Open(ruta)
+	if err != nil {
+		fmt.Println("Error al abrir el archivo:", err)
+		return
+	}
+	defer file.Close()
+
+	// Crea un lector con transformador UTF-8
+	utf8Reader := transform.NewReader(file, unicode.UTF8.NewDecoder())
+
+	// Crea un nuevo lector CSV
+	reader := csv.NewReader(utf8Reader)
+	reader.Comma = ','
+
+	// Lee todas las líneas del archivo
+	lines, err := reader.ReadAll()
+	if err != nil {
+		fmt.Println("Error al leer el archivo:", err)
+		return
+	}
+
+	// Itera sobre las líneas y muestra los datos
+	for _, line := range lines {
+		if line[0] != "id" {
+			//fmt.Println(line[0], " ", line[1], " ", line[2], " ", line[3])
+			listaSimple.Insertar(strings.TrimSpace(line[0]), strings.TrimSpace(line[1]), strings.TrimSpace(line[2]), strings.TrimSpace(line[3]))
+		}
+	}
+	//listaSimple.Mostrar()
+}
+```
+
+> ### Metodo para cargar imagenes
+>
+> Se c
+>
+```go
+func cargarImagenes() {
+	var ruta string
+	fmt.Println("Ingrese la ruta del archivo: ")
+	fmt.Scanln(&ruta)
+
+	// Abre el archivo CSV
+	file, err := os.Open(ruta)
+	if err != nil {
+		fmt.Println("Error al abrir el archivo:", err)
+		return
+	}
+	defer file.Close()
+
+	// Crea un lector con transformador UTF-8
+	utf8Reader := transform.NewReader(file, unicode.UTF8.NewDecoder())
+
+	// Crea un nuevo lector CSV
+	reader := csv.NewReader(utf8Reader)
+	reader.Comma = ','
+	encabezado := true
+
+	for {
+		lines, err := reader.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			fmt.Println("Error al leer la linea del archivo")
+			continue
+		}
+		if encabezado {
+			encabezado = false
+			continue
+		}
+		listaDoble.Insertar(strings.TrimSpace(lines[0]), strings.TrimSpace(lines[1]))
+	}
+	//listaDoble.MostrarAscendente()
+	//listaDoble.MostrarDescendente()
+}
+```
+
+> ### Metodo para cargar clientes
+>
+> Se cre 
+>
+```go
+func cargarClientes() {
+	var ruta string
+	fmt.Println("Ingrese la ruta del archivo: ")
+	fmt.Scanln(&ruta)
+
+	// Abre el archivo CSV
+	file, err := os.Open(ruta)
+	if err != nil {
+		fmt.Println("Error al abrir el archivo:", err)
+		return
+	}
+	defer file.Close()
+
+	// Crea un lector con transformador UTF-8
+	utf8Reader := transform.NewReader(file, unicode.UTF8.NewDecoder())
+
+	// Crea un nuevo lector CSV
+	reader := csv.NewReader(utf8Reader)
+	reader.Comma = ','
+	encabezado := true
+
+	for {
+		lines, err := reader.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			fmt.Println("Error al leer la linea del archivo")
+			continue
+		}
+		if encabezado {
+			encabezado = false
+			continue
+		}
+		listaCircular.Insertar(strings.TrimSpace(lines[0]), strings.TrimSpace(lines[1]))
+	}
+	//listaCircular.Mostrar()
+}
+```
+
+> ### Metodo para cargar clientes en cola
+>
+> Se cr 
+>
+```go
+func cargarActualizarCola() {
+	var ruta string
+	fmt.Println("Ingrese la ruta del archivo: ")
+	fmt.Scanln(&ruta)
+
+	// Abre el archivo CSV
+	file, err := os.Open(ruta)
+	if err != nil {
+		fmt.Println("Error al abrir el archivo:", err)
+		return
+	}
+	defer file.Close()
+
+	// Crea un lector con transformador UTF-8
+	utf8Reader := transform.NewReader(file, unicode.UTF8.NewDecoder())
+
+	// Crea un nuevo lector CSV
+	reader := csv.NewReader(utf8Reader)
+	reader.Comma = ','
+	encabezado := true
+
+	for {
+		lines, err := reader.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			fmt.Println("Error al leer la linea del archivo")
+			continue
+		}
+		if encabezado {
+			encabezado = false
+			continue
+		}
+		clientesCola.Encolar(strings.TrimSpace(lines[0]), strings.TrimSpace(lines[1]))
+	}
+
+}
+```
+
+> ### Metodo para generar reportes
+>
+> Se crea
+>
+```go
 ```
