@@ -20,7 +20,8 @@ var listaDoble = estructura.NewListaDoble()
 var listaCircular = estructura.NewListaCircular()
 var clientesCola = estructura.NewCola()
 var pedidosPila = estructura.NewPila()
-var matrizImages = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
+
+//var matrizImages = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
 
 // import estructura "Estructura/Estructura"
 // MENU PRINCIPAL
@@ -307,10 +308,10 @@ func visualizarImagenes() string {
 }
 
 func previaVisualizacion(nameImagen string) {
+	var matrizImages = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
 	matrizImages.LeerInicial("csv/"+nameImagen+"/inicial.csv", nameImagen)
 	matrizImages.GenerarImagen(nameImagen)
-	matrizImages = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
-	//matrizImages = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
+	matrizImages = &estructura.Matriz{Raiz: nil}
 }
 
 func realizarPedidos(usuario string) {

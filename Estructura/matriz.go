@@ -330,6 +330,7 @@ func (m *Matriz) LeerInicial1(ruta string, imagen string) {
 		} else {
 			m.LeerArchivo("csv/" + imagen + "/" + linea[1])
 			m.Reporte(linea[1])
+			m.Raiz = nil
 		}
 	}
 }
