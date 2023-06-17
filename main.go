@@ -33,7 +33,7 @@ func menuPrincipal() {
 1. Iniciar Sesion
 2. Salir del Sistema
 -------------------------
-Elige una opción:`)
+Seleccione una opción:`)
 
 		fmt.Scanln(&opcion)
 
@@ -86,7 +86,7 @@ func menuAdministrador() {
 5. Reportes Estructuras
 6. Cerrar Sesion
 -----------------------------------------------------
-Elige una opción:`)
+Seleccione una opción:`)
 
 		fmt.Scanln(&opcion)
 		switch opcion {
@@ -274,7 +274,7 @@ func menuEmpleado(usuario string) {
 3. Capas
 4. Cerrar Sesion
 -----------------------------------------------------
-Elige una opción:`, usuario)
+Seleccione una opción:`, usuario)
 
 		fmt.Scanln(&opcion)
 
@@ -300,7 +300,7 @@ func visualizarImagenes() string {
 	var opcion int
 	fmt.Println("\n###################Listado de Imagenes###################")
 	listaDoble.ListarDatos()
-	fmt.Println("\n Elige una opción:")
+	fmt.Println("\n Seleccione una opción:")
 	fmt.Scanln(&opcion)
 	nameImagen := listaDoble.BuscarImagen(strconv.Itoa(opcion))
 	return nameImagen
@@ -388,7 +388,7 @@ func realizarCapa(nameImagen string) {
 	var opcion int
 	fmt.Println("\n=================Listado de Capas=================")
 	listaCapasMatriz.ListarDatosCapa()
-	fmt.Println("\n Elige una opción:")
+	fmt.Println("\n Seleccione una opción:")
 	fmt.Scanln(&opcion)
 	nameCapa := listaCapasMatriz.BuscarCapa(strconv.Itoa(opcion))
 	matrizImages1 = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}

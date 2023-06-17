@@ -86,7 +86,7 @@ func menuPrincipal() {
 1. Iniciar Sesion
 2. Salir del Sistema
 -------------------------
-Elige una opción:`)
+Seleccione una opción:`)
 
 		fmt.Scanln(&opcion)
 
@@ -144,7 +144,7 @@ func menuAdministrador() {
 5. Reportes Estructuras
 6. Cerrar Sesion
 -----------------------------------------------------
-Elige una opción:`)
+Seleccione una opción:`)
 
 		fmt.Scanln(&opcion)
 		switch opcion {
@@ -168,7 +168,7 @@ Elige una opción:`)
 
 > ### Metodo para cargar empleados
 >
-> Se cre
+> Se crea la variable para la ruta que ingresa el usuario, de esa manera se lee el archivo correctamente, por lo que se utiliza la funcion Open, la cual recibe como parametro la ruta del archivo, y si existe algún error con el archivo, entonces se muestra un mensaje indicando que ha ocurrido un error, y de lo contrario con defer file close se cierra el archivo, y con la funcion transform NewReader se garantiza que el archivo lea los datos independientemente de los tipos de caracteres que incluya el mismo, por lo que esta variable se envía a NewReader del csv para así leer todo el archivo, luego se indica con Comma cual será el caracter que separa los datos, despues con RedAll se leen todas las lineas del archivo, luego si ocurre algun error al leer las lineas se muestra un mensaje en pantalla con el error que ha ocurrido, si no existe ningun error, entonces continua con el bucle, el cual se encarga de recorrer cada dato de cada linea y así poder validar con el if si la linea es la cabecera, entonces lo omite, de lo contrario accede a cada valor, y se envia como parametro al metodo Insertar de la lista simple, indicando con TrimSpace que los datos no tengan espacios extras.
 >
 ```go
 func cargarEmpleados() {
@@ -211,7 +211,7 @@ func cargarEmpleados() {
 
 > ### Metodo para cargar imagenes
 >
-> Se c
+> Se crea una variable que obtendrá la ruta del archivo de imagenes csv, el cual será abierto de la misma manera como se explica en el metodo anterior, con la variacion que ahora los datos se insertan en la lista doble, ademas se crea una bandera de encabezado, para omitir el mismo, cuando se encuentre en el archivo.
 >
 ```go
 func cargarImagenes() {
@@ -250,14 +250,12 @@ func cargarImagenes() {
 		}
 		listaDoble.Insertar(strings.TrimSpace(lines[0]), strings.TrimSpace(lines[1]))
 	}
-	//listaDoble.MostrarAscendente()
-	//listaDoble.MostrarDescendente()
 }
 ```
 
 > ### Metodo para cargar clientes
 >
-> Se cre 
+> Se crea una variable que obtendrá la ruta del archivo de imagenes csv, el cual será abierto de la misma manera como se explica en el metodo de cargar empleados, con la variacion que ahora los datos se insertan en la lista circular, ademas se crea una bandera de encabezado, para omitir el mismo, cuando se encuentre en el archivo.
 >
 ```go
 func cargarClientes() {
@@ -296,13 +294,12 @@ func cargarClientes() {
 		}
 		listaCircular.Insertar(strings.TrimSpace(lines[0]), strings.TrimSpace(lines[1]))
 	}
-	//listaCircular.Mostrar()
 }
 ```
 
 > ### Metodo para cargar clientes en cola
 >
-> Se cr 
+> Se crea una variable que obtendrá la ruta del archivo de imagenes csv, el cual será abierto de la misma manera como se explica en el metodo de cargar empleados, con la variacion que ahora los datos se insertan en la cola, ademas se crea una bandera de encabezado, para omitir el mismo, cuando se encuentre en el archivo.
 >
 ```go
 func cargarActualizarCola() {
@@ -341,7 +338,164 @@ func cargarActualizarCola() {
 		}
 		clientesCola.Encolar(strings.TrimSpace(lines[0]), strings.TrimSpace(lines[1]))
 	}
+}
+```
 
+> ### Metodo para generar reportes
+>
+> Se crea
+>
+```go
+```
+
+> ### Metodo para el menu de empleados
+>
+> Se crea la variable opcion para manejar la entrada por consola escrita por el usuario, por lo tanto con el bucle for se indica que es diferente de la opcion cerrar sesión, para así poder regresar al menú principal ya que finaliza la ejecución del bucle, además con el switch verifica a que opción corresponde, las opciones se verán más adelante.
+>
+```go
+func menuEmpleado(usuario string) {
+	var opcion int
+	for opcion != 4 {
+		fmt.Printf(`
+--------- EDD Creative %s ---------
+1. Ver Imagenes Cargadas
+2. Realizar Pedido
+3. Capas
+4. Cerrar Sesion
+-----------------------------------------------------
+Seleccione una opción:`, usuario)
+
+		fmt.Scanln(&opcion)
+
+		switch opcion {
+		case 1:
+			nameImagen := visualizarImagenes()
+			fmt.Println("La imagen elegida fue: ", nameImagen, "\nMostrando visualizacion previa")
+			previaVisualizacion(nameImagen)
+		case 2:
+			realizarPedidos(usuario)
+			pedidosPila.ReportePila()
+			pedidosPila.ReporteJson()
+		case 3:
+			nameImagen := visualizarImagenes()
+			fmt.Println("La imagen elegida fue: ", nameImagen, "\nMostrando visualizacion previa")
+			realizarCapa(nameImagen)
+		}
+
+	}
+}
+```
+
+> ### Función para visualizar las imagenes
+>
+> Se crea una opción para validar la entrada del usuario, luego se manda a llamar la lista de datos correspondiente a las imagenes, las cuales estan almacenadas en la lista doble, además despues de haber obtenido la opcion, esta se envia como parametro a traves de la funcion BuscarImagen, y devuelve el nombre de la imagen y luego retorna este nombre para almacenarla en la variable desde donde se realiza la invocación a la función.
+>
+```go
+func visualizarImagenes() string {
+	var opcion int
+	fmt.Println("\n###################Listado de Imagenes###################")
+	listaDoble.ListarDatos()
+	fmt.Println("\n Seleccione una opción:")
+	fmt.Scanln(&opcion)
+	nameImagen := listaDoble.BuscarImagen(strconv.Itoa(opcion))
+	return nameImagen
+	//Falta la opcion de visualizar la imagen
+}
+```
+
+> ### Función para la primera opcion correspondiente a visualización previa
+>
+> Se crea la variable de matriz, la cual inicializará los valores de la raiz hacia el nodo de la matriz, con los datos de posiciones en -1 debido a que todos los datos dentro de la matriz pueden iniciar con el nodo 0 e ir aumentando conforme sea necesario, y por esa razón tampoco se le indica un color en especifico, además se envía de manera inicial por medio de parametro la ruta correspondiente a la ubicación de la carpeta con las configuraciones para las imagenes, esta es csv más el nombre de la imagen recibida por parametro y el inicial.csv para la lectura de las capas que tendrá el archivo, y nuevamente se agrega el nombre de la imagen la cual será para la extensión del archivo css y html, por lo que se manda a llamar el metodo GenerarImagen, luego simplemente se inicializa la matriz, para volver a generar otra imagen de ser necesario.
+>
+```go
+func previaVisualizacion(nameImagen string) {
+	var matrizImages = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
+	matrizImages.LeerInicial("csv/"+nameImagen+"/inicial.csv", nameImagen)
+	matrizImages.GenerarImagen(nameImagen)
+	matrizImages = &estructura.Matriz{Raiz: nil}
+}
+```
+
+> ### Metodo para realizar pedidos
+>
+> Se crea un bucle infinito que sirve para obtener los datos actuales de la cola, en este caso el id y nombre del cliente, así como el tamaño de la misma, luego con un if se valida si la longitud de la cola es diferente de 0, esto para indicar que cuando sea igual a 0 se finaliza el bucle, luego se muestra un mensaje indicando cual es el cliente que se está atendiendo, se valida si el cliente no está registrado en la lista circular, por lo que se crea otro bucle dentro de la validación cuando sea igual a X, este bucle servirá para que se repita la generación del id en caso de que este exista, de esta forma aseguramos que solo existan id unicos en el sistema, luego se valida cuando el usuario no existe, entonces se muestran las imagenes disponibles en el sistema, por lo que el usuario puede elegir una imagen y luego se ingresa el cliente nuevo a la lista circular, además se agrega el id del cliente, el id del empleado y la imagen elegida a la pila, luego se indica por medio de un mensaje cual es el id para determinado cliente, y se saca de la cola al cliente atendido y se utiliza un break para romper el bucle, luego en el else correspondiente a la validación si es diferente de X, se vuelve a validar si el cliente se encuentra en el sistema, y se visualizan las imagenes, se agrega el usuario a la pila, y se elimina el usuario de la cola, luego si no existe el cliente, simplemente se agrega a la lista circular y se vuelven a realizar las asignaciones.
+>
+```go
+func realizarPedidos(usuario string) {
+	for {
+		idcolaClientes := clientesCola.ObtenerClienteId()
+		nameColaClientes := clientesCola.ObtenerClienteName()
+		longi := clientesCola.ObtenerLongitud()
+		if longi != 0 {
+			fmt.Println("\nAtendiendo al cliente con id: ", idcolaClientes, " y nombre: ", nameColaClientes)
+
+			if strings.ToUpper(idcolaClientes) == "X" {
+				// CUANDO ES IGUAL A X VALIDAR UN ID RANDOM Y
+				for {
+					valor := (rand.Intn(10000)) + 1000
+
+					existe := listaCircular.ValidarRepetidos(strconv.Itoa(valor))
+					if existe == true {
+						//repetir el aleatorio y no guardar nada
+					} else {
+						// guardar el aleatorio como nuevo id y agregarlo a la lista circular junto al nombre del cliente
+						nombreImagenElegida := visualizarImagenes()
+						//Sino existe en la lista circular agregar al cliente en la lista circular
+						listaCircular.Insertar(strconv.Itoa(valor), nameColaClientes)
+						pedidosPila.Push(strconv.Itoa(valor), usuario, nombreImagenElegida)
+						//agregar el id del cliente, id del empleado, y nombre de la imagen elegida
+						fmt.Println("\nEl nuevo id: ", strconv.Itoa(valor), "corresponde al cliente: ", nameColaClientes)
+						clientesCola.Descolar()
+						break
+					}
+				}
+
+			} else {
+				existe := listaCircular.ValidarRepetidos(strings.TrimSpace(idcolaClientes))
+				if existe == true {
+					// si el cliente existe en la lista circular de clientes
+					nombreImagenElegida := visualizarImagenes()
+					pedidosPila.Push(idcolaClientes, usuario, nombreImagenElegida)
+					//agregar el id del cliente, id del empleado, y nombre de la imagen elegida
+					clientesCola.Descolar()
+				} else {
+					nombreImagenElegida := visualizarImagenes()
+					//Sino existe en la lista circular agregar al cliente en la lista circular
+					listaCircular.Insertar(idcolaClientes, nameColaClientes)
+					pedidosPila.Push(idcolaClientes, usuario, nombreImagenElegida)
+					//agregar el id del cliente, id del empleado, y nombre de la imagen elegida
+					clientesCola.Descolar()
+				}
+
+			}
+			fmt.Println("\nFinaliza atención a cliente actual y quedan:", strconv.Itoa(longi-1))
+		} else {
+			break
+		}
+	}
+}
+```
+
+> ### Metodo para generar las capas
+>
+> Se crea nuevamente la inicialización de la matriz, haciendo la creación del nodo raiz con las posiciones en -1 y color como raiz, luego se crea una lista simple para almacenar las capas, se envia por parametros al meotodo leerInicial1 la ruta del archivo con el nombre de la imagen, y la lista simple de capas, esto solamente sirve para obtener cada capa y luego poder seleccionar solamente una, entonces se vuelve a inicializar la matriz enviandole nulo a la raiz. Despues se crea una variable de opcion la cual servirá directamente para poder elegir la capa a visualizar, por lo que se listan las capas que corresponden a la imagen elegida, luego se busca el nombre de la capa en la lista simple, y se alamcena en la variable nameCapa, se inicia nuevamente la matriz, y se manda a llamar al metodo leer inicial y capa elegida, esto para enviarle el nombre de la imagen, la ruta de la imagen, y el nombre de la capa, y así generar el archivo correspondiente al reporte de la matriz por capas, luego se inicializa nuevamente la matriz.
+>
+```go
+func realizarCapa(nameImagen string) {
+	var matrizImages1 = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
+	var listaCapasMatriz = estructura.NewListaSimpleCapa()
+	matrizImages1.LeerInicial1("csv/"+nameImagen+"/inicial.csv", nameImagen, listaCapasMatriz)
+	matrizImages1 = &estructura.Matriz{Raiz: nil}
+
+	var opcion int
+	fmt.Println("\n=================Listado de Capas=================")
+	listaCapasMatriz.ListarDatosCapa()
+	fmt.Println("\n Seleccione una opción:")
+	fmt.Scanln(&opcion)
+	nameCapa := listaCapasMatriz.BuscarCapa(strconv.Itoa(opcion))
+	matrizImages1 = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
+	matrizImages1.LeerInicialYCapaElegida("csv/"+nameImagen+"/inicial.csv", nameImagen, nameCapa)
+	matrizImages1 = &estructura.Matriz{Raiz: nil}
 }
 ```
 
