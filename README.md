@@ -499,9 +499,90 @@ func realizarCapa(nameImagen string) {
 }
 ```
 
-> ### Metodo para generar reportes
+> ### Lista Simple
 >
-> Se crea
+> se crean las estructuras, la primera es de tipo Empleado, esto indica que obtendrá los datos dentro del mismo, la segunda es de tipo nodo, el cual es de tipo Nodo, este nos sirve para almacenar la data el cual apunta hacia Empleado, luego el siguiente, sirve para apuntar al siguiente nodo, y la ultima parte de ListaSimple, indica que tendrá un inicio apuntando hacia nodo, y una longitud que servirá para saber el tamaño de la lista.
 >
 ```go
+type Empleado struct {
+	id     string
+	name   string
+	cargo  string
+	passwd string
+}
+
+type Nodo struct {
+	data      *Empleado
+	siguiente *Nodo
+}
+
+type Lista_simple struct {
+	Inicio   *Nodo
+	Longitud int
+}
+```
+
+> 
+> El metodo esta Vacia, retorna un valor booleano, en el caso de que la longitud de la lista sea igual a 0 devuelve true, y en caso contrario devuelve false.
+> 
+
+```go
+func (lista *Lista_simple) estaVacia() bool {
+	if lista.Longitud == 0 {
+		return true
+	}
+	return false
+}
+```
+
+>
+> El metodo insertar, recibe como parametro el id, nombre, cargo y contraseña del empleado, luego se crea un empleado con estos datos, luego se valida si la lista está vacia, y si es true, entonces se crea el inicio apuntando los datos al nodo y indicamos que el siguiente de ese nodo apunta a nulo, luego en caso contrario a estar vacía la lista, se accede al inicio de la lista, luego con un bucle for se recorre la lista pasando al siguiente hasta que el siguiente apunte a nulo, por lo que despues se indica que el siguiente del ultimo nodo apunta a un nuevo nodo con el dato de empleado y siguiente apuntando a nulo, y para finalizar simplemente se aumenta la unidad de la longitud para indicar que la lista va creciendo.
+>
+
+```go
+func (lista *Lista_simple) Insertar(id string, name string, cargo string, passwd string) {
+	empleado := &Empleado{id: id, name: name, cargo: cargo, passwd: passwd}
+	if lista.estaVacia() {
+		lista.Inicio = &Nodo{data: empleado, siguiente: nil}
+		lista.Longitud++
+	} else {
+		aux := lista.Inicio
+		for aux.siguiente != nil { //esto simula un while
+			aux = aux.siguiente
+		}
+		aux.siguiente = &Nodo{data: empleado, siguiente: nil}
+		lista.Longitud++
+	}
+}
+```
+
+ >
+ > La funcion validar permite recibir como parametro al usuario, y la contraseña, accediendo al inicio de la lista, luego con un bucle for se recorre la lista hasta que el nodo sea nulo, por lo que con un if se valida si el usuarioi y la contraseña son iguales a los almacenados en la lista, y si son iguales retorna true, de lo contrario finaliza el bucle y devuelve false.
+ >
+
+ ```go
+func (lista *Lista_simple) Validar(usuario string, password string) bool {
+	aux := lista.Inicio
+	for aux != nil {
+		if usuario == aux.data.id && password == aux.data.passwd {
+			return true
+		}
+		aux = aux.siguiente
+	}
+	return false
+}
+```
+
+>
+> El metodo mostrar simplemente accede al inicio de la lista, luego con un bucle recorre los nodos hasta que sea igual a nulo, con un println mostramos en consola los datos almacenados en la lista, luego avanzamos de nodo hacia el siguiente.
+>
+```go
+func (lista *Lista_simple) Mostrar() {
+	aux := lista.Inicio
+
+	for aux != nil {
+		fmt.Println(aux.data.id, " ", aux.data.name, " ", aux.data.cargo, " ", aux.data.passwd)
+		aux = aux.siguiente
+	}
+}
 ```
