@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/gorilla/mux"
 	"golang.org/x/text/encoding/unicode"
 	"golang.org/x/text/transform"
 )
@@ -405,7 +406,8 @@ func realizarCapa(nameImagen string) {
 
 // METODO MAIN
 func main() {
-	menuPrincipal()
+	//menuPrincipal()
+	r := mux.NewRouter()
 }
 
 /*
@@ -414,4 +416,12 @@ https://github.com/CristianMejia2198/EDD_1S_JUNIO_2023
 https://www.markdownguide.org/basic-syntax/#images-1
 https://markdown.es/sintaxis-markdown/
 https://github.com/CristianMejia2198/S1EDD-C/tree/main/Clase6
+
+
+FASE 2
+sistema principal
+ agregar opcion
+	historial facturas
+
+biller: id empleado
 */
