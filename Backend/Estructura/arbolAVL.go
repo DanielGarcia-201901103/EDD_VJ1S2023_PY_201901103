@@ -5,10 +5,15 @@ import (
 	"strconv"
 )
 
+type PedidosAVL struct {
+	Id_Cliente     int
+	imagen_Cliente string
+}
+
 type NodoAVL struct {
 	Izquierdo      *NodoAVL
 	Derecho        *NodoAVL
-	Data           int
+	Data           *PedidosAVL
 	Altura         int
 	EquilibrioFact int
 }
@@ -31,8 +36,9 @@ func (arbolAVL *ArbolAVL) equilibrio(raiz *NodoAVL) int {
 	return (arbolAVL.altura(raiz.Derecho) - arbolAVL.altura(raiz.Izquierdo))
 }
 
-func (arbolAVL *ArbolAVL) InsertarElemento(data int) {
-	newNode := &NodoAVL{Data: data}
+func (arbolAVL *ArbolAVL) InsertarElemento(id int, imagen string) {
+	newPedido := &PedidosAVL{Id_Cliente: id, imagen_Cliente: imagen}
+	newNode := &NodoAVL{Data: newPedido}
 	arbolAVL.Raiz = arbolAVL.insertarNodo(arbolAVL.Raiz, newNode)
 }
 
@@ -40,7 +46,7 @@ func (arbolAVL *ArbolAVL) insertarNodo(raiz *NodoAVL, newNode *NodoAVL) *NodoAVL
 	if raiz == nil {
 		raiz = newNode
 	} else {
-		if raiz.Data > newNode.Data {
+		if raiz.Data.Id_Cliente > newNode.Data.Id_Cliente {
 			raiz.Izquierdo = arbolAVL.insertarNodo(raiz.Izquierdo, newNode)
 		} else {
 			raiz.Derecho = arbolAVL.insertarNodo(raiz.Derecho, newNode)
@@ -50,17 +56,17 @@ func (arbolAVL *ArbolAVL) insertarNodo(raiz *NodoAVL, newNode *NodoAVL) *NodoAVL
 	raiz.Altura = 1 + int(numMaximo)
 	balanceando := arbolAVL.equilibrio(raiz)
 	raiz.EquilibrioFact = balanceando
-	if balanceando > 1 && newNode.Data > raiz.Derecho.Data {
+	if balanceando > 1 && newNode.Data.Id_Cliente > raiz.Derecho.Data.Id_Cliente {
 		return arbolAVL.rotIzquierda(raiz)
 	}
-	if balanceando < -1 && newNode.Data < raiz.Izquierdo.Data {
+	if balanceando < -1 && newNode.Data.Id_Cliente < raiz.Izquierdo.Data.Id_Cliente {
 		return arbolAVL.rotDerecha(raiz)
 	}
-	if balanceando > 1 && newNode.Data < raiz.Derecho.Data {
+	if balanceando > 1 && newNode.Data.Id_Cliente < raiz.Derecho.Data.Id_Cliente {
 		raiz.Derecho = arbolAVL.rotDerecha(raiz.Derecho)
 		return arbolAVL.rotIzquierda(raiz)
 	}
-	if balanceando < -1 && newNode.Data > raiz.Izquierdo.Data {
+	if balanceando < -1 && newNode.Data.Id_Cliente > raiz.Izquierdo.Data.Id_Cliente {
 		raiz.Izquierdo = arbolAVL.rotIzquierda(raiz.Izquierdo)
 		return arbolAVL.rotDerecha(raiz)
 	}
@@ -114,41 +120,41 @@ func (a *ArbolAVL) valArbol(raiz *NodoAVL, indice int) string {
 	numero := indice + 1
 	if raiz != nil {
 		text += "\""
-		text += strconv.Itoa(raiz.Data)
+		text += strconv.Itoa(raiz.Data.Id_Cliente) + " - " + raiz.Data.imagen_Cliente
 		text += "\" ;"
 		if raiz.Izquierdo != nil && raiz.Derecho != nil {
 			text += " x" + strconv.Itoa(numero) + " [label=\"\",width=.1,style=invis];"
 			text += "\""
-			text += strconv.Itoa(raiz.Data)
+			text += strconv.Itoa(raiz.Data.Id_Cliente) + " - " + raiz.Data.imagen_Cliente
 			text += "\" -> "
 			text += a.valArbol(raiz.Izquierdo, numero)
 			text += "\""
-			text += strconv.Itoa(raiz.Data)
+			text += strconv.Itoa(raiz.Data.Id_Cliente) + " - " + raiz.Data.imagen_Cliente
 			text += "\" -> "
 			text += a.valArbol(raiz.Derecho, numero)
-			text += "{rank=same" + "\"" + strconv.Itoa(raiz.Izquierdo.Data) + "\"" + " -> " + "\"" + strconv.Itoa(raiz.Derecho.Data) + "\"" + " [style=invis]}; "
+			text += "{rank=same" + "\"" + strconv.Itoa(raiz.Izquierdo.Data.Id_Cliente) + "\"" + " -> " + "\"" + strconv.Itoa(raiz.Derecho.Data.Id_Cliente) + "\"" + " [style=invis]}; "
 		} else if raiz.Izquierdo != nil && raiz.Derecho == nil {
 			text += " x" + strconv.Itoa(numero) + " [label=\"\",width=.1,style=invis];"
 			text += "\""
-			text += strconv.Itoa(raiz.Data)
+			text += strconv.Itoa(raiz.Data.Id_Cliente) + " - " + raiz.Data.imagen_Cliente
 			text += "\" -> "
 			text += a.valArbol(raiz.Izquierdo, numero)
 			text += "\""
-			text += strconv.Itoa(raiz.Data)
+			text += strconv.Itoa(raiz.Data.Id_Cliente) + " - " + raiz.Data.imagen_Cliente
 			text += "\" -> "
 			text += "x" + strconv.Itoa(numero) + "[style=invis]"
-			text += "{rank=same" + "\"" + strconv.Itoa(raiz.Izquierdo.Data) + "\"" + " -> " + "x" + strconv.Itoa(numero) + " [style=invis]}; "
+			text += "{rank=same" + "\"" + strconv.Itoa(raiz.Izquierdo.Data.Id_Cliente) + "\"" + " -> " + "x" + strconv.Itoa(numero) + " [style=invis]}; "
 		} else if raiz.Izquierdo == nil && raiz.Derecho != nil {
 			text += " x" + strconv.Itoa(numero) + " [label=\"\",width=.1,style=invis];"
 			text += "\""
-			text += strconv.Itoa(raiz.Data)
+			text += strconv.Itoa(raiz.Data.Id_Cliente) + " - " + raiz.Data.imagen_Cliente
 			text += "\" -> "
 			text += "x" + strconv.Itoa(numero) + "[style=invis]"
 			text += "; \""
-			text += strconv.Itoa(raiz.Data)
+			text += strconv.Itoa(raiz.Data.Id_Cliente) + " - " + raiz.Data.imagen_Cliente
 			text += "\" -> "
 			text += a.valArbol(raiz.Derecho, numero)
-			text += "{rank=same" + " x" + strconv.Itoa(numero) + " -> \"" + strconv.Itoa(raiz.Derecho.Data) + "\"" + " [style=invis]}; "
+			text += "{rank=same" + " x" + strconv.Itoa(numero) + " -> \"" + strconv.Itoa(raiz.Derecho.Data.Id_Cliente) + "\"" + " [style=invis]}; "
 		}
 	}
 	return text

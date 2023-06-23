@@ -1,13 +1,14 @@
 //import logo from './logo.svg';
 import './App.css';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import { Login } from './components/menuPrincipal';
+//import { Login } from './components/menuPrincipal';
+import { LoginAdmin } from './components/menuAdministrador';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route exact path='/' element={<Login/>} />
+        <Route exact path='/' element={<LoginAdmin/>} />
       </Routes>
     </Router>
   );

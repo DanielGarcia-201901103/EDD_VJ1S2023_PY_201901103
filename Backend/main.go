@@ -3,8 +3,9 @@ package main
 import (
 	estructura "Estructura/Estructura"
 	"encoding/csv"
+	"encoding/json"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"math/rand"
 	"os"
 	"strconv"
@@ -12,13 +13,25 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"golang.org/x/text/encoding/unicode"
-	"golang.org/x/text/transform"
 )
 
 type RespImagen struct {
 	Imagenbase64 string
 	Nombre       string
+}
+
+type DatosUser struct {
+	Usuario  string `json: "Usuario"`
+	Password string `json: "Password"`
+}
+
+type URLempleado struct {
+	Ruta string `json: "Ruta"`
+}
+
+type Pedi struct {
+	ID     int    `json:"id_cliente"`
+	Imagen string `json:"imagen"`
 }
 
 // variables globales
@@ -29,30 +42,6 @@ var clientesCola = estructura.NewCola()
 var pedidosPila = estructura.NewPila()
 var arbol *estructura.ArbolAVL
 
-//var matrizImages = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
-
-// import estructura "Estructura/Estructura"
-// MENU PRINCIPAL
-/*
-func menuPrincipal() {
-	var opcion int
-	for opcion != 2 {
-		fmt.Println(`
---------- Login ---------
-1. Iniciar Sesion
-2. Salir del Sistema
--------------------------
-Seleccione una opción:`)
-
-		fmt.Scanln(&opcion)
-
-		switch opcion {
-		case 1:
-			sesion()
-		}
-	}
-}
-*/
 func sesion(usuario string, password string) string {
 	if usuario == "ADMIN_201901103" && password == "Admin" {
 		//menuAdministrador()
@@ -70,50 +59,13 @@ func sesion(usuario string, password string) string {
 }
 
 // MENU ADMINISTRADOR Y SUS FUNCIONES
-func menuAdministrador() {
-	var opcion int
-	for opcion != 6 {
-		fmt.Println(`
---------- Dashboard Administrador 201901103 ---------
-1. Cargar Empleados
-2. Cargar Imagenes
-3. Cargar Usuarios
-4. Actualizar Cola
-5. Reportes Estructuras
-6. Cerrar Sesion
------------------------------------------------------
-Seleccione una opción:`)
 
-		fmt.Scanln(&opcion)
-		switch opcion {
-		case 1:
-			cargarEmpleados()
-		case 2:
-			cargarImagenes()
-		case 3:
-			cargarClientes()
-		case 4:
-			cargarActualizarCola()
-		case 5:
-			listaSimple.ReporteSimple()
-			listaDoble.ReporteDoble()
-			listaCircular.ReporteCircular()
-			clientesCola.ReporteCola()
-			//fmt.Print("Estoy en reportes estructuras")
-		}
-	}
-}
-
-func cargarEmpleados() {
-	var ruta string
-	fmt.Println("Ingrese la ruta del archivo: ")
-	fmt.Scanln(&ruta)
-
+func cargarEmpleados(ruta string) bool {
 	// Abre el archivo CSV
 	file, err := os.Open(ruta)
 	if err != nil {
 		fmt.Println("Error al abrir el archivo:", err)
-		return
+		return false
 	}
 	defer file.Close()
 
@@ -128,7 +80,7 @@ func cargarEmpleados() {
 	lines, err := reader.ReadAll()
 	if err != nil {
 		fmt.Println("Error al leer el archivo:", err)
-		return
+		return false
 	}
 
 	// Itera sobre las líneas y muestra los datos
@@ -139,124 +91,8 @@ func cargarEmpleados() {
 		}
 	}
 	//listaSimple.Mostrar()
-}
-
-func cargarImagenes() {
-	var ruta string
-	fmt.Println("Ingrese la ruta del archivo: ")
-	fmt.Scanln(&ruta)
-
-	// Abre el archivo CSV
-	file, err := os.Open(ruta)
-	if err != nil {
-		fmt.Println("Error al abrir el archivo:", err)
-		return
-	}
-	defer file.Close()
-
-	// Crea un lector con transformador UTF-8
-	utf8Reader := transform.NewReader(file, unicode.UTF8.NewDecoder())
-
-	// Crea un nuevo lector CSV
-	reader := csv.NewReader(utf8Reader)
-	reader.Comma = ','
-	encabezado := true
-
-	for {
-		lines, err := reader.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			fmt.Println("Error al leer la linea del archivo")
-			continue
-		}
-		if encabezado {
-			encabezado = false
-			continue
-		}
-		listaDoble.Insertar(strings.TrimSpace(lines[0]), strings.TrimSpace(lines[1]))
-	}
-	//listaDoble.MostrarAscendente()
-	//listaDoble.MostrarDescendente()
-}
-
-func cargarClientes() {
-	var ruta string
-	fmt.Println("Ingrese la ruta del archivo: ")
-	fmt.Scanln(&ruta)
-
-	// Abre el archivo CSV
-	file, err := os.Open(ruta)
-	if err != nil {
-		fmt.Println("Error al abrir el archivo:", err)
-		return
-	}
-	defer file.Close()
-
-	// Crea un lector con transformador UTF-8
-	utf8Reader := transform.NewReader(file, unicode.UTF8.NewDecoder())
-
-	// Crea un nuevo lector CSV
-	reader := csv.NewReader(utf8Reader)
-	reader.Comma = ','
-	encabezado := true
-
-	for {
-		lines, err := reader.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			fmt.Println("Error al leer la linea del archivo")
-			continue
-		}
-		if encabezado {
-			encabezado = false
-			continue
-		}
-		listaCircular.Insertar(strings.TrimSpace(lines[0]), strings.TrimSpace(lines[1]))
-	}
-	//listaCircular.Mostrar()
-}
-
-func cargarActualizarCola() {
-	var ruta string
-	fmt.Println("Ingrese la ruta del archivo: ")
-	fmt.Scanln(&ruta)
-
-	// Abre el archivo CSV
-	file, err := os.Open(ruta)
-	if err != nil {
-		fmt.Println("Error al abrir el archivo:", err)
-		return
-	}
-	defer file.Close()
-
-	// Crea un lector con transformador UTF-8
-	utf8Reader := transform.NewReader(file, unicode.UTF8.NewDecoder())
-
-	// Crea un nuevo lector CSV
-	reader := csv.NewReader(utf8Reader)
-	reader.Comma = ','
-	encabezado := true
-
-	for {
-		lines, err := reader.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			fmt.Println("Error al leer la linea del archivo")
-			continue
-		}
-		if encabezado {
-			encabezado = false
-			continue
-		}
-		clientesCola.Encolar(strings.TrimSpace(lines[0]), strings.TrimSpace(lines[1]))
-	}
-
+	//fmt.Println("Carga exitosa")
+	return true
 }
 
 // MENU EMPLEADO Y SUS FUNCIONES
@@ -399,18 +235,14 @@ func realizarCapa(nameImagen string) {
 	*/
 }
 
-type DatosUser struct {
-	Usuario  string `json: "Usuario"`
-	Password string `json: "Password"`
-}
-
 func main() {
 	app := fiber.New()
 	app.Use(cors.New())
+
 	app.Get("/", func(c *fiber.Ctx) error {
 		//return c.SendString("Hello, World!")
 		return c.JSON(&fiber.Map{
-			"data": "hola",
+			"data": "Bienvenido a EDD Creative",
 		})
 	})
 
@@ -444,8 +276,80 @@ func main() {
 		}
 	})
 
+	app.Post("/cargaEmpleados", func(c *fiber.Ctx) error {
+		//return c.SendString("Hello, World!")
+		jsonUrl := new(URLempleado)
+		if err := c.BodyParser(jsonUrl); err != nil {
+			return err
+		}
+		rutaRecibida := jsonUrl.Ruta
+		validacionleer := cargarEmpleados(rutaRecibida)
+
+		if validacionleer {
+			return c.JSON(&fiber.Map{
+				"data": "archivo cargado correctamente",
+			})
+		}
+
+		return c.JSON(&fiber.Map{
+			"data": "error al cargar archivo",
+		})
+	})
+
+	app.Post("/cargarPedidos", func(c *fiber.Ctx) error {
+		jsonUrl := new(URLempleado)
+		if err := c.BodyParser(jsonUrl); err != nil {
+			return err
+		}
+		rutaRecibida := jsonUrl.Ruta
+		validacionleer := cargarJson(rutaRecibida)
+
+		if validacionleer {
+			return c.JSON(&fiber.Map{
+				"data": "archivo cargado correctamente",
+			})
+		}
+
+		return c.JSON(&fiber.Map{
+			"data": "error al cargar archivo",
+		})
+	})
+
 	app.Listen(":5000")
 	//https://github.com/gofiber/fiber
+}
+
+func cargarJson(ruta string) bool {
+	file, err := os.Open(ruta)
+	if err != nil {
+		return false
+	}
+	defer file.Close()
+	byteValue, err := ioutil.ReadAll(file)
+	if err != nil {
+		fmt.Println("aqui muere", err)
+		return false
+	}
+
+	var objeto struct {
+		Pedidos []Pedi `json:"pedidos"`
+	}
+
+	err = json.Unmarshal(byteValue, &objeto)
+	if err != nil {
+		fmt.Println("aqui muere", err)
+		return false
+	}
+	fmt.Println(objeto.Pedidos)
+
+	for _, pedi := range objeto.Pedidos {
+		idTempo := pedi.ID
+		imagenTempo := pedi.Imagen
+		fmt.Println(idTempo)
+		fmt.Println(imagenTempo)
+		fmt.Println("--------------------------------")
+	}
+	return true
 }
 
 // METODO MAIN
