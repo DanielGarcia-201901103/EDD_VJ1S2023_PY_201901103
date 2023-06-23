@@ -4,8 +4,8 @@ import Card from 'react-bootstrap/Card';
 import { useState } from 'react';
 
 export const Login = () => {
-    const [userLogin, setUsuario] = useState(0)
-    const [passwordLogin, setPassword] = useState(0)
+    const [userLogin, setUsuario] = useState()
+    const [passwordLogin, setPassword] = useState()
     //const [imagen, setImagen] = useState('https://yakurefu.com/wp-content/uploads/2020/02/Chi_by_wallabby.jpg')
     const handleSubmit = async(e) => {
         e.preventDefault();

@@ -54,15 +54,9 @@ Seleccione una opción:`)
 }
 */
 func sesion(usuario string, password string) string {
-	fmt.Println("\nIngrese Usuario: ")
-	fmt.Scanln(&usuario)
-	fmt.Println("Password: ")
-	fmt.Scanln(&password)
-
 	if usuario == "ADMIN_201901103" && password == "Admin" {
-		fmt.Println("Bienvenido a admin")
 		//menuAdministrador()
-		return "Administrador"
+		return "Administrador 201901103"
 	} else {
 
 		validandoExistencia := listaSimple.Validar(usuario, password)
@@ -431,11 +425,19 @@ func main() {
 		fmt.Println(passwordRecibido)
 		validacionIniciar := sesion(usuarioRecibido, passwordRecibido)
 
+		if validacionIniciar == "Administrador 201901103" {
+			fmt.Print("Administrador 201901103")
+			return c.JSON(&fiber.Map{
+				"estado": "Administrador 201901103",
+			})
+		}
 		if validacionIniciar != "No" {
+			fmt.Print("Cualquier usuario")
 			return c.JSON(&fiber.Map{
 				"estado": "SI",
 			})
 		} else {
+			fmt.Print("Usuario o contraseña incorrectos")
 			return c.JSON(&fiber.Map{
 				"estado": "NO",
 			})
