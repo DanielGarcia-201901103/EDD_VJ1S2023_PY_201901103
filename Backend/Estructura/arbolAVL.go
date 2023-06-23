@@ -132,7 +132,7 @@ func (a *ArbolAVL) valArbol(raiz *NodoAVL, indice int) string {
 			text += strconv.Itoa(raiz.Data.Id_Cliente) + " - " + raiz.Data.imagen_Cliente
 			text += "\" -> "
 			text += a.valArbol(raiz.Derecho, numero)
-			text += "{rank=same" + "\"" + strconv.Itoa(raiz.Izquierdo.Data.Id_Cliente) + "\"" + " -> " + "\"" + strconv.Itoa(raiz.Derecho.Data.Id_Cliente) + "\"" + " [style=invis]}; "
+			text += "{rank=same" + "\"" + strconv.Itoa(raiz.Izquierdo.Data.Id_Cliente) + " - " + raiz.Izquierdo.Data.imagen_Cliente + "\"" + " -> " + "\"" + strconv.Itoa(raiz.Derecho.Data.Id_Cliente) + " - " + raiz.Derecho.Data.imagen_Cliente + "\"" + " [style=invis]}; "
 		} else if raiz.Izquierdo != nil && raiz.Derecho == nil {
 			text += " x" + strconv.Itoa(numero) + " [label=\"\",width=.1,style=invis];"
 			text += "\""
@@ -143,7 +143,7 @@ func (a *ArbolAVL) valArbol(raiz *NodoAVL, indice int) string {
 			text += strconv.Itoa(raiz.Data.Id_Cliente) + " - " + raiz.Data.imagen_Cliente
 			text += "\" -> "
 			text += "x" + strconv.Itoa(numero) + "[style=invis]"
-			text += "{rank=same" + "\"" + strconv.Itoa(raiz.Izquierdo.Data.Id_Cliente) + "\"" + " -> " + "x" + strconv.Itoa(numero) + " [style=invis]}; "
+			text += "{rank=same" + "\"" + strconv.Itoa(raiz.Izquierdo.Data.Id_Cliente) + " - " + raiz.Izquierdo.Data.imagen_Cliente + "\"" + " -> " + "x" + strconv.Itoa(numero) + " [style=invis]}; "
 		} else if raiz.Izquierdo == nil && raiz.Derecho != nil {
 			text += " x" + strconv.Itoa(numero) + " [label=\"\",width=.1,style=invis];"
 			text += "\""
@@ -154,7 +154,7 @@ func (a *ArbolAVL) valArbol(raiz *NodoAVL, indice int) string {
 			text += strconv.Itoa(raiz.Data.Id_Cliente) + " - " + raiz.Data.imagen_Cliente
 			text += "\" -> "
 			text += a.valArbol(raiz.Derecho, numero)
-			text += "{rank=same" + " x" + strconv.Itoa(numero) + " -> \"" + strconv.Itoa(raiz.Derecho.Data.Id_Cliente) + "\"" + " [style=invis]}; "
+			text += "{rank=same" + " x" + strconv.Itoa(numero) + " -> \"" + strconv.Itoa(raiz.Derecho.Data.Id_Cliente) + " - " + raiz.Derecho.Data.imagen_Cliente + "\"" + " [style=invis]}; "
 		}
 	}
 	return text

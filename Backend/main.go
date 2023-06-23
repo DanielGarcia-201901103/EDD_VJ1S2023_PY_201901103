@@ -40,7 +40,7 @@ var listaDoble = estructura.NewListaDoble()
 var listaCircular = estructura.NewListaCircular()
 var clientesCola = estructura.NewCola()
 var pedidosPila = estructura.NewPila()
-var arbol *estructura.ArbolAVL
+var arbol estructura.ArbolAVL
 
 func sesion(usuario string, password string) string {
 	if usuario == "ADMIN_201901103" && password == "Admin" {
@@ -50,7 +50,7 @@ func sesion(usuario string, password string) string {
 
 		validandoExistencia := listaSimple.Validar(usuario, password)
 
-		if validandoExistencia == true {
+		if validandoExistencia {
 			menuEmpleado(usuario)
 			return usuario
 		}
@@ -160,7 +160,7 @@ func realizarPedidos(usuario string) {
 					valor := (rand.Intn(10000)) + 1000
 
 					existe := listaCircular.ValidarRepetidos(strconv.Itoa(valor))
-					if existe == true {
+					if existe {
 						//repetir el aleatorio y no guardar nada
 					} else {
 						// guardar el aleatorio como nuevo id y agregarlo a la lista circular junto al nombre del cliente
@@ -177,7 +177,7 @@ func realizarPedidos(usuario string) {
 
 			} else {
 				existe := listaCircular.ValidarRepetidos(strings.TrimSpace(idcolaClientes))
-				if existe == true {
+				if existe {
 					// si el cliente existe en la lista circular de clientes
 					nombreImagenElegida := visualizarImagenes()
 					pedidosPila.Push(idcolaClientes, usuario, nombreImagenElegida)
@@ -315,6 +315,14 @@ func main() {
 		})
 	})
 
+	app.Get("/Reportes", func(c *fiber.Ctx) error {
+		//return c.SendString("Hello, World!")
+		arbol.Graficar()
+		return c.JSON(&fiber.Map{
+			"data": "Reportes realizados correctamente",
+		})
+	})
+
 	app.Listen(":5000")
 	//https://github.com/gofiber/fiber
 }
@@ -345,9 +353,10 @@ func cargarJson(ruta string) bool {
 	for _, pedi := range objeto.Pedidos {
 		idTempo := pedi.ID
 		imagenTempo := pedi.Imagen
-		fmt.Println(idTempo)
-		fmt.Println(imagenTempo)
-		fmt.Println("--------------------------------")
+		//fmt.Println(idTempo)
+		//fmt.Println(imagenTempo)
+		arbol.InsertarElemento(idTempo, imagenTempo)
+		//fmt.Println("--------------------------------")
 	}
 	return true
 }
