@@ -8,7 +8,7 @@ import (
 type NodoAVL struct {
 	Izquierdo      *NodoAVL
 	Derecho        *NodoAVL
-	Data           int //valor
+	Data           int
 	Altura         int
 	EquilibrioFact int
 }
@@ -36,31 +36,31 @@ func (arbolAVL *ArbolAVL) InsertarElemento(data int) {
 	arbolAVL.Raiz = arbolAVL.insertarNodo(arbolAVL.Raiz, newNode)
 }
 
-func (arbolAVL *ArbolAVL) insertarNodo(raiz *NodoAVL, newNodo *NodoAVL) *NodoAVL {
+func (arbolAVL *ArbolAVL) insertarNodo(raiz *NodoAVL, newNode *NodoAVL) *NodoAVL {
 	if raiz == nil {
-		raiz = newNodo
+		raiz = newNode
 	} else {
-		if raiz.Data > newNodo.Data {
-			raiz.Izquierdo = arbolAVL.insertarNodo(raiz.Izquierdo, newNodo)
+		if raiz.Data > newNode.Data {
+			raiz.Izquierdo = arbolAVL.insertarNodo(raiz.Izquierdo, newNode)
 		} else {
-			raiz.Derecho = arbolAVL.insertarNodo(raiz.Derecho, newNodo)
+			raiz.Derecho = arbolAVL.insertarNodo(raiz.Derecho, newNode)
 		}
 	}
 	numMaximo := math.Max(float64(arbolAVL.altura(raiz.Izquierdo)), float64(arbolAVL.altura(raiz.Derecho)))
 	raiz.Altura = 1 + int(numMaximo)
 	balanceando := arbolAVL.equilibrio(raiz)
 	raiz.EquilibrioFact = balanceando
-	if balanceando > 1 && newNodo.Data > raiz.Derecho.Data {
+	if balanceando > 1 && newNode.Data > raiz.Derecho.Data {
 		return arbolAVL.rotIzquierda(raiz)
 	}
-	if balanceando < -1 && newNodo.Data < raiz.Izquierdo.Data {
+	if balanceando < -1 && newNode.Data < raiz.Izquierdo.Data {
 		return arbolAVL.rotDerecha(raiz)
 	}
-	if balanceando > 1 && newNodo.Data < raiz.Derecho.Data {
+	if balanceando > 1 && newNode.Data < raiz.Derecho.Data {
 		raiz.Derecho = arbolAVL.rotDerecha(raiz.Derecho)
 		return arbolAVL.rotIzquierda(raiz)
 	}
-	if balanceando < -1 && newNodo.Data > raiz.Izquierdo.Data {
+	if balanceando < -1 && newNode.Data > raiz.Izquierdo.Data {
 		raiz.Izquierdo = arbolAVL.rotIzquierda(raiz.Izquierdo)
 		return arbolAVL.rotDerecha(raiz)
 	}
@@ -111,44 +111,44 @@ func (arbolAVL *ArbolAVL) Graficar() {
 
 func (a *ArbolAVL) valArbol(raiz *NodoAVL, indice int) string {
 	text := ""
-	indice1 := indice + 1
+	numero := indice + 1
 	if raiz != nil {
 		text += "\""
 		text += strconv.Itoa(raiz.Data)
 		text += "\" ;"
 		if raiz.Izquierdo != nil && raiz.Derecho != nil {
-			text += " x" + strconv.Itoa(indice1) + " [label=\"\",width=.1,style=invis];"
+			text += " x" + strconv.Itoa(numero) + " [label=\"\",width=.1,style=invis];"
 			text += "\""
 			text += strconv.Itoa(raiz.Data)
 			text += "\" -> "
-			text += a.valArbol(raiz.Izquierdo, indice1)
+			text += a.valArbol(raiz.Izquierdo, numero)
 			text += "\""
 			text += strconv.Itoa(raiz.Data)
 			text += "\" -> "
-			text += a.valArbol(raiz.Derecho, indice1)
+			text += a.valArbol(raiz.Derecho, numero)
 			text += "{rank=same" + "\"" + strconv.Itoa(raiz.Izquierdo.Data) + "\"" + " -> " + "\"" + strconv.Itoa(raiz.Derecho.Data) + "\"" + " [style=invis]}; "
 		} else if raiz.Izquierdo != nil && raiz.Derecho == nil {
-			text += " x" + strconv.Itoa(indice1) + " [label=\"\",width=.1,style=invis];"
+			text += " x" + strconv.Itoa(numero) + " [label=\"\",width=.1,style=invis];"
 			text += "\""
 			text += strconv.Itoa(raiz.Data)
 			text += "\" -> "
-			text += a.valArbol(raiz.Izquierdo, indice1)
+			text += a.valArbol(raiz.Izquierdo, numero)
 			text += "\""
 			text += strconv.Itoa(raiz.Data)
 			text += "\" -> "
-			text += "x" + strconv.Itoa(indice1) + "[style=invis]"
-			text += "{rank=same" + "\"" + strconv.Itoa(raiz.Izquierdo.Data) + "\"" + " -> " + "x" + strconv.Itoa(indice1) + " [style=invis]}; "
+			text += "x" + strconv.Itoa(numero) + "[style=invis]"
+			text += "{rank=same" + "\"" + strconv.Itoa(raiz.Izquierdo.Data) + "\"" + " -> " + "x" + strconv.Itoa(numero) + " [style=invis]}; "
 		} else if raiz.Izquierdo == nil && raiz.Derecho != nil {
-			text += " x" + strconv.Itoa(indice1) + " [label=\"\",width=.1,style=invis];"
+			text += " x" + strconv.Itoa(numero) + " [label=\"\",width=.1,style=invis];"
 			text += "\""
 			text += strconv.Itoa(raiz.Data)
 			text += "\" -> "
-			text += "x" + strconv.Itoa(indice1) + "[style=invis]"
+			text += "x" + strconv.Itoa(numero) + "[style=invis]"
 			text += "; \""
 			text += strconv.Itoa(raiz.Data)
 			text += "\" -> "
-			text += a.valArbol(raiz.Derecho, indice1)
-			text += "{rank=same" + " x" + strconv.Itoa(indice1) + " -> \"" + strconv.Itoa(raiz.Derecho.Data) + "\"" + " [style=invis]}; "
+			text += a.valArbol(raiz.Derecho, numero)
+			text += "{rank=same" + " x" + strconv.Itoa(numero) + " -> \"" + strconv.Itoa(raiz.Derecho.Data) + "\"" + " [style=invis]}; "
 		}
 	}
 	return text

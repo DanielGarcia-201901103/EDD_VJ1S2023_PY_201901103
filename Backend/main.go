@@ -10,10 +10,16 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gorilla/mux"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"golang.org/x/text/encoding/unicode"
 	"golang.org/x/text/transform"
 )
+
+type RespImagen struct {
+	Imagenbase64 string
+	Nombre       string
+}
 
 // variables globales
 var listaSimple = estructura.NewListaSimple()
@@ -21,11 +27,13 @@ var listaDoble = estructura.NewListaDoble()
 var listaCircular = estructura.NewListaCircular()
 var clientesCola = estructura.NewCola()
 var pedidosPila = estructura.NewPila()
+var arbol *estructura.ArbolAVL
 
 //var matrizImages = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
 
 // import estructura "Estructura/Estructura"
 // MENU PRINCIPAL
+/*
 func menuPrincipal() {
 	var opcion int
 	for opcion != 2 {
@@ -44,10 +52,8 @@ Seleccione una opción:`)
 		}
 	}
 }
-
-func sesion() {
-	var usuario string
-	var password string
+*/
+func sesion(usuario string, password string) string {
 	fmt.Println("\nIngrese Usuario: ")
 	fmt.Scanln(&usuario)
 	fmt.Println("Password: ")
@@ -55,23 +61,18 @@ func sesion() {
 
 	if usuario == "ADMIN_201901103" && password == "Admin" {
 		fmt.Println("Bienvenido a admin")
-		menuAdministrador()
+		//menuAdministrador()
+		return "Administrador"
 	} else {
 
 		validandoExistencia := listaSimple.Validar(usuario, password)
 
 		if validandoExistencia == true {
 			menuEmpleado(usuario)
-		} else {
-			fmt.Println("El usuario no existe o ingresó mal el usuario.")
+			return usuario
 		}
-		//buscar entre los empleados guardados en la lista simple enlazada y si existe iniciar sesion en menu empleado
-		/*Se envia usuario y password por parametro al metodo buscar en la lista simple enlazada y si el usuario y el password
-		coinciden entonces devuelve true y inicia sesion, de lo contrario devuelve false y muestra el mensaje*/
-		//menuEmpleado()
-		//si no coincide entonces mostrar el siguiente mensaje
-		//fmt.Println("El usuario no existe")
 	}
+	return "No"
 }
 
 // MENU ADMINISTRADOR Y SUS FUNCIONES
@@ -123,10 +124,10 @@ func cargarEmpleados() {
 	defer file.Close()
 
 	// Crea un lector con transformador UTF-8
-	utf8Reader := transform.NewReader(file, unicode.UTF8.NewDecoder())
+	//utf8Reader := transform.NewReader(file, unicode.UTF8.NewDecoder())
 
 	// Crea un nuevo lector CSV
-	reader := csv.NewReader(utf8Reader)
+	reader := csv.NewReader(file)
 	reader.Comma = ','
 
 	// Lee todas las líneas del archivo
@@ -404,11 +405,113 @@ func realizarCapa(nameImagen string) {
 	*/
 }
 
+type DatosUser struct {
+	Usuario  string `json: "Usuario"`
+	Password string `json: "Password"`
+}
+
+func main() {
+	app := fiber.New()
+	app.Use(cors.New())
+	app.Get("/", func(c *fiber.Ctx) error {
+		//return c.SendString("Hello, World!")
+		return c.JSON(&fiber.Map{
+			"data": "hola",
+		})
+	})
+
+	app.Post("/login", func(c *fiber.Ctx) error {
+		jsonData := new(DatosUser)
+		if err := c.BodyParser(jsonData); err != nil {
+			return err
+		}
+		usuarioRecibido := jsonData.Usuario
+		passwordRecibido := jsonData.Password
+		fmt.Println(usuarioRecibido)
+		fmt.Println(passwordRecibido)
+		validacionIniciar := sesion(usuarioRecibido, passwordRecibido)
+
+		if validacionIniciar != "No" {
+			return c.JSON(&fiber.Map{
+				"estado": "SI",
+			})
+		} else {
+			return c.JSON(&fiber.Map{
+				"estado": "NO",
+			})
+		}
+	})
+
+	app.Listen(":5000")
+	//https://github.com/gofiber/fiber
+}
+
 // METODO MAIN
+/*
 func main() {
 	//menuPrincipal()
-	r := mux.NewRouter()
+	app := fiber.New()
+	app.Use(cors.New())
+	app.Post("/agregar-arbol", func(c *fiber.Ctx) error {
+		var arbol estructura.NodoAVL
+		c.BodyParser(&arbol)
+		fmt.Println(arbol.Data)
+		return c.Json(&fiber.Map{
+			"data": "hola",
+		})
+	})
+	app.Listen(":3003")
+
+		https://github.com/gofiber/fiber
+			arbol = &estructura.ArbolAVL{Raiz: nil}
+			r := mux.NewRouter()
+			r.HandleFunc("/", MostrarArbol).Methods("GET")
+			r.HandleFunc("/agregar-arbol", AgregarArbol).Methods("POST")
+			r.HandleFunc("/reporte-arbol", MandarReporte).Methods("GET")
+			log.Fatal(http.ListenAndServe(":3001", r))
+
 }
+*/
+/*
+func MostrarArbol(w http.ResponseWriter, req *http.Request) {
+	//Esto nos verifica que le estamos enviando al servidor una respuesta de tipo JSON
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(&arbol)
+}
+
+func AgregarArbol(w http.ResponseWriter, req *http.Request) {
+	reqBody, err := ioutil.ReadAll(req.Body)
+	var nuevoNodo estructura.NodoAVL
+	if err != nil {
+		fmt.Fprintf(w, "No valido")
+	}
+	json.Unmarshal(reqBody, &nuevoNodo)
+	fmt.Println(nuevoNodo.Data)
+	arbol.InsertarElemento(nuevoNodo.Data)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(nuevoNodo)
+}
+
+func MandarReporte(w http.ResponseWriter, req *http.Request) {
+	arbol.Graficar()
+	var imagen RespImagen = RespImagen{Nombre: "arbolAVL.jpg"}
+	//INICIO
+	imageBytes, err := ioutil.ReadFile(imagen.Nombre)
+	if err != nil {
+		fmt.Fprintf(w, "Imagen No Valida")
+		return
+	}
+	// Codifica los bytes de la imagen en base64
+	imagen.Imagenbase64 = "data:image/jpg;base64," + base64.StdEncoding.EncodeToString(imageBytes)
+
+	//data:image/jpg;base64,ABC
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(imagen)
+}*/
 
 /*
 https://drive.google.com/file/d/1Mu40-ZEfP-CMmgPoNtdIBWNoCNng1JYb/view
@@ -420,7 +523,7 @@ https://github.com/CristianMejia2198/S1EDD-C/tree/main/Clase6
 
 FASE 2
 sistema principal
- agregar opcion
+agregar opcion
 	historial facturas
 
 biller: id empleado
