@@ -260,18 +260,18 @@ func main() {
 		if validacionIniciar == "Administrador 201901103" {
 			fmt.Print("Administrador 201901103")
 			return c.JSON(&fiber.Map{
-				"estado": "Administrador 201901103",
+				"data": "Administrador",
 			})
 		}
 		if validacionIniciar != "No" {
 			fmt.Print("Cualquier usuario")
 			return c.JSON(&fiber.Map{
-				"estado": "SI",
+				"data": "SI",
 			})
 		} else {
 			fmt.Print("Usuario o contraseña incorrectos")
 			return c.JSON(&fiber.Map{
-				"estado": "NO",
+				"data": "NO",
 			})
 		}
 	})

@@ -2,10 +2,12 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const Login = () => {
-    const [userLogin, setUsuario] = useState()
-    const [passwordLogin, setPassword] = useState()
+    const navigate = useNavigate();
+    const [userLogin, setUsuario] = useState("")
+    const [passwordLogin, setPassword] = useState("")
     //const [imagen, setImagen] = useState('https://yakurefu.com/wp-content/uploads/2020/02/Chi_by_wallabby.jpg')
     const handleSubmit = async(e) => {
         e.preventDefault();
@@ -21,12 +23,34 @@ export const Login = () => {
                 'Content-Type': 'application/json'
             }
         })
+
+        .then(response => response.json())
+        .then(data => validar(data));
+        /*
+        .then(function(response) {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error('Error en la solicitud POST');
+        })
+        .then(function(responseData) {
+            // Aquí puedes acceder a la respuesta del backend (responseData)
+        })
+        .catch(function(error) {
+            console.log('Error:', error.message);
+        });*/
     }
-    /*
+    
     const validar = (data) =>{
-        //console.log(data)
+        console.log(data)
         //setImagen(data.Imagenbase64)
-        if (data.mensaje === "OK"){
+        if (data.data === "Administrador"){
+            window.localStorage.setItem("Administrador","201901103")
+            //window.open("/admin","_self")
+            navigate('/admin')
+            console.log("estoy en admin")
+        }else if (data.data === "SI"){
+            /*
             swal({
                 title: "Session Iniciada",
                 text: "Datos Correctos",
@@ -34,22 +58,17 @@ export const Login = () => {
                 button: "aceptar"
             }).then(respuesta => {
                 if(respuesta){
-                    console.log(respuesta);
-                    localStorage.setItem('current',respuesta.data);
-                    window.open("/inicio","_self");
-                }
-            })
-            
+                    console.log(respuesta);*/
+                    localStorage.setItem('current', userLogin);
+                    window.open("/empleado","_self");
+            //    }
+            //})
+            console.log("estoy en cualquier usuario")
         }else{
-            swal({
-                title: "Error en Credenciales",
-                text: "Su usuario o contraseña son incorrectos",
-                icon: "error",
-                timer: "4000",
-                buttons: false
-            })
+            alert("Contraseña o usuario incorrecto")
         }
-    }*/
+    }
+
     return (
         <div style={{padding: '200px', backgroundColor: '#282c34', display: 'flex', paddingLeft: '600px', flexdirection: 'column' ,minheight: '100vh',alignitems: 'center'}}>
         <Card style={{ width: '18rem'}}>
