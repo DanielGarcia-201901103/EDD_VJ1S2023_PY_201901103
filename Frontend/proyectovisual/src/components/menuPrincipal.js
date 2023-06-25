@@ -64,7 +64,6 @@ export const Login = () => {
             window.open("/empleado", "_self");
             //    }
             //})
-            console.log("estoy en cualquier usuario")
         } else {
             swal({
                 title: 'Credenciales Incorrectas!',

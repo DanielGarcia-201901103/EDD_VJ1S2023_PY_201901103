@@ -47,11 +47,9 @@ func sesion(usuario string, password string) string {
 		//menuAdministrador()
 		return "Administrador 201901103"
 	} else {
-
 		validandoExistencia := listaSimple.Validar(usuario, password)
-
 		if validandoExistencia {
-			menuEmpleado(usuario)
+			//menuEmpleado(usuario)
 			return usuario
 		}
 	}
@@ -64,7 +62,7 @@ func cargarEmpleados(ruta string) bool {
 	// Abre el archivo CSV
 	file, err := os.Open(ruta)
 	if err != nil {
-		fmt.Println("Error al abrir el archivo:", err)
+		//fmt.Println("Error al abrir el archivo:", err)
 		return false
 	}
 	defer file.Close()
@@ -79,7 +77,7 @@ func cargarEmpleados(ruta string) bool {
 	// Lee todas las líneas del archivo
 	lines, err := reader.ReadAll()
 	if err != nil {
-		fmt.Println("Error al leer el archivo:", err)
+		//fmt.Println("Error al leer el archivo:", err)
 		return false
 	}
 
@@ -253,23 +251,23 @@ func main() {
 		}
 		usuarioRecibido := jsonData.Usuario
 		passwordRecibido := jsonData.Password
-		fmt.Println(usuarioRecibido)
-		fmt.Println(passwordRecibido)
+		//fmt.Println(usuarioRecibido)
+		//fmt.Println(passwordRecibido)
 		validacionIniciar := sesion(usuarioRecibido, passwordRecibido)
 
 		if validacionIniciar == "Administrador 201901103" {
-			fmt.Print("Administrador 201901103")
+			//fmt.Print("Administrador 201901103")
 			return c.JSON(&fiber.Map{
 				"data": "Administrador",
 			})
 		}
 		if validacionIniciar != "No" {
-			fmt.Print("Cualquier usuario")
+			//fmt.Print("Cualquier usuario")
 			return c.JSON(&fiber.Map{
 				"data": "SI",
 			})
 		} else {
-			fmt.Print("Usuario o contraseña incorrectos")
+			//fmt.Print("Usuario o contraseña incorrectos")
 			return c.JSON(&fiber.Map{
 				"data": "NO",
 			})
@@ -335,7 +333,6 @@ func cargarJson(ruta string) bool {
 	defer file.Close()
 	byteValue, err := ioutil.ReadAll(file)
 	if err != nil {
-		fmt.Println("aqui muere", err)
 		return false
 	}
 
@@ -345,18 +342,13 @@ func cargarJson(ruta string) bool {
 
 	err = json.Unmarshal(byteValue, &objeto)
 	if err != nil {
-		fmt.Println("aqui muere", err)
 		return false
 	}
-	fmt.Println(objeto.Pedidos)
 
 	for _, pedi := range objeto.Pedidos {
 		idTempo := pedi.ID
 		imagenTempo := pedi.Imagen
-		//fmt.Println(idTempo)
-		//fmt.Println(imagenTempo)
 		arbol.InsertarElemento(idTempo, imagenTempo)
-		//fmt.Println("--------------------------------")
 	}
 	return true
 }
@@ -434,7 +426,7 @@ https://github.com/CristianMejia2198/EDD_1S_JUNIO_2023
 https://www.markdownguide.org/basic-syntax/#images-1
 https://markdown.es/sintaxis-markdown/
 https://github.com/CristianMejia2198/S1EDD-C/tree/main/Clase6
-
+https://w3.unpocodetodo.info/canvas/blancoynegro.php
 
 FASE 2
 sistema principal
