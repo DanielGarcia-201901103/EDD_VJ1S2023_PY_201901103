@@ -301,7 +301,7 @@ func main() {
 		}
 		rutaRecibida := jsonUrl.Ruta
 		validacionleer := cargarJson(rutaRecibida)
-
+		arbol.InOrder(clientesCola)
 		if validacionleer {
 			return c.JSON(&fiber.Map{
 				"data": "archivo cargado correctamente",
@@ -316,6 +316,7 @@ func main() {
 	app.Get("/Reportes", func(c *fiber.Ctx) error {
 		//return c.SendString("Hello, World!")
 		arbol.Graficar()
+		clientesCola.ReporteCola()
 		return c.JSON(&fiber.Map{
 			"data": "Reportes realizados correctamente",
 		})
@@ -324,6 +325,28 @@ func main() {
 	app.Listen(":5000")
 	//https://github.com/gofiber/fiber
 }
+
+/*
+pedidos.json
+
+csv\empleados.csv
+
+
+4269,Paula Fuentes,Ventas,2576_Ventas
+4364,Maria Tux,Ventas,4364_Ventas
+
+
+
+algoritmo para filtros
+
+elegir una imagen
+
+1. generar imagen original de la misma
+2. preservar la imagen original
+3. aplicar el filtro a la imagen
+4. aplicar el segundo filtro a la imagen a
+   la que ya se le habia aplicado filtro
+*/
 
 func cargarJson(ruta string) bool {
 	file, err := os.Open(ruta)
