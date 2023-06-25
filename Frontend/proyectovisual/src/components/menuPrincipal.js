@@ -84,16 +84,16 @@ export const Login = () => {
                     <Card.Body>
                         <Card.Title>Iniciar Sesión</Card.Title>
                         <Form onSubmit={handleSubmit}>
-                            <Form.Group className="mb-3" controlId="userEmpleado">
+                            <Form.Group className="mb-3">
                                 <Form.Label>Usuario</Form.Label>
-                                <Form.Control id='user' type="text" placeholder="Enter User" required
+                                <Form.Control id='userEmpleado' type="text" placeholder="Enter User" required
                                     onChange={e => setUsuario(e.target.value)}
                                     value={userLogin}
                                     autoFocus />
                             </Form.Group>
-                            <Form.Group className="mb-3" controlId="userPassword">
+                            <Form.Group className="mb-3">
                                 <Form.Label>Password</Form.Label>
-                                <Form.Control id='password' type="password" placeholder="Password" required
+                                <Form.Control id='userPassword' type="password" placeholder="Password" required
                                     onChange={e => setPassword(e.target.value)}
                                     value={passwordLogin} />
                             </Form.Group>
