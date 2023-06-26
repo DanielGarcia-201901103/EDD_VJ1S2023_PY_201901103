@@ -2,6 +2,7 @@ package main
 
 import (
 	estructura "Estructura/Estructura"
+	"encoding/base64"
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
@@ -317,8 +318,21 @@ func main() {
 		//return c.SendString("Hello, World!")
 		arbol.Graficar()
 		clientesCola.ReporteCola()
+		var imagen RespImagen = RespImagen{Nombre: "arbolAVL.jpg"}
+		/*INICIO*/
+		imageBytes, err := ioutil.ReadFile(imagen.Nombre)
+		fmt.Println(imagen.Nombre)
+		if err != nil {
+			//fmt.Fprintf(w, "Imagen No Valida")
+			return c.JSON(&fiber.Map{
+				"data": "error en imagen",
+			})
+		}
+		// Codifica los bytes de la imagen en base64
+		imagen.Imagenbase64 = "data:image/jpg;base64," + base64.StdEncoding.EncodeToString(imageBytes)
+
 		return c.JSON(&fiber.Map{
-			"data": "Reportes realizados correctamente",
+			"data": imagen.Imagenbase64,
 		})
 	})
 

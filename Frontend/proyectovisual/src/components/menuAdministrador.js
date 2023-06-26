@@ -8,7 +8,7 @@ import Navbar from 'react-bootstrap/Navbar';
 export const LoginAdmin = () => {
     const [rutaPedidos, setRutaP] = useState("");
     const [rutaEmpleados, setrutaEmpleados] = useState("");
-    //const [imagen, setImagen] = useState('https://yakurefu.com/wp-content/uploads/2020/02/Chi_by_wallabby.jpg')
+    const [imagen, setImagen] = useState('https://yakurefu.com/wp-content/uploads/2020/02/Chi_by_wallabby.jpg')
     const cargaPedidos = async (e) => {
         e.preventDefault();
         await fetch('http://localhost:5000/cargarPedidos', {
@@ -22,8 +22,8 @@ export const LoginAdmin = () => {
                 'Content-Type': 'application/json'
             }
         })
-        .then(response => response.json())
-        .then(data => validar(data));
+            .then(response => response.json())
+            .then(data => validar(data));
         setRutaP("")
         setrutaEmpleados("")
     }
@@ -43,8 +43,8 @@ export const LoginAdmin = () => {
                 'Content-Type': 'application/json'
             }
         })
-        .then(response => response.json())
-        .then(data => validar1(data));
+            .then(response => response.json())
+            .then(data => validar1(data));
         setrutaEmpleados("")
     }
     const validar1 = (data) => {
@@ -53,6 +53,7 @@ export const LoginAdmin = () => {
 
     const obtenerReportes = async (e) => {
         e.preventDefault();
+        
         await fetch('http://localhost:5000/Reportes', {
             method: 'GET',
             mode: 'cors',
@@ -61,24 +62,30 @@ export const LoginAdmin = () => {
                 'Content-Type': 'application/json'
             }
         })
+        .then(response => response.json())
+        .then(data => validar2(data));
     }
+    const validar2 = (data) => {
+        setImagen(data.data)
+    }
+
     return (
         <>
             <div >
-                <Navbar className="bg-body-tertiary" style={{background: '#bdc3c7', background: '-webkit-linear-gradient(to right, #bdc3c7, #2c3e50)', background: 'linear-gradient(to right, #bdc3c7, #2c3e50)',minheight: '100vh' }}>
+                <Navbar className="bg-body-tertiary" style={{ background: '#bdc3c7', background: '-webkit-linear-gradient(to right, #bdc3c7, #2c3e50)', background: 'linear-gradient(to right, #bdc3c7, #2c3e50)', minheight: '100vh' }}>
                     <Container>
                         <Navbar.Brand href="/">Cerrar Sesión</Navbar.Brand>
                         <Navbar.Toggle />
                         <Navbar.Collapse className="justify-content-center">
                             <Navbar.Text>
-                                Signed in as: Administrador 201901103
+                                Usuario: Administrador 201901103
                             </Navbar.Text>
                         </Navbar.Collapse>
                     </Container>
                 </Navbar>
             </div>
-            <div style={{padding: "200px", paddingTop: '75px', paddingLeft: '300px',backgroundColor: '#282c34', display: 'flex', flexdirection: 'column', minheight: '100vh', alignitems: 'center' }}>
-                <Card style={{margin: '0 1.5%', width: '25rem', background: '#D3CBB8', display: 'inline-block'}}>
+            <div style={{ padding: "200px", paddingTop: '75px', paddingLeft: '300px', backgroundColor: '#282c34', display: 'flex', flexdirection: 'column', minheight: '100vh', alignitems: 'center' }}>
+                <Card style={{ margin: '0 1.5%', width: '25rem', background: '#D3CBB8', display: 'inline-block' }}>
                     <Card.Body>
                         <Card.Title>Pedidos</Card.Title>
                         <Form onSubmit={cargaPedidos}>
@@ -96,7 +103,7 @@ export const LoginAdmin = () => {
                     </Card.Body>
                 </Card>
 
-                <Card style={{margin: '0 1.5%', width: '25rem', background: '#D3CBB8', display: 'inline-block'}}>
+                <Card style={{ margin: '0 1.5%', width: '25rem', background: '#D3CBB8', display: 'inline-block' }}>
                     <Card.Body>
                         <Card.Title>Empleados</Card.Title>
                         <Form onSubmit={cargarEmpleados}>
@@ -105,7 +112,7 @@ export const LoginAdmin = () => {
                                 <Form.Control id='fileR' type="text" placeholder="archivo.csv" required
                                     onChange={e => setrutaEmpleados(e.target.value)}
                                     value={rutaEmpleados}
-                                    />
+                                />
                             </Form.Group>
                             <Button className="w-100 btn btn-lg btn-primary" variant='dark' type="submit">
                                 Cargar Empleados
@@ -114,8 +121,9 @@ export const LoginAdmin = () => {
                     </Card.Body>
                 </Card>
             </div>
-            <div style={{padding: "200px", paddingTop: '1px',paddingLeft: '300px',backgroundColor: '#282c34', display: 'flex', flexdirection: 'column', minheight: '100vh', alignitems: 'center' }}>
-            <Card style={{margin: '0 1.5%', width: '25rem', background: '#D3CBB8', display: 'inline-block'}}>
+            <div style={{ padding: "200px", paddingTop: '1px', paddingLeft: '300px', backgroundColor: '#282c34', display: 'flex', flexdirection: 'column', minheight: '100vh', alignitems: 'center' }}>
+                <Card style={{ margin: '0 1.5%', width: '55rem', background: '#D3CBB8', display: 'inline-block' }}>
+                    <Card.Img variant="top" src= {imagen} width="300" height="400" alt='reporte arbol AVL'/>
                     <Card.Body>
                         <Card.Title>Reportes</Card.Title>
                         <Form>

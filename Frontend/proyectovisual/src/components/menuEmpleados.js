@@ -3,6 +3,7 @@ import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
 //import { useState } from 'react';
 
 export const LoginEmpleados = () => {
@@ -50,9 +51,14 @@ export const LoginEmpleados = () => {
                         <Navbar.Toggle />
                         <Navbar.Collapse className="justify-content-center">
                             <Navbar.Text>
-                                Signed in as: {usuarioIniciado}
+                                Usuario: {usuarioIniciado}
                             </Navbar.Text>
                         </Navbar.Collapse>
+                        <Nav className="me-auto">
+                            <Nav.Link href="#home">Home</Nav.Link>
+                            <Nav.Link href="#features">Features</Nav.Link>
+                            <Nav.Link href="#pricing">Pricing</Nav.Link>
+                        </Nav>
                     </Container>
                 </Navbar>
             </div>
@@ -69,7 +75,7 @@ export const LoginEmpleados = () => {
             >
                 <Card style={{ width: "18rem" }}>
                     <Card.Body>
-                        <Card.Title>Empleado {usuarioIniciado}</Card.Title>
+                        <Card.Title>Empleado: {usuarioIniciado}</Card.Title>
                         <Form>
                             <Button
                                 className="w-100 btn btn-lg btn-primary"
