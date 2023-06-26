@@ -5,56 +5,55 @@ import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 //import { useState } from 'react';
 
-export const LoginEmpleados = () => {
+export const ApliFiltros = () => {
     const usuarioIniciado = localStorage.getItem('current');
-    const clickAFiltros = async (e) => {
-        window.open("/aplicacionFiltros", "_self");
-    }
-    const clickGFactura = async (e) => {
-        window.open("/generarFactura", "_self");
-    }
-    const clickHFacturas = async (e) => {
-        window.open("/historialFacturas", "_self");
-    }
-    const clickVeCompletadas = async (e) => {
-        window.open("/ventasCompletadas", "_self");
-    }
+    /*
+      const [userLogin, setUsuario] = useState()
+      const [passwordLogin, setPassword] = useState()
+      //const [imagen, setImagen] = useState('https://yakurefu.com/wp-content/uploads/2020/02/Chi_by_wallabby.jpg')
+      const handleSubmit = async(e) => {
+          e.preventDefault();
+          await fetch('http://localhost:5000/loginAdmin',{
+              method: 'POST',
+              mode: 'cors',
+              body: JSON.stringify({
+                  Usuario: userLogin,
+                  Password: passwordLogin
+              }),
+              headers:{
+                  'Access-Control-Allow-Origin': '*',
+                  'Content-Type': 'application/json'
+              }
+          })
+      }*/
 
-/*
-Aplicación Filtros
-	aplicar negativo
-	aplicar escala de grises
-	aplicar espejo x
-	aplicar espejo y
-	aplicar ambos espejos
-	generar imagen con
-	regresar al menu anterior
+    const clickB = async (e) => {
+        /*
+        e.preventDefault();
+        await fetch('http://localhost:5000/Reportes', {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            }
+        })*/
+        alert("hola click")
+    }
+/*Aplicación Filtros
 Generar Factura
-	-fecha
-	-empleado cobrador
-	-usuario
-	-pago
-	Realizar pago
-	regresar al menu anterior
 Historial de facturas
-	Mostrar tabla con la lista de cl antendidos id cliente, y id factura y el id del empleado
-	Regresar al menu anterior
-Ventas completadas
-	- tabla con id cliente, nombre imagen, filtros elegidos
-	Reporte
-	Regresar al menu anterior
-cerrar sesion
- */
+Ventas completadas */
     return (
         <>
             <div >
                 <Navbar className="bg-body-tertiary" style={{ background: '#bdc3c7', background: '-webkit-linear-gradient(to right, #bdc3c7, #2c3e50)', background: 'linear-gradient(to right, #bdc3c7, #2c3e50)', minheight: '100vh' }}>
                     <Container>
-                        <Navbar.Brand href="/">Cerrar Sesión</Navbar.Brand>
+                        <Navbar.Brand href="/empleado">Regresar</Navbar.Brand>
                         <Navbar.Toggle />
                         <Navbar.Collapse className="justify-content-center">
                             <Navbar.Text>
-                                Sesión: {usuarioIniciado}
+                            Sesión: {usuarioIniciado}
                             </Navbar.Text>
                         </Navbar.Collapse>
                     </Container>
@@ -73,44 +72,63 @@ cerrar sesion
             >
                 <Card style={{margin: '0 1.5%', width: '25rem', background: '#D3CBB8', display: 'inline-block'  }}>
                     <Card.Body>
-                        <Card.Title>Empleado: {usuarioIniciado}</Card.Title>
+                        <Card.Title>Filtros</Card.Title>
                         <Form>
                         <br />
                             <Button
                                 className="w-100 btn btn-lg btn-primary"
                                 variant='dark'
-                                onClick={clickAFiltros}
+                                onClick={clickB}
                             >
-                                Aplicación Filtros
+                                Aplicar Negativo
                             </Button>
                             <br />
                             <br />
                             <Button
                                 className="w-100 btn btn-lg btn-primary"
                                 variant='dark'
-                                onClick={clickGFactura}
+                                onClick={clickB}
                             >
-                                Generar Factura
+                                Aplicar Escala de Grises
                             </Button>
                             <br />
                             <br />
                             <Button
                                 className="w-100 btn btn-lg btn-primary"
                                 variant='dark'
-                                onClick={clickHFacturas}
+                                onClick={clickB}
                             >
-                                Historial de Facturas
+                                Aplicar Espejo X
                             </Button>
                             <br />
                             <br />
                             <Button
                                 className="w-100 btn btn-lg btn-primary"
                                 variant='dark'
-                                onClick={clickVeCompletadas}
+                                onClick={clickB}
                             >
-                                Ventas Completadas
+                                Aplicar Espejo Y
+                            </Button>
+                            <br />
+                            <br />
+                            <Button
+                                className="w-100 btn btn-lg btn-primary"
+                                variant='dark'
+                                onClick={clickB}
+                            >
+                                Aplicar Ambos Espejos
+                            </Button>
+                            <br />
+                            <br />
+                            <Button
+                                className="w-100 btn btn-lg btn-primary"
+                                variant='success'
+                                onClick={clickB}
+                            >
+                                Generar Imagen con Filtros
                             </Button>
                         </Form>
+                        
                     </Card.Body>
                 </Card>
             </div>

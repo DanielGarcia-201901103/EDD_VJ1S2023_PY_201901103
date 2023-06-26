@@ -4,6 +4,10 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import { Login } from './components/menuPrincipal';
 import { LoginAdmin } from './components/menuAdministrador';
 import { LoginEmpleados } from './components/menuEmpleados';
+import { ApliFiltros } from './components/aplicacionFiltros';
+import { GeneraFact } from './components/generarFactura';
+import { HistoryFact } from './components/historialFacturas';
+import { VentCompl } from './components/ventasCompletadas';
 
 function App() {
   return (
@@ -12,6 +16,10 @@ function App() {
         <Route exact path='/' element={<Login/>} />
         <Route exact path='/admin' element={<LoginAdmin/>} />
         <Route exact path='/empleado' element={<LoginEmpleados/>} />
+        <Route exact path='/aplicacionFiltros' element={<ApliFiltros/>} />
+        <Route exact path='/generarFactura' element={<GeneraFact/>} />
+        <Route exact path='/historialFacturas' element={<HistoryFact/>} />
+        <Route exact path='/ventasCompletadas' element={<VentCompl/>} />
       </Routes>
     </Router>
   );
