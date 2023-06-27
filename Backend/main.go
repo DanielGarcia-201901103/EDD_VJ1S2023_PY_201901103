@@ -142,7 +142,8 @@ func previaVisualizacion(nameImagen string) {
 	var matrizImages = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
 	matrizImages.LeerInicial("csv/"+nameImagen+"/inicial.csv", nameImagen)
 	matrizImages.GenerarImagen(nameImagen)
-	matrizImages.FiltroNegativo(nameImagen)
+	//matrizImages.FiltroNegativo(nameImagen)
+	matrizImages.FiltroEscalaGris(nameImagen)
 	matrizImages = &estructura.Matriz{Raiz: nil}
 }
 
