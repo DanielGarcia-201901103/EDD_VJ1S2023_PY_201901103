@@ -27,6 +27,21 @@ export const ApliFiltros = () => {
           })
       }*/
 
+    const apliNegativo = async (e) => {
+        e.preventDefault();
+        await fetch('http://localhost:5000/filtroNegativo', {
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify({
+                Ruta: "mario",
+            }),
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            }
+        })
+    }
+
     const clickB = async (e) => {
         /*
         e.preventDefault();
@@ -40,10 +55,10 @@ export const ApliFiltros = () => {
         })*/
         alert("hola click")
     }
-/*Aplicación Filtros
-Generar Factura
-Historial de facturas
-Ventas completadas */
+    /*Aplicación Filtros
+    Generar Factura
+    Historial de facturas
+    Ventas completadas */
     return (
         <>
             <div >
@@ -53,7 +68,7 @@ Ventas completadas */
                         <Navbar.Toggle />
                         <Navbar.Collapse className="justify-content-center">
                             <Navbar.Text>
-                            Sesión: {usuarioIniciado}
+                                Sesión: {usuarioIniciado}
                             </Navbar.Text>
                         </Navbar.Collapse>
                     </Container>
@@ -70,15 +85,15 @@ Ventas completadas */
                     alignitems: "center",
                 }}
             >
-                <Card style={{margin: '0 1.5%', width: '25rem', background: '#D3CBB8', display: 'inline-block'  }}>
+                <Card style={{ margin: '0 1.5%', width: '25rem', background: '#D3CBB8', display: 'inline-block' }}>
                     <Card.Body>
                         <Card.Title>Filtros</Card.Title>
                         <Form>
-                        <br />
+                            <br />
                             <Button
                                 className="w-100 btn btn-lg btn-primary"
                                 variant='dark'
-                                onClick={clickB}
+                                onClick={apliNegativo}
                             >
                                 Aplicar Negativo
                             </Button>
@@ -128,7 +143,7 @@ Ventas completadas */
                                 Generar Imagen con Filtros
                             </Button>
                         </Form>
-                        
+
                     </Card.Body>
                 </Card>
             </div>

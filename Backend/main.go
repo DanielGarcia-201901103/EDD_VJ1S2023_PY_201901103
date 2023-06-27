@@ -142,6 +142,7 @@ func previaVisualizacion(nameImagen string) {
 	var matrizImages = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
 	matrizImages.LeerInicial("csv/"+nameImagen+"/inicial.csv", nameImagen)
 	matrizImages.GenerarImagen(nameImagen)
+	matrizImages.FiltroNegativo(nameImagen)
 	matrizImages = &estructura.Matriz{Raiz: nil}
 }
 
@@ -319,7 +320,7 @@ func main() {
 		arbol.Graficar()
 		clientesCola.ReporteCola()
 		var imagen RespImagen = RespImagen{Nombre: "arbolAVL.jpg"}
-		/*INICIO*/
+		//INICIO
 		imageBytes, err := ioutil.ReadFile(imagen.Nombre)
 		fmt.Println(imagen.Nombre)
 		if err != nil {
@@ -356,6 +357,21 @@ func main() {
 		clientesCola.Descolar()
 		return c.JSON(&fiber.Map{
 			"data": "cliente atendido",
+		})
+	})
+
+	//PROBANDO LOS FILTROS
+	app.Post("/filtroNegativo", func(c *fiber.Ctx) error {
+		//return c.SendString("Hello, World!")
+		img := new(URLempleado)
+		if err := c.BodyParser(img); err != nil {
+			return err
+		}
+		imgRecibida := img.Ruta
+		previaVisualizacion(imgRecibida)
+
+		return c.JSON(&fiber.Map{
+			"data": "archivo cargado correctamente",
 		})
 	})
 
