@@ -336,6 +336,29 @@ func main() {
 		})
 	})
 
+	app.Get("/clienteObtener", func(c *fiber.Ctx) error {
+		idcolaClientes := clientesCola.ObtenerClienteId()
+		nameColaClientes := clientesCola.ObtenerClienteName()
+		longi := clientesCola.ObtenerLongitud()
+		if longi != 0 {
+			return c.JSON(&fiber.Map{
+				"data":   idcolaClientes,
+				"imagen": nameColaClientes,
+			})
+		}
+		return c.JSON(&fiber.Map{
+			"data": "sin clientes por atender",
+		})
+
+	})
+
+	app.Get("/clienteBorrar", func(c *fiber.Ctx) error {
+		clientesCola.Descolar()
+		return c.JSON(&fiber.Map{
+			"data": "cliente atendido",
+		})
+	})
+
 	app.Listen(":5000")
 	//https://github.com/gofiber/fiber
 }
@@ -390,73 +413,6 @@ func cargarJson(ruta string) bool {
 	return true
 }
 
-// METODO MAIN
-/*
-func main() {
-	//menuPrincipal()
-	app := fiber.New()
-	app.Use(cors.New())
-	app.Post("/agregar-arbol", func(c *fiber.Ctx) error {
-		var arbol estructura.NodoAVL
-		c.BodyParser(&arbol)
-		fmt.Println(arbol.Data)
-		return c.Json(&fiber.Map{
-			"data": "hola",
-		})
-	})
-	app.Listen(":3003")
-
-		https://github.com/gofiber/fiber
-			arbol = &estructura.ArbolAVL{Raiz: nil}
-			r := mux.NewRouter()
-			r.HandleFunc("/", MostrarArbol).Methods("GET")
-			r.HandleFunc("/agregar-arbol", AgregarArbol).Methods("POST")
-			r.HandleFunc("/reporte-arbol", MandarReporte).Methods("GET")
-			log.Fatal(http.ListenAndServe(":3001", r))
-
-}
-*/
-/*
-func MostrarArbol(w http.ResponseWriter, req *http.Request) {
-	//Esto nos verifica que le estamos enviando al servidor una respuesta de tipo JSON
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(&arbol)
-}
-
-func AgregarArbol(w http.ResponseWriter, req *http.Request) {
-	reqBody, err := ioutil.ReadAll(req.Body)
-	var nuevoNodo estructura.NodoAVL
-	if err != nil {
-		fmt.Fprintf(w, "No valido")
-	}
-	json.Unmarshal(reqBody, &nuevoNodo)
-	fmt.Println(nuevoNodo.Data)
-	arbol.InsertarElemento(nuevoNodo.Data)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(nuevoNodo)
-}
-
-func MandarReporte(w http.ResponseWriter, req *http.Request) {
-	arbol.Graficar()
-	var imagen RespImagen = RespImagen{Nombre: "arbolAVL.jpg"}
-	//INICIO
-	imageBytes, err := ioutil.ReadFile(imagen.Nombre)
-	if err != nil {
-		fmt.Fprintf(w, "Imagen No Valida")
-		return
-	}
-	// Codifica los bytes de la imagen en base64
-	imagen.Imagenbase64 = "data:image/jpg;base64," + base64.StdEncoding.EncodeToString(imageBytes)
-
-	//data:image/jpg;base64,ABC
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(imagen)
-}*/
-
 /*
 https://drive.google.com/file/d/1Mu40-ZEfP-CMmgPoNtdIBWNoCNng1JYb/view
 https://github.com/CristianMejia2198/EDD_1S_JUNIO_2023
@@ -465,6 +421,7 @@ https://markdown.es/sintaxis-markdown/
 https://github.com/CristianMejia2198/S1EDD-C/tree/main/Clase6
 https://w3.unpocodetodo.info/canvas/blancoynegro.php
 
+https://github.com/gofiber/fiber
 FASE 2
 sistema principal
 agregar opcion

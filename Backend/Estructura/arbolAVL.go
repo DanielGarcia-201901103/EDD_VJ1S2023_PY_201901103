@@ -1,7 +1,6 @@
 package estructura
 
 import (
-	"fmt"
 	"math"
 	"strconv"
 )
@@ -168,7 +167,7 @@ func (a *ArbolAVL) InOrder(clientesCola *Cola) {
 func (a *ArbolAVL) inOrder1(tmp *NodoAVL, clientesCola *Cola) {
 	if tmp != nil {
 		a.inOrder1(tmp.Izquierdo, clientesCola)
-		fmt.Println(tmp.Data.Id_Cliente)
+		//fmt.Println(tmp.Data.Id_Cliente)
 		clientesCola.Encolar(strconv.Itoa(tmp.Data.Id_Cliente), tmp.Data.imagen_Cliente)
 		a.inOrder1(tmp.Derecho, clientesCola)
 	}
