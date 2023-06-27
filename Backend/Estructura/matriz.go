@@ -460,7 +460,58 @@ func NewMatriz() *Matriz {
 	return &Matriz{nil, 0, 0, 0, 0}
 }
 
-/*
-func Inicializar() *NodoMatriz {
-	return &NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}
-}*/
+// CONFIGURACIONES PARA FILTROS
+func (m *Matriz) FiltroNegativo(nombre_imagen string) {
+	archivoCSS := "csv/" + nombre_imagen + "/" + nombre_imagen + ".css" // csv/mario/mario.css
+	contenidoCSS := "body{\n background: #636363; \n background: -webkit-linear-gradient(to right, #636363, #a2ab58);\n background: linear-gradient(to right, #636363, #a2ab58);  \n height: 100vh; \n display: flex; \n justify-content: center; \n align-items: center; \n } \n"
+	contenidoCSS += ".canvas{ \n width: " + strconv.Itoa(m.ImageWidth*m.PixelWidth) + "px; \n"
+	contenidoCSS += "height: " + strconv.Itoa(m.ImageHeight*m.PixelHeight) + "px; \n }"
+	contenidoCSS += ".pixel{ \n width: " + strconv.Itoa(m.PixelWidth) + "px; \n"
+	contenidoCSS += "height: " + strconv.Itoa(m.PixelHeight) + "px; \n float: left; \n } \n"
+	x_pixel := 0
+	x := 1
+	auxFila := m.Raiz.Abajo
+	auxColumna := auxFila.Siguiente
+
+	for i := 0; i < m.ImageHeight; i++ {
+		for j := 0; j < m.ImageWidth; j++ {
+			if auxColumna != nil {
+				if auxColumna.PosicionX == x_pixel {
+					//Formato del color 255-51-0     si es 0 se reemplaza por 255 o viceversa o de lo contrario 255-color
+					cade := auxColumna.Color
+					cad1 := ""
+					result := strings.Split(cade, "-")
+					for _, elem := range result {
+						num := 0
+						if elem == "0" {
+							num = 255
+						} else if elem == "255" {
+							num = 0
+						} else {
+							num = 255 - num
+						}
+						cad1 += strconv.Itoa(num) + ","
+					}
+					nuevoText := strings.TrimSuffix(cad1, string(cad1[len(cad1)-1]))
+					contenidoCSS += ".pixel:nth-child(" + strconv.Itoa(x) + ") { background: rgb(" + nuevoText + "); }\n"
+					auxColumna = auxColumna.Siguiente
+				}
+				x_pixel++
+			}
+			x++
+		}
+		x_pixel = 0
+		if auxFila.Abajo != nil {
+			auxFila = auxFila.Abajo
+		}
+
+		if auxFila != nil {
+			auxColumna = auxFila.Siguiente
+		}
+	}
+
+	/*FIN*/
+	m.generarHTML(nombre_imagen)
+	crearArchivo(archivoCSS)
+	escribirArchivo(contenidoCSS, archivoCSS)
+}
