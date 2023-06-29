@@ -3,37 +3,21 @@ import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
-//import { useState } from 'react';
+import { useState } from 'react';
 
 export const ApliFiltros = () => {
     const usuarioIniciado = localStorage.getItem('current');
-    /*
-      const [userLogin, setUsuario] = useState()
-      const [passwordLogin, setPassword] = useState()
-      //const [imagen, setImagen] = useState('https://yakurefu.com/wp-content/uploads/2020/02/Chi_by_wallabby.jpg')
-      const handleSubmit = async(e) => {
-          e.preventDefault();
-          await fetch('http://localhost:5000/loginAdmin',{
-              method: 'POST',
-              mode: 'cors',
-              body: JSON.stringify({
-                  Usuario: userLogin,
-                  Password: passwordLogin
-              }),
-              headers:{
-                  'Access-Control-Allow-Origin': '*',
-                  'Content-Type': 'application/json'
-              }
-          })
-      }*/
-
+    var [imagenActual, setImagenAc] = useState("");
+    var obtenIm = localStorage.getItem('nombreImagen');
     const apliNegativo = async (e) => {
+        console.log(imagenActual)
         e.preventDefault();
         await fetch('http://localhost:5000/filtroNegativo', {
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify({
-                Ruta: "mario",
+                Tipo: "escalaNegativo",
+                Imagen: obtenIm,
             }),
             headers: {
                 'Access-Control-Allow-Origin': '*',
@@ -42,23 +26,91 @@ export const ApliFiltros = () => {
         })
     }
 
-    const clickB = async (e) => {
-        /*
+    const apliGrises = async (e) => {
         e.preventDefault();
-        await fetch('http://localhost:5000/Reportes', {
+        await fetch('http://localhost:5000/filtroNegativo', {
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify({
+                Tipo: "escalaGris",
+                Imagen: obtenIm,
+            }),
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            }
+        })
+    }
+
+    const apliX = async (e) => {
+        e.preventDefault();
+        await fetch('http://localhost:5000/filtroNegativo', {
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify({
+                Tipo: "espejoX",
+                Imagen: obtenIm,
+            }),
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            }
+        })
+    }
+
+    const apliY = async (e) => {
+        e.preventDefault();
+        await fetch('http://localhost:5000/filtroNegativo', {
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify({
+                Tipo: "espejoY",
+                Imagen: obtenIm,
+            }),
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            }
+        })
+    }
+
+    const apliAmbos = async (e) => {
+        e.preventDefault();
+        await fetch('http://localhost:5000/filtroNegativo', {
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify({
+                Tipo: "dobleEspejo",
+                Imagen: obtenIm,
+            }),
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            }
+        })
+    }
+
+    const obtenerCliente = async (e) => {
+        e.preventDefault();
+        await fetch('http://localhost:5000/clienteObtener', {
             method: 'GET',
             mode: 'cors',
             headers: {
                 'Access-Control-Allow-Origin': '*',
                 'Content-Type': 'application/json'
             }
-        })*/
-        alert("hola click")
+        })
+            .then(response => response.json())
+            .then(data => {
+                //console.log(data.data)
+                //console.log(data.imagen)
+                imagenActual = data.imagen
+                localStorage.setItem('nombreImagen', imagenActual);
+                setImagenAc(data.imagen)
+            });
+            //setClienteAc("")
     }
-    /*Aplicación Filtros
-    Generar Factura
-    Historial de facturas
-    Ventas completadas */
+
     return (
         <>
             <div >
@@ -102,7 +154,7 @@ export const ApliFiltros = () => {
                             <Button
                                 className="w-100 btn btn-lg btn-primary"
                                 variant='dark'
-                                onClick={clickB}
+                                onClick={apliGrises}
                             >
                                 Aplicar Escala de Grises
                             </Button>
@@ -111,7 +163,7 @@ export const ApliFiltros = () => {
                             <Button
                                 className="w-100 btn btn-lg btn-primary"
                                 variant='dark'
-                                onClick={clickB}
+                                onClick={apliX}
                             >
                                 Aplicar Espejo X
                             </Button>
@@ -120,7 +172,7 @@ export const ApliFiltros = () => {
                             <Button
                                 className="w-100 btn btn-lg btn-primary"
                                 variant='dark'
-                                onClick={clickB}
+                                onClick={apliY}
                             >
                                 Aplicar Espejo Y
                             </Button>
@@ -129,7 +181,7 @@ export const ApliFiltros = () => {
                             <Button
                                 className="w-100 btn btn-lg btn-primary"
                                 variant='dark'
-                                onClick={clickB}
+                                onClick={apliAmbos}
                             >
                                 Aplicar Ambos Espejos
                             </Button>
@@ -138,10 +190,14 @@ export const ApliFiltros = () => {
                             <Button
                                 className="w-100 btn btn-lg btn-primary"
                                 variant='success'
-                                onClick={clickB}
+                                onClick={obtenerCliente}
                             >
-                                Generar Imagen con Filtros
+                                Obtener Imagen del cliente
                             </Button>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Empleado Cobrador</Form.Label>
+                                <Form.Control type="text" placeholder={imagenActual} aria-label="Disabled input example" disabled readOnly />
+                            </Form.Group>
                         </Form>
 
                     </Card.Body>

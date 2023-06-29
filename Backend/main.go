@@ -35,6 +35,11 @@ type Pedi struct {
 	Imagen string `json:"imagen"`
 }
 
+type Filt struct {
+	Tipo   string `json:"Tipo"`
+	Imagen string `json:"Imagen"`
+}
+
 // variables globales
 var listaSimple = estructura.NewListaSimple()
 var listaDoble = estructura.NewListaDoble()
@@ -113,7 +118,7 @@ Seleccione una opción:`, usuario)
 		case 1:
 			nameImagen := visualizarImagenes()
 			fmt.Println("La imagen elegida fue: ", nameImagen, "\nMostrando visualizacion previa")
-			previaVisualizacion(nameImagen)
+			//previaVisualizacion(nameImagen)
 		case 2:
 			realizarPedidos(usuario)
 			pedidosPila.ReportePila()
@@ -138,12 +143,64 @@ func visualizarImagenes() string {
 	//Falta la opcion de visualizar la imagen
 }
 
-func previaVisualizacion(nameImagen string) {
+func previaVisualizacion(nameImagen string, tipoFiltro string) {
 	var matrizImages = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
 	matrizImages.LeerInicial("csv/"+nameImagen+"/inicial.csv", nameImagen)
 	matrizImages.GenerarImagen(nameImagen)
 	//matrizImages.FiltroNegativo(nameImagen)
-	matrizImages.FiltroEscalaGris(nameImagen)
+	//matrizImages.FiltroEscalaGris(nameImagen)
+
+	if tipoFiltro == "escalaGris" {
+		matrizImages.FiltroEscalaGris(nameImagen)
+	} else if tipoFiltro == "escalaNegativo" {
+		matrizImages.FiltroNegativo(nameImagen)
+	} else if tipoFiltro == "espejoX" {
+		var matrizFiltroX = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
+		//valorX := (matrizImages.ImageWidth - 1) - matrizImages.Raiz.PosicionX
+		//valorY := matrizImages.Raiz.PosicionY
+		//matrizFiltroX.Insertar_Elemento(valorX, valorY, matrizImages.Raiz.Color)
+		//matrizFiltroX.GenerarImagenOtros(nameImagen, "espejoX")
+		x_pixel := 0
+		x := 1
+		auxFila := matrizImages.Raiz.Abajo
+		auxColumna := auxFila.Siguiente
+		for i := 0; i < matrizImages.ImageHeight; i++ {
+			for j := 0; j < matrizImages.ImageWidth; j++ {
+				if auxColumna != nil {
+					if auxColumna.PosicionX == x_pixel {
+						valorX := (matrizImages.ImageWidth - 1) - matrizImages.Raiz.PosicionX
+						valorY := matrizImages.Raiz.PosicionY
+						matrizFiltroX.Insertar_Elemento(valorX, valorY, matrizImages.Raiz.Color)
+						auxColumna = auxColumna.Siguiente
+					}
+					x_pixel++
+				}
+				x--
+			}
+			x = matrizImages.ImageWidth * (i + 1)
+			x_pixel = 0
+			auxFila = auxFila.Abajo
+			if auxFila != nil {
+				auxColumna = auxFila.Siguiente
+			}
+		}
+		matrizFiltroX.GenerarImagenOtros(nameImagen, "espejoX")
+	} else if tipoFiltro == "espejoY" {
+		var matrizFiltroY = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
+		valorY := (matrizImages.ImageHeight - 1) - matrizImages.Raiz.PosicionY
+		valorX := matrizImages.Raiz.PosicionX
+		matrizFiltroY.Insertar_Elemento(valorX, valorY, matrizImages.Raiz.Color)
+		matrizFiltroY.GenerarImagenOtros(nameImagen, "espejoY")
+	} else if tipoFiltro == "dobleEspejo" {
+		var matrizFiltroDoble = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
+		valorX := (matrizImages.ImageWidth - 1) - matrizImages.Raiz.PosicionX
+		valorY := (matrizImages.ImageHeight - 1) - matrizImages.Raiz.PosicionY
+		matrizFiltroDoble.Insertar_Elemento(valorX, valorY, matrizImages.Raiz.Color)
+		matrizFiltroDoble.GenerarImagenOtros(nameImagen, "dobleEspejo")
+	} else {
+		fmt.Println("El espejo no existe")
+	}
+
 	matrizImages = &estructura.Matriz{Raiz: nil}
 }
 
@@ -364,12 +421,14 @@ func main() {
 	//PROBANDO LOS FILTROS
 	app.Post("/filtroNegativo", func(c *fiber.Ctx) error {
 		//return c.SendString("Hello, World!")
-		img := new(URLempleado)
+		img := new(Filt)
 		if err := c.BodyParser(img); err != nil {
 			return err
 		}
-		imgRecibida := img.Ruta
-		previaVisualizacion(imgRecibida)
+		imgRecibida := img.Imagen
+		tipoRecibido := img.Tipo
+
+		previaVisualizacion(imgRecibida, tipoRecibido)
 
 		return c.JSON(&fiber.Map{
 			"data": "archivo cargado correctamente",
