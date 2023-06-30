@@ -12,7 +12,7 @@ export const ApliFiltros = () => {
     const apliNegativo = async (e) => {
         console.log(imagenActual)
         e.preventDefault();
-        await fetch('http://localhost:5000/filtroNegativo', {
+        await fetch('http://localhost:5000/filtro', {
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify({
@@ -28,7 +28,7 @@ export const ApliFiltros = () => {
 
     const apliGrises = async (e) => {
         e.preventDefault();
-        await fetch('http://localhost:5000/filtroNegativo', {
+        await fetch('http://localhost:5000/filtro', {
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify({
@@ -44,7 +44,7 @@ export const ApliFiltros = () => {
 
     const apliX = async (e) => {
         e.preventDefault();
-        await fetch('http://localhost:5000/filtroNegativo', {
+        await fetch('http://localhost:5000/filtro', {
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify({
@@ -60,7 +60,7 @@ export const ApliFiltros = () => {
 
     const apliY = async (e) => {
         e.preventDefault();
-        await fetch('http://localhost:5000/filtroNegativo', {
+        await fetch('http://localhost:5000/filtro', {
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify({
@@ -76,7 +76,7 @@ export const ApliFiltros = () => {
 
     const apliAmbos = async (e) => {
         e.preventDefault();
-        await fetch('http://localhost:5000/filtroNegativo', {
+        await fetch('http://localhost:5000/filtro', {
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify({
@@ -195,7 +195,7 @@ export const ApliFiltros = () => {
                                 Obtener Imagen del cliente
                             </Button>
                             <Form.Group className="mb-3">
-                                <Form.Label>Empleado Cobrador</Form.Label>
+                                <Form.Label>Nombre de la Imagen</Form.Label>
                                 <Form.Control type="text" placeholder={imagenActual} aria-label="Disabled input example" disabled readOnly />
                             </Form.Group>
                         </Form>

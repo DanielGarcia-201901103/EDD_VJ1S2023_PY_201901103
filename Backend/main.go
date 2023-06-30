@@ -41,10 +41,12 @@ type Filt struct {
 
 // variables globales
 var listaSimple = estructura.NewListaSimple()
-var listaDoble = estructura.NewListaDoble()
-var listaCircular = estructura.NewListaCircular()
+
+// var listaDoble = estructura.NewListaDoble()
+// var listaCircular = estructura.NewListaCircular()
 var clientesCola = estructura.NewCola()
-var pedidosPila = estructura.NewPila()
+
+// var pedidosPila = estructura.NewPila()
 var arbol estructura.ArbolAVL
 
 func sesion(usuario string, password string) string {
@@ -273,7 +275,7 @@ func main() {
 	})
 
 	//PROBANDO LOS FILTROS
-	app.Post("/filtroNegativo", func(c *fiber.Ctx) error {
+	app.Post("/filtro", func(c *fiber.Ctx) error {
 		//return c.SendString("Hello, World!")
 		img := new(Filt)
 		if err := c.BodyParser(img); err != nil {

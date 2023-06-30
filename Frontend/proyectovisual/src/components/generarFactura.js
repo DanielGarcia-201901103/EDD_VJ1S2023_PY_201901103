@@ -7,6 +7,7 @@ import Navbar from 'react-bootstrap/Navbar';
 
 export const GeneraFact = () => {
     const usuarioIniciado = localStorage.getItem('current');
+    const clienteObtenido = localStorage.getItem('cliente');
     /*
       const [userLogin, setUsuario] = useState()
       const [passwordLogin, setPassword] = useState()
@@ -26,7 +27,7 @@ export const GeneraFact = () => {
               }
           })
       }*/
-
+      
     const clickB = async (e) => {
         /*
         e.preventDefault();
@@ -38,12 +39,13 @@ export const GeneraFact = () => {
                 'Content-Type': 'application/json'
             }
         })*/
-        alert("hola click")
+        alert(clienteObtenido+"  "+usuarioIniciado)
     }
     /*Aplicación Filtros
     Generar Factura
     Historial de facturas
     Ventas completadas */
+    
     return (
         <>
             <div >
@@ -73,27 +75,27 @@ export const GeneraFact = () => {
                 <Card style={{ margin: '0 1.5%', width: '25rem', background: '#D3CBB8', display: 'inline-block' }}>
                     <Card.Body>
                         <Card.Title alignitems= "center">Generar Factura</Card.Title>
-                        <Form>
+                        <Form onSubmit={clickB}>
                             <Form.Group className="mb-3">
                                 <Form.Label>Fecha</Form.Label>
-                                <Form.Control type="text" placeholder="Disabled input" aria-label="Disabled input example" disabled readOnly />
+                                <Form.Control type="text" placeholder="Disabled input" aria-label="Disabled input example" disabled readOnly required/>
                             </Form.Group>
                             <Form.Group className="mb-3">
                                 <Form.Label>Empleado Cobrador</Form.Label>
-                                <Form.Control type="text" placeholder={usuarioIniciado} aria-label="Disabled input example" disabled readOnly />
+                                <Form.Control type="text" placeholder={usuarioIniciado} aria-label="Disabled input example" disabled readOnly required/>
                             </Form.Group>
                             <Form.Group className="mb-3">
                                 <Form.Label>Usuario</Form.Label>
-                                <Form.Control type="text" placeholder="Disabled input" aria-label="Disabled input example" disabled readOnly />
+                                <Form.Control type="text" placeholder={clienteObtenido} aria-label="Disabled input example" disabled readOnly required/>
                             </Form.Group>
                             <Form.Group className="mb-3">
                                 <Form.Label>Pago</Form.Label>
-                                <Form.Control type="text" placeholder="Normal text" />
+                                <Form.Control type="text" placeholder="Normal text" required autoFocus/>
                             </Form.Group>
                             <Button
                                 className="w-100 btn btn-lg btn-primary"
                                 variant='dark'
-                                onClick={clickB}
+                                type="submit"
                             >
                                 Realizar Pago
                             </Button>

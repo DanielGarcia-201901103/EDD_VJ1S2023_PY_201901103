@@ -37,6 +37,7 @@ export const LoginEmpleados = () => {
                 console.log(data.data)
                 console.log(data.imagen)
                 clienteActual = data.data
+                localStorage.setItem('cliente', clienteActual);
                 setClienteAc(data.data)
             });
             //setClienteAc("")
