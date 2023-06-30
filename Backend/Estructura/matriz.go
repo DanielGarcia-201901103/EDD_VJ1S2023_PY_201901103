@@ -402,8 +402,8 @@ func (m *Matriz) leerConfig(ruta string) {
 	}
 }
 
-func (m *Matriz) GenerarImagen(nombre_imagen string) {
-	archivoCSS := "csv/" + nombre_imagen + "/" + nombre_imagen + ".css" // csv/mario/mario.css
+func (m *Matriz) GenerarImagen(nombre_imagen string, tipoFiltro string) {
+	archivoCSS := "csv/" + nombre_imagen + "/" + nombre_imagen + tipoFiltro + ".css" // csv/mario/mario.css
 	contenidoCSS := "body{\n background: #636363; \n background: -webkit-linear-gradient(to right, #636363, #a2ab58);\n background: linear-gradient(to right, #636363, #a2ab58);  \n height: 100vh; \n display: flex; \n justify-content: center; \n align-items: center; \n } \n"
 	contenidoCSS += ".canvas{ \n width: " + strconv.Itoa(m.ImageWidth*m.PixelWidth) + "px; \n"
 	contenidoCSS += "height: " + strconv.Itoa(m.ImageHeight*m.PixelHeight) + "px; \n }"
@@ -436,15 +436,15 @@ func (m *Matriz) GenerarImagen(nombre_imagen string) {
 	}
 
 	/*FIN*/
-	m.generarHTML(nombre_imagen)
+	m.generarHTML(nombre_imagen, tipoFiltro)
 	crearArchivo(archivoCSS)
 	escribirArchivo(contenidoCSS, archivoCSS)
 }
 
-func (m *Matriz) generarHTML(nombre_imagen string) {
-	archivoHTML := "csv/" + nombre_imagen + "/" + nombre_imagen + ".html"
+func (m *Matriz) generarHTML(nombre_imagen string, tipoFiltro string) {
+	archivoHTML := "csv/" + nombre_imagen + "/" + nombre_imagen + tipoFiltro + ".html"
 	contenidoHTML := "<!DOCTYPE html> \n <html> \n <head> \n <link rel=\"stylesheet\"  href=\""
-	contenidoHTML += nombre_imagen + ".css"
+	contenidoHTML += nombre_imagen + tipoFiltro + ".css"
 	contenidoHTML += "\" > \n </head> \n <body> \n <div class=\"canvas\"> \n"
 	for i := 0; i < m.ImageHeight; i++ {
 		for j := 0; j < m.ImageWidth; j++ {
@@ -604,30 +604,21 @@ func (m *Matriz) generarHTMLEscalaGris(nombre_imagen string) {
 	escribirArchivo(contenidoHTML, archivoHTML)
 }
 
-func (m *Matriz) GenerarImagenOtros(nombre_imagen string, tipoFiltro string) {
-	archivoCSS := "csv/" + nombre_imagen + "/" + nombre_imagen + tipoFiltro + ".css" // csv/mario/mario.css
-	contenidoCSS := "body{\n background: #636363; \n background: -webkit-linear-gradient(to right, #636363, #a2ab58);\n background: linear-gradient(to right, #636363, #a2ab58);  \n height: 100vh; \n display: flex; \n justify-content: center; \n align-items: center; \n } \n"
-	contenidoCSS += ".canvas{ \n width: " + strconv.Itoa(m.ImageWidth*m.PixelWidth) + "px; \n"
-	contenidoCSS += "height: " + strconv.Itoa(m.ImageHeight*m.PixelHeight) + "px; \n }"
-	contenidoCSS += ".pixel{ \n width: " + strconv.Itoa(m.PixelWidth) + "px; \n"
-	contenidoCSS += "height: " + strconv.Itoa(m.PixelHeight) + "px; \n float: left; \n } \n"
-	x_pixel := 0
-	x := 1
+func (m *Matriz) EspejoDoble() {
+	var matrizFiltroDoble = &Matriz{Raiz: &NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
 	auxFila := m.Raiz.Abajo
 	auxColumna := auxFila.Siguiente
 
 	for i := 0; i < m.ImageHeight; i++ {
 		for j := 0; j < m.ImageWidth; j++ {
 			if auxColumna != nil {
-				if auxColumna.PosicionX == x_pixel {
-					contenidoCSS += ".pixel:nth-child(" + strconv.Itoa(x) + ") { background: rgb(" + strings.ReplaceAll(auxColumna.Color, "-", ",") + "); }\n"
-					auxColumna = auxColumna.Siguiente
-				}
-				x_pixel++
+				valorX := (m.ImageWidth - 1) - auxColumna.PosicionX
+				valorY := (m.ImageHeight - 1) - auxColumna.PosicionY
+				matrizFiltroDoble.Insertar_Elemento(valorX, valorY, auxColumna.Color)
+				auxColumna = auxColumna.Siguiente
+
 			}
-			x++
 		}
-		x_pixel = 0
 		if auxFila.Abajo != nil {
 			auxFila = auxFila.Abajo
 		}
@@ -636,24 +627,55 @@ func (m *Matriz) GenerarImagenOtros(nombre_imagen string, tipoFiltro string) {
 			auxColumna = auxFila.Siguiente
 		}
 	}
-
-	/*FIN*/
-	m.generarHTMLotros(nombre_imagen, tipoFiltro)
-	crearArchivo(archivoCSS)
-	escribirArchivo(contenidoCSS, archivoCSS)
+	m.Raiz = matrizFiltroDoble.Raiz
 }
 
-func (m *Matriz) generarHTMLotros(nombre_imagen string, tipoFiltro string) {
-	archivoHTML := "csv/" + nombre_imagen + "/" + nombre_imagen + tipoFiltro + ".html"
-	contenidoHTML := "<!DOCTYPE html> \n <html> \n <head> \n <link rel=\"stylesheet\"  href=\""
-	contenidoHTML += nombre_imagen + ".css"
-	contenidoHTML += "\" > \n </head> \n <body> \n <div class=\"canvas\"> \n"
+func (m *Matriz) EspejoX() {
+	var matrizFiltroEspX = &Matriz{Raiz: &NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
+	auxFila := m.Raiz.Abajo
+	auxColumna := auxFila.Siguiente
+
 	for i := 0; i < m.ImageHeight; i++ {
 		for j := 0; j < m.ImageWidth; j++ {
-			contenidoHTML += "    <div class=\"pixel\"></div> \n"
+			if auxColumna != nil {
+				valorX := (m.ImageWidth - 1) - auxColumna.PosicionX
+				matrizFiltroEspX.Insertar_Elemento(valorX, auxColumna.PosicionY, auxColumna.Color)
+				auxColumna = auxColumna.Siguiente
+
+			}
+		}
+		if auxFila.Abajo != nil {
+			auxFila = auxFila.Abajo
+		}
+
+		if auxFila != nil {
+			auxColumna = auxFila.Siguiente
 		}
 	}
-	contenidoHTML += "</div> \n </body> \n </html> \n"
-	crearArchivo(archivoHTML)
-	escribirArchivo(contenidoHTML, archivoHTML)
+	m.Raiz = matrizFiltroEspX.Raiz
+}
+
+func (m *Matriz) EspejoY() {
+	var matrizFiltroEspY = &Matriz{Raiz: &NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
+	auxFila := m.Raiz.Abajo
+	auxColumna := auxFila.Siguiente
+
+	for i := 0; i < m.ImageHeight; i++ {
+		for j := 0; j < m.ImageWidth; j++ {
+			if auxColumna != nil {
+				valorY := (m.ImageWidth - 1) - auxColumna.PosicionY
+				matrizFiltroEspY.Insertar_Elemento(auxColumna.PosicionX, valorY, auxColumna.Color)
+				auxColumna = auxColumna.Siguiente
+
+			}
+		}
+		if auxFila.Abajo != nil {
+			auxFila = auxFila.Abajo
+		}
+
+		if auxFila != nil {
+			auxColumna = auxFila.Siguiente
+		}
+	}
+	m.Raiz = matrizFiltroEspY.Raiz
 }

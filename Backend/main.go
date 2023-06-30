@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"math/rand"
 	"os"
 	"strconv"
 	"strings"
@@ -99,104 +98,24 @@ func cargarEmpleados(ruta string) bool {
 	return true
 }
 
-// MENU EMPLEADO Y SUS FUNCIONES
-func menuEmpleado(usuario string) {
-	var opcion int
-	for opcion != 4 {
-		fmt.Printf(`
---------- EDD Creative %s ---------
-1. Ver Imagenes Cargadas
-2. Realizar Pedido
-3. Capas
-4. Cerrar Sesion
------------------------------------------------------
-Seleccione una opción:`, usuario)
-
-		fmt.Scanln(&opcion)
-
-		switch opcion {
-		case 1:
-			nameImagen := visualizarImagenes()
-			fmt.Println("La imagen elegida fue: ", nameImagen, "\nMostrando visualizacion previa")
-			//previaVisualizacion(nameImagen)
-		case 2:
-			realizarPedidos(usuario)
-			pedidosPila.ReportePila()
-			pedidosPila.ReporteJson()
-		case 3:
-			nameImagen := visualizarImagenes()
-			fmt.Println("La imagen elegida fue: ", nameImagen, "\nMostrando visualizacion previa")
-			realizarCapa(nameImagen)
-		}
-
-	}
-}
-
-func visualizarImagenes() string {
-	var opcion int
-	fmt.Println("\n###################Listado de Imagenes###################")
-	listaDoble.ListarDatos()
-	fmt.Println("\n Seleccione una opción:")
-	fmt.Scanln(&opcion)
-	nameImagen := listaDoble.BuscarImagen(strconv.Itoa(opcion))
-	return nameImagen
-	//Falta la opcion de visualizar la imagen
-}
-
 func previaVisualizacion(nameImagen string, tipoFiltro string) {
 	var matrizImages = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
 	matrizImages.LeerInicial("csv/"+nameImagen+"/inicial.csv", nameImagen)
-	matrizImages.GenerarImagen(nameImagen)
-	//matrizImages.FiltroNegativo(nameImagen)
-	//matrizImages.FiltroEscalaGris(nameImagen)
+	matrizImages.GenerarImagen(nameImagen, "Original")
 
 	if tipoFiltro == "escalaGris" {
 		matrizImages.FiltroEscalaGris(nameImagen)
 	} else if tipoFiltro == "escalaNegativo" {
 		matrizImages.FiltroNegativo(nameImagen)
 	} else if tipoFiltro == "espejoX" {
-		var matrizFiltroX = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
-		//valorX := (matrizImages.ImageWidth - 1) - matrizImages.Raiz.PosicionX
-		//valorY := matrizImages.Raiz.PosicionY
-		//matrizFiltroX.Insertar_Elemento(valorX, valorY, matrizImages.Raiz.Color)
-		//matrizFiltroX.GenerarImagenOtros(nameImagen, "espejoX")
-		x_pixel := 0
-		x := 1
-		auxFila := matrizImages.Raiz.Abajo
-		auxColumna := auxFila.Siguiente
-		for i := 0; i < matrizImages.ImageHeight; i++ {
-			for j := 0; j < matrizImages.ImageWidth; j++ {
-				if auxColumna != nil {
-					if auxColumna.PosicionX == x_pixel {
-						valorX := (matrizImages.ImageWidth - 1) - matrizImages.Raiz.PosicionX
-						valorY := matrizImages.Raiz.PosicionY
-						matrizFiltroX.Insertar_Elemento(valorX, valorY, matrizImages.Raiz.Color)
-						auxColumna = auxColumna.Siguiente
-					}
-					x_pixel++
-				}
-				x--
-			}
-			x = matrizImages.ImageWidth * (i + 1)
-			x_pixel = 0
-			auxFila = auxFila.Abajo
-			if auxFila != nil {
-				auxColumna = auxFila.Siguiente
-			}
-		}
-		matrizFiltroX.GenerarImagenOtros(nameImagen, "espejoX")
+		matrizImages.EspejoX()
+		matrizImages.GenerarImagen(nameImagen, tipoFiltro)
 	} else if tipoFiltro == "espejoY" {
-		var matrizFiltroY = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
-		valorY := (matrizImages.ImageHeight - 1) - matrizImages.Raiz.PosicionY
-		valorX := matrizImages.Raiz.PosicionX
-		matrizFiltroY.Insertar_Elemento(valorX, valorY, matrizImages.Raiz.Color)
-		matrizFiltroY.GenerarImagenOtros(nameImagen, "espejoY")
+		matrizImages.EspejoY()
+		matrizImages.GenerarImagen(nameImagen, tipoFiltro)
 	} else if tipoFiltro == "dobleEspejo" {
-		var matrizFiltroDoble = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
-		valorX := (matrizImages.ImageWidth - 1) - matrizImages.Raiz.PosicionX
-		valorY := (matrizImages.ImageHeight - 1) - matrizImages.Raiz.PosicionY
-		matrizFiltroDoble.Insertar_Elemento(valorX, valorY, matrizImages.Raiz.Color)
-		matrizFiltroDoble.GenerarImagenOtros(nameImagen, "dobleEspejo")
+		matrizImages.EspejoDoble()
+		matrizImages.GenerarImagen(nameImagen, tipoFiltro)
 	} else {
 		fmt.Println("El espejo no existe")
 	}
@@ -204,71 +123,6 @@ func previaVisualizacion(nameImagen string, tipoFiltro string) {
 	matrizImages = &estructura.Matriz{Raiz: nil}
 }
 
-func realizarPedidos(usuario string) {
-	for {
-		idcolaClientes := clientesCola.ObtenerClienteId()
-		nameColaClientes := clientesCola.ObtenerClienteName()
-		longi := clientesCola.ObtenerLongitud()
-		if longi != 0 {
-			fmt.Println("\nAtendiendo al cliente con id: ", idcolaClientes, " y nombre: ", nameColaClientes)
-
-			if strings.ToUpper(idcolaClientes) == "X" {
-				// CUANDO ES IGUAL A X VALIDAR UN ID RANDOM Y
-				for {
-					valor := (rand.Intn(10000)) + 1000
-
-					existe := listaCircular.ValidarRepetidos(strconv.Itoa(valor))
-					if existe {
-						//repetir el aleatorio y no guardar nada
-					} else {
-						// guardar el aleatorio como nuevo id y agregarlo a la lista circular junto al nombre del cliente
-						nombreImagenElegida := visualizarImagenes()
-						//Sino existe en la lista circular agregar al cliente en la lista circular
-						listaCircular.Insertar(strconv.Itoa(valor), nameColaClientes)
-						pedidosPila.Push(strconv.Itoa(valor), usuario, nombreImagenElegida)
-						//agregar el id del cliente, id del empleado, y nombre de la imagen elegida
-						fmt.Println("\nEl nuevo id: ", strconv.Itoa(valor), "corresponde al cliente: ", nameColaClientes)
-						clientesCola.Descolar()
-						break
-					}
-				}
-
-			} else {
-				existe := listaCircular.ValidarRepetidos(strings.TrimSpace(idcolaClientes))
-				if existe {
-					// si el cliente existe en la lista circular de clientes
-					nombreImagenElegida := visualizarImagenes()
-					pedidosPila.Push(idcolaClientes, usuario, nombreImagenElegida)
-					//agregar el id del cliente, id del empleado, y nombre de la imagen elegida
-					clientesCola.Descolar()
-				} else {
-					nombreImagenElegida := visualizarImagenes()
-					//Sino existe en la lista circular agregar al cliente en la lista circular
-					listaCircular.Insertar(idcolaClientes, nameColaClientes)
-					pedidosPila.Push(idcolaClientes, usuario, nombreImagenElegida)
-					//agregar el id del cliente, id del empleado, y nombre de la imagen elegida
-					clientesCola.Descolar()
-				}
-
-			}
-			fmt.Println("\nFinaliza atención a cliente actual y quedan:", strconv.Itoa(longi-1))
-		} else {
-			break
-		}
-	}
-	/*
-		1.Buscar el primer cliente y obtener su id en la cola
-		y retornarlo
-
-		2.validar si el id es igual a x, entonces
-		crear un id aleatorio y que sea diferente a los id existentes en la lista circular y luego retornar el id
-		y agregar el nombre y el nuevo id a la lista circular
-		y imprimir en pantalla el id del cliente y su respectivo nombre
-		3. si no es igual a x, entonces continuar con el paso 4
-		4. Tomar el Id de cliente, id de empleado, nombre de la imagen y guardarlo dentro de la pila
-
-	*/
-}
 func realizarCapa(nameImagen string) {
 	var matrizImages1 = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
 	var listaCapasMatriz = estructura.NewListaSimpleCapa()
