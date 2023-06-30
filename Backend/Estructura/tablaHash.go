@@ -20,7 +20,7 @@ type TablaHash struct {
 
 func (t *TablaHash) calculoIndice(id_cliente int, multiplicador int) int {
 	/*índice = (45*1526 + 202312345) % tamaño_tablahash*/
-	indice := (18*id_cliente + 201700918*multiplicador) % t.Capacidad
+	indice := (03*id_cliente + 201901103*multiplicador) % t.Capacidad
 	return indice
 }
 

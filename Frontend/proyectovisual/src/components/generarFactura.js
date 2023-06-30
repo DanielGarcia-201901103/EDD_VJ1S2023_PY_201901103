@@ -32,18 +32,23 @@ export const GeneraFact = () => {
           })
       }*/
       
-    const clickB = async (e) => {
-        /*
+    const enviarDatos = async (e) => {
+        
         e.preventDefault();
-        await fetch('http://localhost:5000/Reportes', {
-            method: 'GET',
-            mode: 'cors',
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Content-Type': 'application/json'
-            }
-        })*/
-        alert(clienteObtenido+"  "+usuarioIniciado)
+        await fetch('http://localhost:5000/genFacturaPago', {
+            method: 'POST',
+              mode: 'cors',
+              body: JSON.stringify({
+                  Timestamp: fechaHora,
+                  Biller: usuarioIniciado,
+                  Customer: clienteObtenido,
+                  Payment: pagoR
+              }),
+              headers:{
+                  'Access-Control-Allow-Origin': '*',
+                  'Content-Type': 'application/json'
+              }
+          })
     }
     /*Aplicación Filtros
     Generar Factura
@@ -79,7 +84,7 @@ export const GeneraFact = () => {
                 <Card style={{ margin: '0 1.5%', width: '25rem', background: '#D3CBB8', display: 'inline-block' }}>
                     <Card.Body>
                         <Card.Title alignitems= "center">Generar Factura</Card.Title>
-                        <Form onSubmit={clickB}>
+                        <Form onSubmit={enviarDatos}>
                             <Form.Group className="mb-3">
                                 <Form.Label>Fecha</Form.Label>
                                 <Form.Control type="text" placeholder={fechaHora} aria-label="Disabled input example" disabled readOnly required/>

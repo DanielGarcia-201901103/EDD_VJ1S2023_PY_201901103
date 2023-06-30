@@ -38,6 +38,12 @@ type Filt struct {
 	Tipo   string `json:"Tipo"`
 	Imagen string `json:"Imagen"`
 }
+type genFacturaP struct {
+	Timestamp string `json:"Timestamp"`
+	Biller    string `json:"Biller"`
+	Customer  string `json:"Customer"`
+	Payment   string `json:"Payment"`
+}
 
 // variables globales
 var listaSimple = estructura.NewListaSimple()
@@ -48,6 +54,7 @@ var clientesCola = estructura.NewCola()
 
 // var pedidosPila = estructura.NewPila()
 var arbol estructura.ArbolAVL
+var blockchain *estructura.BlockChain
 
 func sesion(usuario string, password string) string {
 	if usuario == "ADMIN_201901103" && password == "Admin" {
@@ -150,6 +157,7 @@ func realizarCapa(nameImagen string) {
 }
 
 func main() {
+	blockchain = &estructura.BlockChain{Bloques_Creados: 0}
 	app := fiber.New()
 	app.Use(cors.New())
 
@@ -290,7 +298,18 @@ func main() {
 			"data": "archivo cargado correctamente",
 		})
 	})
-
+	//genFacturaP
+	app.Post("/genFacturaPago", func(c *fiber.Ctx) error {
+		var nuevoN estructura.NodoBlockPet
+		//return c.SendString("Hello, World!")
+		if err := c.BodyParser(&nuevoN); err != nil {
+			return err
+		}
+		blockchain.InsertarBloque(nuevoN.Timestamp, nuevoN.Biller, nuevoN.Customer, nuevoN.Payment)
+		return c.JSON(&fiber.Map{
+			"data": nuevoN,
+		})
+	})
 	app.Listen(":5000")
 	//https://github.com/gofiber/fiber
 }
