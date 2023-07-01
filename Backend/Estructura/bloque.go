@@ -84,3 +84,13 @@ func (b *BlockChain) ArregloFacturas() []RespBlock {
 	fmt.Println(finalArreglo)
 	return finalArreglo
 }
+
+func (b *BlockChain) InsertTabla(tabla *TablaHash, idEmpleado string) {
+	aux := b.Inicio
+	for aux != nil {
+		if aux.Bloque["biller"] == idEmpleado {
+			tabla.Insertar(aux.Bloque["customer"], aux.Bloque["hash"])
+		}
+		aux = aux.Siguiente
+	}
+}

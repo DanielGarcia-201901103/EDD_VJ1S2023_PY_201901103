@@ -7,54 +7,31 @@ import { useState } from 'react';
 
 export const GeneraFact = () => {
     const usuarioIniciado = localStorage.getItem('current');
-    const clienteObtenido = localStorage.getItem('cliente');
+    var clienteObtenido = localStorage.getItem('cliente');
     const moment = require('moment');
     const fechaHora = moment().format('DD-MM-YYYY-::HH:mm:ss');
     const [pagoR, setPago] = useState("");
-    //DD-MM-YY-::HH:MM:SS
-    /*
-      const [userLogin, setUsuario] = useState()
-      const [passwordLogin, setPassword] = useState()
-      //const [imagen, setImagen] = useState('https://yakurefu.com/wp-content/uploads/2020/02/Chi_by_wallabby.jpg')
-      const handleSubmit = async(e) => {
-          e.preventDefault();
-          await fetch('http://localhost:5000/loginAdmin',{
-              method: 'POST',
-              mode: 'cors',
-              body: JSON.stringify({
-                  Usuario: userLogin,
-                  Password: passwordLogin
-              }),
-              headers:{
-                  'Access-Control-Allow-Origin': '*',
-                  'Content-Type': 'application/json'
-              }
-          })
-      }*/
-      
     const enviarDatos = async (e) => {
-        
+
         e.preventDefault();
         await fetch('http://localhost:5000/genFacturaPago', {
             method: 'POST',
-              mode: 'cors',
-              body: JSON.stringify({
-                  Timestamp: fechaHora,
-                  Biller: usuarioIniciado,
-                  Customer: clienteObtenido,
-                  Payment: pagoR
-              }),
-              headers:{
-                  'Access-Control-Allow-Origin': '*',
-                  'Content-Type': 'application/json'
-              }
-          })
+            mode: 'cors',
+            body: JSON.stringify({
+                Timestamp: fechaHora,
+                Biller: usuarioIniciado,
+                Customer: clienteObtenido,
+                Payment: pagoR
+            }),
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => console.log(data));
     }
-    /*Aplicación Filtros
-    Generar Factura
-    Historial de facturas
-    Ventas completadas */
-    
+
     return (
         <>
             <div >
@@ -83,25 +60,25 @@ export const GeneraFact = () => {
             >
                 <Card style={{ margin: '0 1.5%', width: '25rem', background: '#D3CBB8', display: 'inline-block' }}>
                     <Card.Body>
-                        <Card.Title alignitems= "center">Generar Factura</Card.Title>
+                        <Card.Title alignitems="center">Generar Factura</Card.Title>
                         <Form onSubmit={enviarDatos}>
                             <Form.Group className="mb-3">
                                 <Form.Label>Fecha</Form.Label>
-                                <Form.Control type="text" placeholder={fechaHora} aria-label="Disabled input example" disabled readOnly required/>
+                                <Form.Control type="text" placeholder={fechaHora} aria-label="Disabled input example" disabled readOnly required />
                             </Form.Group>
                             <Form.Group className="mb-3">
                                 <Form.Label>Empleado Cobrador</Form.Label>
-                                <Form.Control type="text" placeholder={usuarioIniciado} aria-label="Disabled input example" disabled readOnly required/>
+                                <Form.Control type="text" placeholder={usuarioIniciado} aria-label="Disabled input example" disabled readOnly required />
                             </Form.Group>
                             <Form.Group className="mb-3">
                                 <Form.Label>Usuario</Form.Label>
-                                <Form.Control type="text" placeholder={clienteObtenido} aria-label="Disabled input example" disabled readOnly required/>
+                                <Form.Control type="text" placeholder={clienteObtenido} aria-label="Disabled input example" disabled readOnly required />
                             </Form.Group>
                             <Form.Group className="mb-3">
                                 <Form.Label>Pago</Form.Label>
-                                <Form.Control type="text" placeholder="Q 00.00" required autoFocus
-                                onChange={e => setPago(e.target.value)}
-                                value={pagoR} />
+                                <Form.Control type="text" placeholder="Q00.00" required autoFocus
+                                    onChange={e => setPago(e.target.value)}
+                                    value={pagoR} />
                             </Form.Group>
                             <Button
                                 className="w-100 btn btn-lg btn-primary"

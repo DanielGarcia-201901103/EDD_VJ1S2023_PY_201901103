@@ -47,14 +47,10 @@ type genFacturaP struct {
 
 // variables globales
 var listaSimple = estructura.NewListaSimple()
-
-// var listaDoble = estructura.NewListaDoble()
-// var listaCircular = estructura.NewListaCircular()
 var clientesCola = estructura.NewCola()
-
-// var pedidosPila = estructura.NewPila()
 var arbol estructura.ArbolAVL
 var blockchain *estructura.BlockChain
+var tabHash *estructura.TablaHash
 
 func sesion(usuario string, password string) string {
 	if usuario == "ADMIN_201901103" && password == "Admin" {
@@ -158,6 +154,8 @@ func realizarCapa(nameImagen string) {
 
 func main() {
 	blockchain = &estructura.BlockChain{Bloques_Creados: 0}
+	tabHash = &estructura.TablaHash{Capacidad: 5, Utilizacion: 0}
+	valorEmpleado := ""
 	app := fiber.New()
 	app.Use(cors.New())
 
@@ -178,7 +176,7 @@ func main() {
 		//fmt.Println(usuarioRecibido)
 		//fmt.Println(passwordRecibido)
 		validacionIniciar := sesion(usuarioRecibido, passwordRecibido)
-
+		valorEmpleado = usuarioRecibido
 		if validacionIniciar == "Administrador 201901103" {
 			//fmt.Print("Administrador 201901103")
 			return c.JSON(&fiber.Map{
@@ -187,6 +185,8 @@ func main() {
 		}
 		if validacionIniciar != "No" {
 			//fmt.Print("Cualquier usuario")
+			tabHash = &estructura.TablaHash{Capacidad: 5, Utilizacion: 0}
+			tabHash.NewTablaHash()
 			return c.JSON(&fiber.Map{
 				"data": "SI",
 			})
@@ -301,13 +301,35 @@ func main() {
 	//genFacturaP
 	app.Post("/genFacturaPago", func(c *fiber.Ctx) error {
 		var nuevoN estructura.NodoBlockPet
-		//return c.SendString("Hello, World!")
-		if err := c.BodyParser(&nuevoN); err != nil {
-			return err
-		}
+		c.BodyParser(&nuevoN)
 		blockchain.InsertarBloque(nuevoN.Timestamp, nuevoN.Biller, nuevoN.Customer, nuevoN.Payment)
+		tabHash.NewTablaHash()
+		blockchain.InsertTabla(tabHash, valorEmpleado)
+		/*
+			MatrizOriginal = &Matriz.Matriz{Raiz: &Matriz.NodoMatriz{PosX: -1, PosY: -1, Color: "Raiz"}}
+			MatrizFiltro = &Matriz.Matriz{Raiz: &Matriz.NodoMatriz{PosX: -1, PosY: -1, Color: "Raiz"}}
+		*/
 		return c.JSON(&fiber.Map{
-			"data": nuevoN,
+			"data": blockchain.Bloques_Creados,
+		})
+	})
+	/*
+		app.Post("/insertTabla", func(c *fiber.Ctx) error {
+			var nuevoN estructura.NodoHash
+			//return c.SendString("Hello, World!")
+			if err := c.BodyParser(&nuevoN); err != nil {
+				return err
+			}
+			tabHash.Insertar(nuevoN.Id_Cliente, nuevoN.Id_Factura)
+			return c.JSON(&fiber.Map{
+				"data": "agregado",
+			})
+		})*/
+
+	app.Get("/obTabla", func(c *fiber.Ctx) error {
+		return c.JSON(&fiber.Map{
+			"status": 200,
+			"data":   tabHash.Tabla,
 		})
 	})
 	app.Listen(":5000")
@@ -322,18 +344,6 @@ csv\empleados.csv
 
 4269,Paula Fuentes,Ventas,2576_Ventas
 4364,Maria Tux,Ventas,4364_Ventas
-
-
-
-algoritmo para filtros
-
-elegir una imagen
-
-1. generar imagen original de la misma
-2. preservar la imagen original
-3. aplicar el filtro a la imagen
-4. aplicar el segundo filtro a la imagen a
-   la que ya se le habia aplicado filtro
 */
 
 func cargarJson(ruta string) bool {
