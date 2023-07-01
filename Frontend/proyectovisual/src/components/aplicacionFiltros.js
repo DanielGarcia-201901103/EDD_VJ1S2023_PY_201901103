@@ -10,8 +10,13 @@ export const ApliFiltros = () => {
     const usuarioIniciado = localStorage.getItem('current');
     var [imagenActual, setImagenAc] = useState("");
     var obtenIm = localStorage.getItem('nombreImagen');
+    //var [filtrosElegidos, setFiltrosElegidos] = useState("");
+    var filtrosElegidos = ""
+    localStorage.setItem('filtrosSeleccionados', filtrosElegidos);
+    
     const apliNegativo = async (e) => {
         console.log(imagenActual)
+        filtrosElegidos = filtrosElegidos + " Negativo "
         e.preventDefault();
         await fetch('http://localhost:5000/filtro', {
             method: 'POST',
@@ -28,6 +33,7 @@ export const ApliFiltros = () => {
     }
 
     const apliGrises = async (e) => {
+        filtrosElegidos = filtrosElegidos + " Grises "
         e.preventDefault();
         await fetch('http://localhost:5000/filtro', {
             method: 'POST',
@@ -44,6 +50,7 @@ export const ApliFiltros = () => {
     }
 
     const apliX = async (e) => {
+        filtrosElegidos = filtrosElegidos + " EspejoX "
         e.preventDefault();
         await fetch('http://localhost:5000/filtro', {
             method: 'POST',
@@ -60,6 +67,7 @@ export const ApliFiltros = () => {
     }
 
     const apliY = async (e) => {
+        filtrosElegidos = filtrosElegidos + " EspejoY "
         e.preventDefault();
         await fetch('http://localhost:5000/filtro', {
             method: 'POST',
@@ -76,12 +84,29 @@ export const ApliFiltros = () => {
     }
 
     const apliAmbos = async (e) => {
+        filtrosElegidos = filtrosElegidos + " EspejoDoble "
         e.preventDefault();
         await fetch('http://localhost:5000/filtro', {
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify({
                 Tipo: "dobleEspejo",
+                Imagen: obtenIm,
+            }),
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            }
+        })
+    }
+
+    const apliOriginal = async (e) => {
+        e.preventDefault();
+        await fetch('http://localhost:5000/filtro', {
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify({
+                Tipo: "Original",
                 Imagen: obtenIm,
             }),
             headers: {
@@ -109,7 +134,7 @@ export const ApliFiltros = () => {
                 localStorage.setItem('nombreImagen', imagenActual);
                 setImagenAc(data.imagen)
             });
-            //setClienteAc("")
+        //setClienteAc("")
     }
 
     return (
@@ -194,7 +219,17 @@ export const ApliFiltros = () => {
                     <Card.Body>
                         <Card.Title>Filtros</Card.Title>
                         <Form>
-                            <br />
+                            <Button
+                                className="w-100 btn btn-lg btn-primary"
+                                variant='success'
+                                onClick={obtenerCliente}
+                            >
+                                Obtener Imagen del cliente
+                            </Button>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Nombre de la Imagen</Form.Label>
+                                <Form.Control type="text" placeholder={imagenActual} aria-label="Disabled input example" disabled readOnly />
+                            </Form.Group>
                             <Button
                                 className="w-100 btn btn-lg btn-primary"
                                 variant='dark'
@@ -242,15 +277,11 @@ export const ApliFiltros = () => {
                             <br />
                             <Button
                                 className="w-100 btn btn-lg btn-primary"
-                                variant='success'
-                                onClick={obtenerCliente}
+                                variant='dark'
+                                onClick={apliOriginal}
                             >
-                                Obtener Imagen del cliente
+                                Imagen Original
                             </Button>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Nombre de la Imagen</Form.Label>
-                                <Form.Control type="text" placeholder={imagenActual} aria-label="Disabled input example" disabled readOnly />
-                            </Form.Group>
                         </Form>
 
                     </Card.Body>

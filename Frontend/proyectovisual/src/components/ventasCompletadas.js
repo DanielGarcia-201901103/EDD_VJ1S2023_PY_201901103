@@ -5,42 +5,44 @@ import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Badge from 'react-bootstrap/Badge';
 import Table from 'react-bootstrap/Table';
-//import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export const VentCompl = () => {
     const usuarioIniciado = localStorage.getItem('current');
-    /*
-      const [userLogin, setUsuario] = useState()
-      const [passwordLogin, setPassword] = useState()
-      //const [imagen, setImagen] = useState('https://yakurefu.com/wp-content/uploads/2020/02/Chi_by_wallabby.jpg')
-      const handleSubmit = async(e) => {
-          e.preventDefault();
-          await fetch('http://localhost:5000/loginAdmin',{
-              method: 'POST',
-              mode: 'cors',
-              body: JSON.stringify({
-                  Usuario: userLogin,
-                  Password: passwordLogin
-              }),
-              headers:{
-                  'Access-Control-Allow-Origin': '*',
-                  'Content-Type': 'application/json'
-              }
-          })
-      }*/
+    const [obtenidoFactura, setFact] = useState([]);
+    const [imagenOtro, setImagenOtro] = useState('./guitarra1.jpg')
 
-    const clickB = async (e) => {
-        /*
+    useEffect(() => {
+        mostrarTabla()
+    },[])
+
+    const mostrarTabla = () => {
+        fetch('http://localhost:5000/solicitudClientes', {
+        })
+        .then(response => response.json())
+        .then(data => validar(data))
+    }
+
+    const validar = (data) =>{
+        console.log(data.data)
+        setFact(data.data)
+    }
+    
+    const obtenerReportesOtro = async (e) => {
         e.preventDefault();
-        await fetch('http://localhost:5000/Reportes', {
+        await fetch('http://localhost:5000/reporteGrafo', {
             method: 'GET',
             mode: 'cors',
             headers: {
                 'Access-Control-Allow-Origin': '*',
                 'Content-Type': 'application/json'
             }
-        })*/
-        alert("hola click")
+        })
+        .then(response => response.json())
+        .then(data => validar3(data));
+    }
+    const validar3 = (data) => {
+        setImagenOtro(data.data)
     }
 /*Aplicación Filtros
 Generar Factura
@@ -118,23 +120,20 @@ Ventas completadas */
                     padding: "200px",
                     backgroundColor: "#282c34",
                     display: "flex",
-                    paddingLeft: "600px",
+                    paddingLeft: "300px",
                     flexdirection: "column",
                     minheight: "100vh",
                     alignitems: "center",
                 }}
             >
-                <Card style={{margin: '0 1.5%', width: '25rem', background: '#D3CBB8', display: 'inline-block'  }}>
+                <Card style={{ margin: '0 1.5%', width: '55rem', background: '#D3CBB8', display: 'inline-block' }}>
+                    <Card.Img variant="top" src= {imagenOtro} width="300" height="400" alt='reporte pagos'/>
                     <Card.Body>
                         <Card.Title>Reporte</Card.Title>
                         <Form>
-                        <br />
-                            <Button
-                                className="w-100 btn btn-lg btn-primary"
-                                variant='dark'
-                                onClick={clickB}
-                            >
-                                Reporte
+                            <br />
+                            <Button className="w-100 btn btn-lg btn-primary" variant='dark' onClick={obtenerReportesOtro}>
+                                Reporte Grafo
                             </Button>
                         </Form>
                     </Card.Body>

@@ -18,6 +18,7 @@ type NodoBlockPet struct {
 	Biller    string
 	Customer  string
 	Payment   string
+	Filtros   string
 }
 
 type RespBlock struct {

@@ -8,11 +8,13 @@ import { useState } from 'react';
 export const GeneraFact = () => {
     const usuarioIniciado = localStorage.getItem('current');
     var clienteObtenido = localStorage.getItem('cliente');
+    var seleccionadosFiltros = localStorage.getItem('filtrosSeleccionados');
     const moment = require('moment');
     const fechaHora = moment().format('DD-MM-YYYY-::HH:mm:ss');
     const [pagoR, setPago] = useState("");
-    const enviarDatos = async (e) => {
 
+    const enviarDatos = async (e) => {
+        console.log(seleccionadosFiltros)
         e.preventDefault();
         await fetch('http://localhost:5000/genFacturaPago', {
             method: 'POST',
@@ -21,7 +23,8 @@ export const GeneraFact = () => {
                 Timestamp: fechaHora,
                 Biller: usuarioIniciado,
                 Customer: clienteObtenido,
-                Payment: pagoR
+                Payment: pagoR,
+                Filtros: seleccionadosFiltros
             }),
             headers: {
                 'Access-Control-Allow-Origin': '*',

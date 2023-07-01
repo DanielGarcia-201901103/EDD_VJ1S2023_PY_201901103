@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -43,6 +42,7 @@ type genFacturaP struct {
 	Biller    string `json:"Biller"`
 	Customer  string `json:"Customer"`
 	Payment   string `json:"Payment"`
+	Filtros   string `json: "Filtros"`
 }
 
 // variables globales
@@ -51,6 +51,7 @@ var clientesCola = estructura.NewCola()
 var arbol estructura.ArbolAVL
 var blockchain *estructura.BlockChain
 var tabHash *estructura.TablaHash
+var matrizAdy *estructura.Grafo
 
 func sesion(usuario string, password string) string {
 	if usuario == "ADMIN_201901103" && password == "Admin" {
@@ -106,7 +107,6 @@ func cargarEmpleados(ruta string) bool {
 func previaVisualizacion(nameImagen string, tipoFiltro string) {
 	var matrizImages = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
 	matrizImages.LeerInicial("csv/"+nameImagen+"/inicial.csv", nameImagen)
-	matrizImages.GenerarImagen(nameImagen, "Original")
 
 	if tipoFiltro == "escalaGris" {
 		matrizImages.FiltroEscalaGris(nameImagen)
@@ -121,40 +121,17 @@ func previaVisualizacion(nameImagen string, tipoFiltro string) {
 	} else if tipoFiltro == "dobleEspejo" {
 		matrizImages.EspejoDoble()
 		matrizImages.GenerarImagen(nameImagen, tipoFiltro)
-	} else {
-		fmt.Println("El espejo no existe")
+	} else if tipoFiltro == "Original" {
+		matrizImages.GenerarImagen(nameImagen, "Original")
 	}
 
 	matrizImages = &estructura.Matriz{Raiz: nil}
 }
 
-func realizarCapa(nameImagen string) {
-	var matrizImages1 = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
-	var listaCapasMatriz = estructura.NewListaSimpleCapa()
-	matrizImages1.LeerInicial1("csv/"+nameImagen+"/inicial.csv", nameImagen, listaCapasMatriz)
-	matrizImages1 = &estructura.Matriz{Raiz: nil}
-
-	var opcion int
-	fmt.Println("\n=================Listado de Capas=================")
-	listaCapasMatriz.ListarDatosCapa()
-	fmt.Println("\n Seleccione una opción:")
-	fmt.Scanln(&opcion)
-	nameCapa := listaCapasMatriz.BuscarCapa(strconv.Itoa(opcion))
-	matrizImages1 = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
-	matrizImages1.LeerInicialYCapaElegida("csv/"+nameImagen+"/inicial.csv", nameImagen, nameCapa)
-	matrizImages1 = &estructura.Matriz{Raiz: nil}
-	/*
-		leer el archivo inicial con cada capa
-		leer la capa de configuración
-		guardar cada una de las capas en una lista
-		recorrer la lista y mostrar las opciones de las capas, luego preguntar cual capa elige
-		enviar el nombre de la capa al metodo LeerArchivo
-	*/
-}
-
 func main() {
 	blockchain = &estructura.BlockChain{Bloques_Creados: 0}
 	tabHash = &estructura.TablaHash{Capacidad: 5, Utilizacion: 0}
+	matrizAdy = &estructura.Grafo{Principal: nil}
 	valorEmpleado := ""
 	app := fiber.New()
 	app.Use(cors.New())
@@ -303,6 +280,8 @@ func main() {
 		var nuevoN estructura.NodoBlockPet
 		c.BodyParser(&nuevoN)
 		blockchain.InsertarBloque(nuevoN.Timestamp, nuevoN.Biller, nuevoN.Customer, nuevoN.Payment)
+		nameColaClientes := clientesCola.ObtenerClienteName()
+		matrizAdy.InsertarValores(nuevoN.Biller, nuevoN.Customer, nameColaClientes, nuevoN.Filtros)
 		/*Ingresar al grafo, tomar los valores de nuevoBloque.Biller, nuevoBloque.Customer, PedidosCola.Primero.Pedido.Nombre_Imagen,Filtros_colocados */
 		tabHash.NewTablaHash()
 		blockchain.InsertTabla(tabHash, valorEmpleado)
@@ -353,10 +332,36 @@ func main() {
 			"data": imagen.Imagenbase64,
 		})
 	})
+
+	app.Get("/solicitudClientes", func(c *fiber.Ctx) error {
+		return c.JSON(&fiber.Map{
+			"status": 200,
+			"data":   matrizAdy,
+		})
+	})
+
+	app.Get("/reporteGrafo", func(c *fiber.Ctx) error {
+		matrizAdy.Reporte()
+		var imagen RespImagen = RespImagen{Nombre: "grafo.jpg"}
+		//INICIO
+		imageBytes, err := ioutil.ReadFile(imagen.Nombre)
+		fmt.Println(imagen.Nombre)
+		if err != nil {
+			//fmt.Fprintf(w, "Imagen No Valida")
+			return c.JSON(&fiber.Map{
+				"data": "error en imagen",
+			})
+		}
+		// Codifica los bytes de la imagen en base64
+		imagen.Imagenbase64 = "data:image/jpg;base64," + base64.StdEncoding.EncodeToString(imageBytes)
+
+		return c.JSON(&fiber.Map{
+			"data": imagen.Imagenbase64,
+		})
+	})
 	/*Falta
 	Ingresar al Grafo los datos de los filtros
-	Hacer el reporte del Blockchain
-	mostrar ambos reportes blockchain y grafo
+	mostrar reporte grafo
 	*/
 
 	app.Listen(":5000")
