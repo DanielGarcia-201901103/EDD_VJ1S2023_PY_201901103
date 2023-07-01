@@ -1,0 +1,11 @@
+digraph Bloque{ 
+ node [margin=0 fontcolor=black fontsize=25 shape=rectangle color=bisque3 style=filled margin = 0.3];
+nodo0[label="TimeStamp: 01-07-2023-::01:16:44\n Biller: 4364\n Customer: 2480\n PreviousHash: 0000"]; 
+nodo1[label="TimeStamp: 01-07-2023-::01:16:59\n Biller: 4364\n Customer: 3589\n PreviousHash: 8db6fcf19076fe33206497f8ebe84ddb5aab98864141572b781d32645e878b7b"]; 
+nodo2[label="TimeStamp: 01-07-2023-::01:17:15\n Biller: 4364\n Customer: 4575\n PreviousHash: 54117098464e6c5f8760947d8101a3fbcebcfbe17b51d40300cf96e8f0b392f5"]; 
+nodo3[label="TimeStamp: 01-07-2023-::01:17:33\n Biller: 4364\n Customer: 4983\n PreviousHash: 4e48601bd9058ff29247c2c3424c9fd8efd114bfb50f1793269c6709007f45a0"]; 
+nodo0->nodo1;
+nodo1->nodo2;
+nodo2->nodo3;
+
+}

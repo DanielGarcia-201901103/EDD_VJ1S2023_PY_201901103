@@ -9,6 +9,7 @@ export const LoginAdmin = () => {
     const [rutaPedidos, setRutaP] = useState("");
     const [rutaEmpleados, setrutaEmpleados] = useState("");
     const [imagen, setImagen] = useState('https://yakurefu.com/wp-content/uploads/2020/02/Chi_by_wallabby.jpg')
+    const [imagenOtro, setImagenOtro] = useState('https://yakurefu.com/wp-content/uploads/2020/02/Chi_by_wallabby.jpg')
     const cargaPedidos = async (e) => {
         e.preventDefault();
         await fetch('http://localhost:5000/cargarPedidos', {
@@ -53,7 +54,7 @@ export const LoginAdmin = () => {
 
     const obtenerReportes = async (e) => {
         e.preventDefault();
-        
+
         await fetch('http://localhost:5000/Reportes', {
             method: 'GET',
             mode: 'cors',
@@ -67,6 +68,23 @@ export const LoginAdmin = () => {
     }
     const validar2 = (data) => {
         setImagen(data.data)
+    }
+
+    const obtenerReportesOtro = async (e) => {
+        e.preventDefault();
+        await fetch('http://localhost:5000/reporteBloquePago', {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => validar3(data));
+    }
+    const validar3 = (data) => {
+        setImagenOtro(data.data)
     }
 
     return (
@@ -121,15 +139,27 @@ export const LoginAdmin = () => {
                     </Card.Body>
                 </Card>
             </div>
-            <div style={{ padding: "200px", paddingTop: '1px', paddingLeft: '300px', backgroundColor: '#282c34', display: 'flex', flexdirection: 'column', minheight: '100vh', alignitems: 'center' }}>
+            <div style={{ padding: "200px", paddingTop: '1px', paddingLeft: '150px', backgroundColor: '#282c34', display: 'flex', flexdirection: 'column', minheight: '100vh', alignitems: 'center' }}>
                 <Card style={{ margin: '0 1.5%', width: '55rem', background: '#D3CBB8', display: 'inline-block' }}>
                     <Card.Img variant="top" src= {imagen} width="300" height="400" alt='reporte arbol AVL'/>
                     <Card.Body>
-                        <Card.Title>Reportes</Card.Title>
+                        <Card.Title>Reporte</Card.Title>
                         <Form>
                             <br />
                             <Button className="w-100 btn btn-lg btn-primary" variant='dark' onClick={obtenerReportes}>
-                                Reportes
+                                Reporte de Arbol
+                            </Button>
+                        </Form>
+                    </Card.Body>
+                </Card>
+                <Card style={{ margin: '0 1.5%', width: '55rem', background: '#D3CBB8', display: 'inline-block' }}>
+                    <Card.Img variant="top" src= {imagenOtro} width="300" height="400" alt='reporte pagos'/>
+                    <Card.Body>
+                        <Card.Title>Reporte</Card.Title>
+                        <Form>
+                            <br />
+                            <Button className="w-100 btn btn-lg btn-primary" variant='dark' onClick={obtenerReportesOtro}>
+                                Reporte de Pagos
                             </Button>
                         </Form>
                     </Card.Body>

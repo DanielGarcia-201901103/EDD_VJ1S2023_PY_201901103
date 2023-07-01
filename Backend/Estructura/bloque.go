@@ -94,3 +94,28 @@ func (b *BlockChain) InsertTabla(tabla *TablaHash, idEmpleado string) {
 		aux = aux.Siguiente
 	}
 }
+
+func (b *BlockChain) ReporteBloque() {
+	cadena := "digraph Bloque{ \n node [margin=0 fontcolor=black fontsize=25 shape=rectangle color=bisque3 style=filled margin = 0.3];\n"
+	nombre_archivo := "./bloquePagos.dot"
+	nombre_imagen := "./bloquePagos.jpg"
+	aux := b.Inicio
+	i := 0
+	longitud := 0
+	for aux != nil {
+		//"TimeStamp: 01-06-2023-::16:05:42 \n Biller: 2566 \nCustomer: 9536\nPreviousHash: 0000"
+		cadena += "nodo" + strconv.Itoa(i) + "[label=\"TimeStamp: " + aux.Bloque["timestamp"] + "\\" + "n Biller: " + aux.Bloque["biller"] + "\\" + "n Customer: " + aux.Bloque["customer"] + "\\" + "n PreviousHash: " + aux.Bloque["previoushash"] + "\"]; \n"
+		i++
+		longitud++
+		aux = aux.Siguiente
+	}
+	i = 0
+	for i := 0; i < longitud-1; i++ {
+		c := i + 1
+		cadena += "nodo" + strconv.Itoa(i) + "->nodo" + strconv.Itoa(c) + ";\n"
+	}
+	cadena += "\n}"
+	crearArchivo(nombre_archivo)
+	escribirArchivo(cadena, nombre_archivo)
+	ejecutar(nombre_imagen, nombre_archivo)
+}

@@ -303,6 +303,7 @@ func main() {
 		var nuevoN estructura.NodoBlockPet
 		c.BodyParser(&nuevoN)
 		blockchain.InsertarBloque(nuevoN.Timestamp, nuevoN.Biller, nuevoN.Customer, nuevoN.Payment)
+		/*Ingresar al grafo, tomar los valores de nuevoBloque.Biller, nuevoBloque.Customer, PedidosCola.Primero.Pedido.Nombre_Imagen,Filtros_colocados */
 		tabHash.NewTablaHash()
 		blockchain.InsertTabla(tabHash, valorEmpleado)
 		/*
@@ -332,6 +333,32 @@ func main() {
 			"data":   tabHash.Tabla,
 		})
 	})
+
+	app.Get("/reporteBloquePago", func(c *fiber.Ctx) error {
+		blockchain.ReporteBloque()
+		var imagen RespImagen = RespImagen{Nombre: "bloquePagos.jpg"}
+		//INICIO
+		imageBytes, err := ioutil.ReadFile(imagen.Nombre)
+		fmt.Println(imagen.Nombre)
+		if err != nil {
+			//fmt.Fprintf(w, "Imagen No Valida")
+			return c.JSON(&fiber.Map{
+				"data": "error en imagen",
+			})
+		}
+		// Codifica los bytes de la imagen en base64
+		imagen.Imagenbase64 = "data:image/jpg;base64," + base64.StdEncoding.EncodeToString(imageBytes)
+
+		return c.JSON(&fiber.Map{
+			"data": imagen.Imagenbase64,
+		})
+	})
+	/*Falta
+	Ingresar al Grafo los datos de los filtros
+	Hacer el reporte del Blockchain
+	mostrar ambos reportes blockchain y grafo
+	*/
+
 	app.Listen(":5000")
 	//https://github.com/gofiber/fiber
 }
