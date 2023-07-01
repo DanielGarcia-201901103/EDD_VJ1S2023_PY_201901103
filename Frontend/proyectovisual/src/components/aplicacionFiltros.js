@@ -3,6 +3,7 @@ import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
+import Carousel from 'react-bootstrap/Carousel';
 import { useState } from 'react';
 
 export const ApliFiltros = () => {
@@ -128,15 +129,67 @@ export const ApliFiltros = () => {
             </div>
             <div
                 style={{
-                    padding: "200px",
+                    padding: "75px",
                     backgroundColor: "#282c34",
                     display: "flex",
-                    paddingLeft: "600px",
+                    paddingLeft: "100px",
                     flexdirection: "column",
                     minheight: "100vh",
                     alignitems: "center",
                 }}
             >
+                <Carousel data-bs-theme="dark" style={{ margin: '0 1.5%', width: '50rem', display: 'inline-block' }}>
+                    <Carousel.Item>
+                        <img
+                            className="d-block w-100"
+                            src="./Grises.jpg"
+                            alt="Grises"
+                        />
+                        <Carousel.Caption>
+                            <p>Imagen en Escala de Grises.</p>
+                        </Carousel.Caption>
+                    </Carousel.Item>
+                    <Carousel.Item>
+                        <img
+                            className="d-block w-100"
+                            src="./Negativo.jpg"
+                            alt="Negativo"
+                        />
+                        <Carousel.Caption>
+                            <p>Imagen en Negativo.</p>
+                        </Carousel.Caption>
+                    </Carousel.Item>
+                    <Carousel.Item>
+                        <img
+                            className="d-block w-100"
+                            src="./EspejoX.jpg"
+                            alt="Espejo X"
+                        />
+                        <Carousel.Caption>
+                            <p>Imagen Espejo en X.</p>
+                        </Carousel.Caption>
+                    </Carousel.Item>
+                    <Carousel.Item>
+                        <img
+                            className="d-block w-100"
+                            src="./EspejoY.jpg"
+                            alt="Espejo Y"
+                        />
+                        <Carousel.Caption>
+                            <p>Imagen Espejo en Y.</p>
+                        </Carousel.Caption>
+                    </Carousel.Item>
+                    <Carousel.Item>
+                        <img
+                            className="d-block w-100"
+                            src="./Doble.jpg"
+                            alt="Espejo Doble"
+                        />
+                        <Carousel.Caption>
+                            <p>Imagen Doble Espejo.</p>
+                        </Carousel.Caption>
+                    </Carousel.Item>
+                </Carousel>
                 <Card style={{ margin: '0 1.5%', width: '25rem', background: '#D3CBB8', display: 'inline-block' }}>
                     <Card.Body>
                         <Card.Title>Filtros</Card.Title>

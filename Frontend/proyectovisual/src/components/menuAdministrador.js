@@ -8,8 +8,8 @@ import Navbar from 'react-bootstrap/Navbar';
 export const LoginAdmin = () => {
     const [rutaPedidos, setRutaP] = useState("");
     const [rutaEmpleados, setrutaEmpleados] = useState("");
-    const [imagen, setImagen] = useState('https://yakurefu.com/wp-content/uploads/2020/02/Chi_by_wallabby.jpg')
-    const [imagenOtro, setImagenOtro] = useState('https://yakurefu.com/wp-content/uploads/2020/02/Chi_by_wallabby.jpg')
+    const [imagen, setImagen] = useState('./guitarra.jpg')
+    const [imagenOtro, setImagenOtro] = useState('./guitarra1.jpg')
     const cargaPedidos = async (e) => {
         e.preventDefault();
         await fetch('http://localhost:5000/cargarPedidos', {
