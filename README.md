@@ -538,24 +538,142 @@ func (lista *Lista_simple) Validar(usuario string, password string) bool {
 }
 ```
 
+> ### BlockChain
 >
-> El metodo mostrar simplemente accede al inicio de la lista, luego con un bucle recorre los nodos hasta que sea igual a nulo, con un println mostramos en consola los datos almacenados en la lista, luego avanzamos de nodo hacia el siguiente.
+> Se crean las structs necesarias para manejar los datos, en este caso usamos un nodo para apuntar hacia el blockChain siguiente y anterior, asegurando así que esten enlazados, luego al bloque se agrega un map de strings, el cual contendra los datos de la peticion, y como respuesta a la petición mostrará el id del cliente con el id de la factura generada durante el proceso que se explicará mas adelante.
 >
 ```go
-func (lista *Lista_simple) Mostrar() {
-	aux := lista.Inicio
+import (
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
+	"strconv"
+)
 
+type NodoBlock struct {
+	Bloque    map[string]string
+	Siguiente *NodoBlock
+	Anterior  *NodoBlock
+}
+
+type NodoBlockPet struct {
+	Timestamp string
+	Biller    string
+	Customer  string
+	Payment   string
+	Filtros   string
+}
+
+type RespBlock struct {
+	Id      string
+	Factura string
+}
+
+type BlockChain struct {
+	Inicio          *NodoBlock
+	Bloques_Creados int
+}
+```
+
+>
+> El metodo insertarbloque recibe como parametros las variables de fecha, biller, customer, y payment, estas se concatenan a los bloques creados y esa concatenación se agrega a la función SHA256 para hacer la codificación, luego valida si existe algun bloque creado anteriormente, si no se ha creado ningun bloque, entonces crea uno con los datos obtenidos por medio de parametro, luego agrega los datos directamente al nodo del bloque para almacenarlos, y por ultimo agrega el nodo al bloque, indicando que es el inicial, y si ya existe un bloque, entonces enlaza el siguiente del inicio hacia el nuevo bloque y por ultimo aumenta la cantidad de bloques creados.
+>
+
+ ```go
+func (b *BlockChain) InsertarBloque(fecha string, biller string, customer string, payment string) {
+	cadenaFuncion := strconv.Itoa(b.Bloques_Creados) + fecha + biller + customer + payment
+	hash := SHA256(cadenaFuncion)
+	if b.Bloques_Creados == 0 {
+		datosBloque := map[string]string{
+			"index":        strconv.Itoa(b.Bloques_Creados),
+			"timestamp":    fecha,
+			"biller":       biller,
+			"customer":     customer,
+			"payment":      payment,
+			"previoushash": "0000",
+			"hash":         hash,
+		}
+		nuevoBloque := &NodoBlock{Bloque: datosBloque}
+		b.Inicio = nuevoBloque
+	} else {
+		aux := b.Inicio
+		for aux.Siguiente != nil {
+			aux = aux.Siguiente
+		}
+		datosBloque := map[string]string{
+			"index":        strconv.Itoa(b.Bloques_Creados),
+			"timestamp":    fecha,
+			"biller":       biller,
+			"customer":     customer,
+			"payment":      payment,
+			"previoushash": aux.Bloque["hash"],
+			"hash":         hash,
+		}
+		nuevoBloque := &NodoBlock{Bloque: datosBloque, Anterior: aux}
+		aux.Siguiente = nuevoBloque
+	}
+	b.Bloques_Creados++
+}
+```
+
+>
+> El metodo SHA256 recibe la cadena, luego inicializa como una nueva encriptación y se escribe la cadena en bytes, luego se codifica con EncodeToString, para así retornar la codificación de los datos.
+>
+
+ ```go
+func SHA256(cadena string) string {
+	hexaString := ""
+	h := sha256.New()
+	h.Write([]byte(cadena))
+	hash := h.Sum(nil)
+	hexaString = hex.EncodeToString(hash)
+	return hexaString
+}
+```
+
+>
+> El metodo para Insertar tabla, recibe como parametro la tabla hash y el id del empleado, luego accede al inicio del bloque para así recorrer los bloques que sean necesarios, luego con un if se valida si el id del empleado es el correspondiente y si esto es correcto ingresa a la tabla el id del cliente y el id de la factura, la cual corresponde al hash del blockchain.
+>
+
+ ```go
+func (b *BlockChain) InsertTabla(tabla *TablaHash, idEmpleado string) {
+	aux := b.Inicio
 	for aux != nil {
-		fmt.Println(aux.data.id, " ", aux.data.name, " ", aux.data.cargo, " ", aux.data.passwd)
-		aux = aux.siguiente
+		if aux.Bloque["biller"] == idEmpleado {
+			tabla.Insertar(aux.Bloque["customer"], aux.Bloque["hash"])
+		}
+		aux = aux.Siguiente
 	}
 }
 ```
 
-> ### Matriz para los filtros
 >
-> se crean las estructuras, la primera es de tipo Empleado, esto indica que obtendrá los datos dentro del mismo, la segunda es de tipo nodo, el cual es de tipo Nodo, este nos sirve para almacenar la data el cual apunta hacia Empleado, luego el siguiente, sirve para apuntar al siguiente nodo, y la ultima parte de ListaSimple, indica que tendrá un inicio apuntando hacia nodo, y una longitud que servirá para saber el tamaño de la lista.
+> Para crear el reporte del bloque se inicializa la cadena con los datos para el nodo, del graphviz, luego el nombre del archivo y el nombre de la imagen, luego se crea una variable que almacenará la cantidad de bloques, y se valida que no sea nulo los bloques y se agrega a la cadena los nodos y los datos que van dentro de los mismos, para luego acceder al siguiente bloque y así sucesivamente, despues teniendo la cantidad de bloques se recorren esos datos para enlazar cada uno de los nodos, y se cierra la cadena, para luego crear, escribir y ejecutar el archivo.
 >
-```go
 
+ ```go
+func (b *BlockChain) ReporteBloque() {
+	cadena := "digraph Bloque{ \n node [margin=0 fontcolor=black fontsize=25 shape=rectangle color=bisque3 style=filled margin = 0.3];\n"
+	nombre_archivo := "./bloquePagos.dot"
+	nombre_imagen := "./bloquePagos.jpg"
+	aux := b.Inicio
+	i := 0
+	longitud := 0
+	for aux != nil {
+		//"TimeStamp: 01-06-2023-::16:05:42 \n Biller: 2566 \nCustomer: 9536\nPreviousHash: 0000"
+		cadena += "nodo" + strconv.Itoa(i) + "[label=\"TimeStamp: " + aux.Bloque["timestamp"] + "\\" + "n Biller: " + aux.Bloque["biller"] + "\\" + "n Customer: " + aux.Bloque["customer"] + "\\" + "n PreviousHash: " + aux.Bloque["previoushash"] + "\"]; \n"
+		i++
+		longitud++
+		aux = aux.Siguiente
+	}
+	i = 0
+	for i := 0; i < longitud-1; i++ {
+		c := i + 1
+		cadena += "nodo" + strconv.Itoa(i) + "->nodo" + strconv.Itoa(c) + ";\n"
+	}
+	cadena += "\n}"
+	crearArchivo(nombre_archivo)
+	escribirArchivo(cadena, nombre_archivo)
+	ejecutar(nombre_imagen, nombre_archivo)
+}
 ```

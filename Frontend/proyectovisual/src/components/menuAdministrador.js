@@ -4,6 +4,7 @@ import Card from 'react-bootstrap/Card';
 import { useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
+import swal from 'sweetalert'
 
 export const LoginAdmin = () => {
     const [rutaPedidos, setRutaP] = useState("");
@@ -30,6 +31,21 @@ export const LoginAdmin = () => {
     }
     const validar = (data) => {
         console.log(data)
+        if (data.data == "archivo cargado correctamente"){
+            swal({
+                title: 'Ruta correcta!',
+                text: 'archivo cargado correctamente',
+                icon: 'success',
+                confirmButtonText: 'Ok'
+            })
+        }else {
+            swal({
+                title: 'Ruta Incorrecta!',
+                text: 'Intenta de nuevo',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            })
+        }
     }
     const cargarEmpleados = async (e) => {
         e.preventDefault();
@@ -50,6 +66,21 @@ export const LoginAdmin = () => {
     }
     const validar1 = (data) => {
         console.log(data)
+        if (data.data == "archivo cargado correctamente"){
+            swal({
+                title: 'Ruta correcta!',
+                text: 'archivo cargado correctamente',
+                icon: 'success',
+                confirmButtonText: 'Ok'
+            })
+        }else {
+            swal({
+                title: 'Ruta Incorrecta!',
+                text: 'Intenta de nuevo',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            })
+        }
     }
 
     const obtenerReportes = async (e) => {
