@@ -204,86 +204,60 @@ func cargarEmpleados(ruta string) bool {
 
 > ### Petición Post para cargar pedidos
 >
-> Se crea la variable para seleccionar la opcion, luego se crea un bucle para mantenerse dentro de la sesión, y se muestran las opciones imprimiendolas en consola, luego con la funcion Scanln se recibe la opción para así poder validar a traves del switch a que opción corresponde, por lo que se accede a diferentes metodos los cuales se explicarán más adelante. 
+> Se crea la función Post que recibirá la ruta de la ubicación del archivo json con los datos de los clientes y las imagenes, este recibe la url y la almacena en una variable que se envia como parametro hacia la función cargarJson, la cual devolverá una respuesta booleana para indicar si se cargó correctamente el archivo. o si ocurrió algun error. Ademas se envia la estructura cola para almacenar en orden los datos de los clientes y así poder atenderlos correctamente, por lo que se llama al metodo InOrder del arbol AVL.
 >
 ```go
-func menuAdministrador() {
-	var opcion int
-	for opcion != 6 {
-		fmt.Println(`
---------- Dashboard Administrador 201901103 ---------
-1. Cargar Empleados
-2. Cargar Imagenes
-3. Cargar Usuarios
-4. Actualizar Cola
-5. Reportes Estructuras
-6. Cerrar Sesion
------------------------------------------------------
-Seleccione una opción:`)
-
-		fmt.Scanln(&opcion)
-		switch opcion {
-		case 1:
-			cargarEmpleados()
-		case 2:
-			cargarImagenes()
-		case 3:
-			cargarClientes()
-		case 4:
-			cargarActualizarCola()
-		case 5:
-			listaSimple.ReporteSimple()
-			listaDoble.ReporteDoble()
-			listaCircular.ReporteCircular()
-			clientesCola.ReporteCola()
-		}
+app.Post("/cargarPedidos", func(c *fiber.Ctx) error {
+	jsonUrl := new(URLempleado)
+	if err := c.BodyParser(jsonUrl); err != nil {
+		return err
 	}
-}
+	rutaRecibida := jsonUrl.Ruta
+	validacionleer := cargarJson(rutaRecibida)
+	arbol.InOrder(clientesCola)
+	if validacionleer {
+		return c.JSON(&fiber.Map{
+			"data": "archivo cargado correctamente",
+		})
+	}
+
+	return c.JSON(&fiber.Map{
+		"data": "error al cargar archivo",
+	})
+})
 ```
 
-
-
-> ### Metodo para cargar imagenes
+> ### Función para cargar pedidos
 >
-> Se crea una variable que obtendrá la ruta del archivo de imagenes csv, el cual será abierto de la misma manera como se explica en el metodo anterior, con la variacion que ahora los datos se insertan en la lista doble, ademas se crea una bandera de encabezado, para omitir el mismo, cuando se encuentre en el archivo.
+> Se crea una variable que obtendrá la ruta del archivo json, el cual será abierto por medio de la función Open y almacenada el la variable file, luego se valida que no existan errores, luego se cierra el archivo con file.Close y despues se utiliza ReadAll y se pasa por parametro el file y así se utiliza la variable byteValue, y si no existe error se utiliza el struct objeto para obtener la lista de Pedidos del json, y con Unmarshal se obtiene el objeto y si no existe ningun error, se recorre con un for el objeto de pedidos, para luego almacenar en el arbol AVL los datos del id del cliente y de la imagen correspondiente al cliente y si no ha ocurrido ningún error retorna true.
 >
 ```go
-func cargarImagenes() {
-	var ruta string
-	fmt.Println("Ingrese la ruta del archivo: ")
-	fmt.Scanln(&ruta)
-
-	// Abre el archivo CSV
+func cargarJson(ruta string) bool {
 	file, err := os.Open(ruta)
 	if err != nil {
-		fmt.Println("Error al abrir el archivo:", err)
-		return
+		return false
 	}
 	defer file.Close()
-
-	// Crea un lector con transformador UTF-8
-	utf8Reader := transform.NewReader(file, unicode.UTF8.NewDecoder())
-
-	// Crea un nuevo lector CSV
-	reader := csv.NewReader(utf8Reader)
-	reader.Comma = ','
-	encabezado := true
-
-	for {
-		lines, err := reader.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			fmt.Println("Error al leer la linea del archivo")
-			continue
-		}
-		if encabezado {
-			encabezado = false
-			continue
-		}
-		listaDoble.Insertar(strings.TrimSpace(lines[0]), strings.TrimSpace(lines[1]))
+	byteValue, err := ioutil.ReadAll(file)
+	if err != nil {
+		return false
 	}
+
+	var objeto struct {
+		Pedidos []Pedi `json:"pedidos"`
+	}
+
+	err = json.Unmarshal(byteValue, &objeto)
+	if err != nil {
+		return false
+	}
+
+	for _, pedi := range objeto.Pedidos {
+		idTempo := pedi.ID
+		imagenTempo := pedi.Imagen
+		arbol.InsertarElemento(idTempo, imagenTempo)
+	}
+	return true
 }
 ```
 
