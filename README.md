@@ -73,63 +73,136 @@ EDD Creative es un proyecto que permite la interacción con el usuario a traves 
 ## **MANUAL TECNICO**
 
 EDD Creative maneja la información por medio de carga masiva de archivos de tipo csv, los cuales contienen la información necesaria para la interacción con los empleados. 
-Para la creación del software se utiliza el lenguaje de programación go.
+Para la creación del software se utiliza en el Backend el lenguaje de programación go, y para el frontend el framework React.
 
-> ### Metodo para el menu principal
+> ### Petición Post para login
 >
-> Para comenzar con la estructura del software se realiza el menú principal tomando en cuenta el inicio de sesión, por lo que se utiliza un bucle para permitir elegir diversas opciones, además  se muestra en pantalla las opciones, y con Scanln se ingresa la opción tecleada por el usuario, de tal manera que accede a la posision de memoria para asignar el dato leído desde consola, luego con el switch evalúa la opcion elegida por el usuario, si es la opcion 1 accede al metodo sesion.
+> Para comenzar con la estructura del software se realiza la petición Post utilizando la libreria fiber. Para mayor información de la libreria haga click en el enlace: https://github.com/gofiber/fiber. En el codigo que se muestra a continuación se observa que se crea el metodo post y para ello se debe utilizar los cors, los cuales permiten una mejor interación con el frontend al recibir los datos desde el mismo, por lo que es necesario realizar un enlace, y para ello se observa el /login, este enlace irá en la parte del frontend para realizar correctamente la petición, ya que de esta forma no ocurriran errores, algo que se debe tomar en cuenta es que cuando se reciben los datos es a traves de archivos json, por lo que se crea una variable para recibir estos datos, y para ello se utiliza c.BodyParser, luego se accede a la referencia del dato recibido desde el frontend y se envian los datos a traves del metodo sesión, el cual se explicará mas adelante, este metodo retornara un valor que será validado para saber que respuesta se envia al frontend, por lo que dependiendo de la respuesta se enviará a la pagina de administrador, la de empleado o indicando que el usuario no existe.
 >
 ```go
-func menuPrincipal() {
-    var opcion int
-    for opcion != 2 {
-	    fmt.Println(`
---------- Login ---------
-1. Iniciar Sesion
-2. Salir del Sistema
--------------------------
-Seleccione una opción:`)
+app := fiber.New()
+app.Use(cors.New())
 
-		fmt.Scanln(&opcion)
-
-	    switch opcion {
-		    case 1:
-			    sesion()
-		}
+app.Post("/login", func(c *fiber.Ctx) error {
+	jsonData := new(DatosUser)
+	if err := c.BodyParser(jsonData); err != nil {
+		return err
 	}
-}
-```
-
-> ### Metodo para sesion
->
-> Se crean las variables para el usuario y para la contraseña, se muestra en pantalla los mensajes para ingresarlos, luego se compara con un if si el usuario y la contraseña son los predeterminados para el administrador, si esto es correcto, entonces se abre el menu de administrador, de lo contrario se abre el menu de empleados, por lo tanto se debe validar si el usuario y la contraseña existen en el sistema, por lo cual se envian los datos como parametro hacia la funcion validar para así verificar la existencia de los mismos, por lo que si los datos existen, la función devuelve true, y si no existen en la lista devuelve false, y si devuelve false se muestra un mensaje indicando que el usuario no existe o que se ingresaron mal los datos del mismo. 
->
-```go
-func sesion() {
-	var usuario string
-	var password string
-	fmt.Println("\nIngrese Usuario: ")
-	fmt.Scanln(&usuario)
-	fmt.Println("Password: ")
-	fmt.Scanln(&password)
-
-	if usuario == "ADMIN_201901103" && password == "Admin" {
-		fmt.Println("Bienvenido a admin")
-		menuAdministrador()
+	usuarioRecibido := jsonData.Usuario
+	passwordRecibido := jsonData.Password
+	//fmt.Println(usuarioRecibido)
+	//fmt.Println(passwordRecibido)
+	validacionIniciar := sesion(usuarioRecibido, passwordRecibido)
+	valorEmpleado = usuarioRecibido
+	if validacionIniciar == "Administrador 201901103" {
+		//fmt.Print("Administrador 201901103")
+		return c.JSON(&fiber.Map{
+			"data": "Administrador",
+		})
+	}
+	if validacionIniciar != "No" {
+		//fmt.Print("Cualquier usuario")
+		tabHash = &estructura.TablaHash{Capacidad: 5, Utilizacion: 0}
+		tabHash.NewTablaHash()
+		return c.JSON(&fiber.Map{
+			"data": "SI",
+		})
 	} else {
-
+		//fmt.Print("Usuario o contraseña incorrectos")
+		return c.JSON(&fiber.Map{
+			"data": "NO",
+		})
+	}
+})
+```
+> ### Función para sesion
+>
+> La función sesion recibe como parametro el usuario y la contraseña para ser validados dentro del if, si corresponde al administrador retorna "Administrador 201901103", si no corresponde al administrador, ingresara a la lista simple para validar si el usuario y la contraseña se encuentran en el sistema, si esa validación es correcta, entonces retorna el usuario, de lo contrario retorna la palabra "No" en el caso de que no corresponda al admin o a ningun dato almacenado en la lista. 
+>
+```go
+func sesion(usuario string, password string) string {
+	if usuario == "ADMIN_201901103" && password == "Admin" {
+		//menuAdministrador()
+		return "Administrador 201901103"
+	} else {
 		validandoExistencia := listaSimple.Validar(usuario, password)
-
-		if validandoExistencia == true {
-			menuEmpleado(usuario)
-		} else {
-			fmt.Println("El usuario no existe o ingresó mal el usuario.")
+		if validandoExistencia {
+			//menuEmpleado(usuario)
+			return usuario
 		}
 	}
+	return "No"
 }
 ```
 
-> ### Metodo para menu administrador
+> ### Petición Post para cargar empleados
+>
+> Se crea la función Post que recibirá la ruta de la ubicación del archivo csv con los datos de los empleados, este recibe la url y la almacena en una variable que se envia como parametro hacia la función cargarEmpleados, la cual devolverá una respuesta booleana para indicar si se cargó correctamente el archivo. o si ocurrió algun error. 
+>
+```go
+app.Post("/cargaEmpleados", func(c *fiber.Ctx) error {
+		//return c.SendString("Hello, World!")
+		jsonUrl := new(URLempleado)
+		if err := c.BodyParser(jsonUrl); err != nil {
+			return err
+		}
+		rutaRecibida := jsonUrl.Ruta
+		validacionleer := cargarEmpleados(rutaRecibida)
+
+		if validacionleer {
+			return c.JSON(&fiber.Map{
+				"data": "archivo cargado correctamente",
+			})
+		}
+
+		return c.JSON(&fiber.Map{
+			"data": "error al cargar archivo",
+		})
+	})
+```
+
+> ### Metodo para cargar empleados
+>
+> Se crea la variable para la ruta que ingresa el usuario, de esa manera se lee el archivo correctamente, por lo que se utiliza la funcion Open, la cual recibe como parametro la ruta del archivo, y si existe algún error con el archivo, entonces se muestra un mensaje indicando que ha ocurrido un error, y de lo contrario con defer file close se cierra el archivo, y con la funcion transform NewReader se garantiza que el archivo lea los datos independientemente de los tipos de caracteres que incluya el mismo, por lo que esta variable se envía a NewReader del csv para así leer todo el archivo, luego se indica con Comma cual será el caracter que separa los datos, despues con RedAll se leen todas las lineas del archivo, luego si ocurre algun error al leer las lineas se muestra un mensaje en pantalla con el error que ha ocurrido, si no existe ningun error, entonces continua con el bucle, el cual se encarga de recorrer cada dato de cada linea y así poder validar con el if si la linea es la cabecera, entonces lo omite, de lo contrario accede a cada valor, y se envia como parametro al metodo Insertar de la lista simple, indicando con TrimSpace que los datos no tengan espacios extras.
+>
+```go
+func cargarEmpleados(ruta string) bool {
+	// Abre el archivo CSV
+	file, err := os.Open(ruta)
+	if err != nil {
+		//fmt.Println("Error al abrir el archivo:", err)
+		return false
+	}
+	defer file.Close()
+
+	// Crea un lector con transformador UTF-8
+	//utf8Reader := transform.NewReader(file, unicode.UTF8.NewDecoder())
+
+	// Crea un nuevo lector CSV
+	reader := csv.NewReader(file)
+	reader.Comma = ','
+
+	// Lee todas las líneas del archivo
+	lines, err := reader.ReadAll()
+	if err != nil {
+		//fmt.Println("Error al leer el archivo:", err)
+		return false
+	}
+
+	// Itera sobre las líneas y muestra los datos
+	for _, line := range lines {
+		if line[0] != "id" {
+			//fmt.Println(line[0], " ", line[1], " ", line[2], " ", line[3])
+			listaSimple.Insertar(strings.TrimSpace(line[0]), strings.TrimSpace(line[1]), strings.TrimSpace(line[2]), strings.TrimSpace(line[3]))
+		}
+	}
+	//listaSimple.Mostrar()
+	//fmt.Println("Carga exitosa")
+	return true
+}
+```
+
+> ### Petición Post para cargar pedidos
 >
 > Se crea la variable para seleccionar la opcion, luego se crea un bucle para mantenerse dentro de la sesión, y se muestran las opciones imprimiendolas en consola, luego con la funcion Scanln se recibe la opción para así poder validar a traves del switch a que opción corresponde, por lo que se accede a diferentes metodos los cuales se explicarán más adelante. 
 >
@@ -168,48 +241,7 @@ Seleccione una opción:`)
 }
 ```
 
-> ### Metodo para cargar empleados
->
-> Se crea la variable para la ruta que ingresa el usuario, de esa manera se lee el archivo correctamente, por lo que se utiliza la funcion Open, la cual recibe como parametro la ruta del archivo, y si existe algún error con el archivo, entonces se muestra un mensaje indicando que ha ocurrido un error, y de lo contrario con defer file close se cierra el archivo, y con la funcion transform NewReader se garantiza que el archivo lea los datos independientemente de los tipos de caracteres que incluya el mismo, por lo que esta variable se envía a NewReader del csv para así leer todo el archivo, luego se indica con Comma cual será el caracter que separa los datos, despues con RedAll se leen todas las lineas del archivo, luego si ocurre algun error al leer las lineas se muestra un mensaje en pantalla con el error que ha ocurrido, si no existe ningun error, entonces continua con el bucle, el cual se encarga de recorrer cada dato de cada linea y así poder validar con el if si la linea es la cabecera, entonces lo omite, de lo contrario accede a cada valor, y se envia como parametro al metodo Insertar de la lista simple, indicando con TrimSpace que los datos no tengan espacios extras.
->
-```go
-func cargarEmpleados() {
-	var ruta string
-	fmt.Println("Ingrese la ruta del archivo: ")
-	fmt.Scanln(&ruta)
 
-	// Abre el archivo CSV
-	file, err := os.Open(ruta)
-	if err != nil {
-		fmt.Println("Error al abrir el archivo:", err)
-		return
-	}
-	defer file.Close()
-
-	// Crea un lector con transformador UTF-8
-	utf8Reader := transform.NewReader(file, unicode.UTF8.NewDecoder())
-
-	// Crea un nuevo lector CSV
-	reader := csv.NewReader(utf8Reader)
-	reader.Comma = ','
-
-	// Lee todas las líneas del archivo
-	lines, err := reader.ReadAll()
-	if err != nil {
-		fmt.Println("Error al leer el archivo:", err)
-		return
-	}
-
-	// Itera sobre las líneas y muestra los datos
-	for _, line := range lines {
-		if line[0] != "id" {
-			//fmt.Println(line[0], " ", line[1], " ", line[2], " ", line[3])
-			listaSimple.Insertar(strings.TrimSpace(line[0]), strings.TrimSpace(line[1]), strings.TrimSpace(line[2]), strings.TrimSpace(line[3]))
-		}
-	}
-	//listaSimple.Mostrar()
-}
-```
 
 > ### Metodo para cargar imagenes
 >

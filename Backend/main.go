@@ -293,18 +293,6 @@ func main() {
 			"data": blockchain.Bloques_Creados,
 		})
 	})
-	/*
-		app.Post("/insertTabla", func(c *fiber.Ctx) error {
-			var nuevoN estructura.NodoHash
-			//return c.SendString("Hello, World!")
-			if err := c.BodyParser(&nuevoN); err != nil {
-				return err
-			}
-			tabHash.Insertar(nuevoN.Id_Cliente, nuevoN.Id_Factura)
-			return c.JSON(&fiber.Map{
-				"data": "agregado",
-			})
-		})*/
 
 	app.Get("/obTabla", func(c *fiber.Ctx) error {
 		return c.JSON(&fiber.Map{
