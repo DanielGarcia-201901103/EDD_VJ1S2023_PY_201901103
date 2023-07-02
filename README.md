@@ -34,26 +34,40 @@ EDD Creative es un proyecto que permite la interacción con el usuario a traves 
 >
 
 > #### Menu Empleados
-> Maneja la visualización de las imagenes, así como el control del pedido de cada uno de los clientes que se encuentran en la cola, y si un cliente no se encuentra registrado, permite agregarlo como cliente nuevo, mostrando su respectivo id, y agregandolo a la lista de clientes registrados. Cuando se inicia sesión automaticamente se mostrará el usuario que realizó el login.
+> Maneja las opciones para escoger filtros, generar facturas, historial de facturas, e historial de ventas completadas, así como el control del pedido de cada uno de los clientes que se encuentran en la cola, mostrando su respectivo id al presionar el botón de Iniciar atención y quitando al cliente de la lista al presionar el boton de finalizar atención. Cuando se inicia sesión automaticamente se mostrará el usuario que realizó el login.
 >
-> ![menu empleados!](./imgManuales/opcionVerimagenes.jpg)
-> *Opción para ver imagenes previas.*
+> ![menu empleados!](./imgManuales/MenuEmpleados.png)
+> *Opciones de la ventana de empleados.*
 >
-> ![menu empleados!](./imgManuales/opcionPedido.jpg)
-> *Opción para realizar los pedidos.*
+> Si el empleado presiona el boton de aplicación filtros, entonces se muestra la lista de filtros que puede aplicar a la imagen obtenida al presionar el boton verde, además en la parte derecha observará la visualización en ejemplo de como son los filtros y así el usuario pueda elegir adecuadamente, y cuando lo seleccione, automaticamente se generará la imagen, ver la siguiente imagen.
 >
-> Si el usuario elige la opción número 1, entonces se muestra la lista de imagenes cargadas en el sistema, y podrá elegir cual de estas opciones desea visualizar, y cuando lo seleccione, automaticamente se generará la imagen, ver la siguiente imagen.
+> ![menu empleados!](./imgManuales/Filtros.png)
+> *Visualización de las opciones para los filtros.*
 >
-> ![menu empleados!](./imgManuales/letra_R.jpg)
-> *Visualización de la imagen seleccionada.*
+> ![menu empleados!](./imgManuales/corrin.png)
+> *Visualización de una imagen generada en escala de grises.*
 >
-> Para la opción número 2, correspondiente a realizar pedido, se muestra nuevamente la lista de imagenes y cada vez que un cliente almacenado en la cola elige una opción automaticamente este cliente se elimina de la cola y se almacena en la pila, por lo que se debe seleccionar la imagen para cada cliente que continue en la cola, hasta que esta finalice, y luego se muestra el reporte de la pila con los datos del cliente y la imagen que seleccionó, además taqmbién se genera un archivo JSON con los datos de la pila, ver la siguientes imagenes correspondientes a los reportes.
+> Para la opción generar factura, se muestra un formulario que contiene datos sobre el cliente que se esta atendiendo, el empleado que atiende al cliente, y la fecha con hora en la que se está realizando el pago, además se debe ingresar el precio de los filtros que se hayan elegido en la opción anterior, luego se presiona el boton para generar la factura, la cual se almacena en la tabla hash y blockchain.
 >
-> ![menu empleados!](./imgManuales/pila.jpg)
-> *Visualización del reporte con los datos de los clientes con la imagen elegida.*
+> ![menu empleados!](./imgManuales/generarFactura.png)
+> *Visualización del formulario correspondiente a la generación de facturas.*
 >
-> ![menu empleados!](./imgManuales/reporteJson.jpg)
-> *Visualización del reporte JSON con los datos de los clientes con la imagen elegida.*
+> Para la opción historial de facturas, se muestra una tabla con los datos de id cliente y id factura, entre mas generaciones de facturas se realicen, estas apareceran en esta tabla.
+>
+> ![menu empleados!](./imgManuales/HistorialFacturas.png)
+> *Visualización de la tabla correspondiente al historial de facturas.*
+>
+> Para la opción de visualización de ventas completadas, se muestra una tabla con los datos de id cliente, imagen y filtros. Ademas, se muestra la opción para visualizar el reporte del grafo.
+>
+> ![menu empleados!](./imgManuales/solicitudes.png)
+> *Visualización de la tabla.*
+>
+> ![menu empleados!](./imgManuales/ReporteGrafo.png)
+> *Visualización del esepacio para obtener el reporte de grafo*
+>
+> Despues de presionar el boton para ver el reporte se visualizará una imagen como la siguiente.
+> ![menu empleados!](./imgManuales/reportGrafo.png)
+> *Visualización del reporte de grafo*
 >
 
 ## **MANUAL TECNICO**
