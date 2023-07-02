@@ -77,7 +77,7 @@ Para la creación del software se utiliza en el Backend el lenguaje de programac
 
 > ### Petición Post para login
 >
-> Para comenzar con la estructura del software se realiza la petición Post utilizando la libreria fiber. Para mayor información de la libreria haga click en el enlace: https://github.com/gofiber/fiber. En el codigo que se muestra a continuación se observa que se crea el metodo post y para ello se debe utilizar los cors, los cuales permiten una mejor interación con el frontend al recibir los datos desde el mismo, por lo que es necesario realizar un enlace, y para ello se observa el /login, este enlace irá en la parte del frontend para realizar correctamente la petición, ya que de esta forma no ocurriran errores, algo que se debe tomar en cuenta es que cuando se reciben los datos es a traves de archivos json, por lo que se crea una variable para recibir estos datos, y para ello se utiliza c.BodyParser, luego se accede a la referencia del dato recibido desde el frontend y se envian los datos a traves del metodo sesión, el cual se explicará mas adelante, este metodo retornara un valor que será validado para saber que respuesta se envia al frontend, por lo que dependiendo de la respuesta se enviará a la pagina de administrador, la de empleado o indicando que el usuario no existe.
+> Para comenzar con la estructura del software se realiza la petición Post utilizando la libreria fiber. Para mayor información de la libreria haga click en el enlace: https://github.com/gofiber/fiber. En el codigo que se muestra a continuación se observa que se crea el metodo post y para ello se debe utilizar los cors, los cuales permiten una mejor interación con el frontend al recibir los datos desde el mismo, por lo que es necesario realizar un enlace, y para ello se observa el /login, este enlace irá en la parte del frontend para realizar correctamente la petición, ya que de esta forma no ocurriran errores, algo que se debe tomar en cuenta es que cuando se reciben los datos es a traves de archivos json, por lo que se crea una variable para recibir estos datos, y para ello se utiliza c.BodyParser, luego se accede a la referencia del dato recibido desde el frontend y se envian los datos a traves del metodo sesión, el cual se explicará mas adelante, este metodo retornara un valor que será validado para saber que respuesta se envia al frontend, por lo que dependiendo de la respuesta se enviará a la pagina de administrador, la de empleado o indicando que el usuario no existe. Por ultimo se indica que el backend tendrá el puerto 5000
 >
 ```go
 app := fiber.New()
@@ -114,6 +114,7 @@ app.Post("/login", func(c *fiber.Ctx) error {
 		})
 	}
 })
+app.Listen(":5000")
 ```
 > ### Función para sesion
 >
@@ -141,24 +142,23 @@ func sesion(usuario string, password string) string {
 >
 ```go
 app.Post("/cargaEmpleados", func(c *fiber.Ctx) error {
-		//return c.SendString("Hello, World!")
-		jsonUrl := new(URLempleado)
-		if err := c.BodyParser(jsonUrl); err != nil {
-			return err
-		}
-		rutaRecibida := jsonUrl.Ruta
-		validacionleer := cargarEmpleados(rutaRecibida)
+	jsonUrl := new(URLempleado)
+	if err := c.BodyParser(jsonUrl); err != nil {
+		return err
+	}
+	rutaRecibida := jsonUrl.Ruta
+	validacionleer := cargarEmpleados(rutaRecibida)
 
-		if validacionleer {
-			return c.JSON(&fiber.Map{
-				"data": "archivo cargado correctamente",
-			})
-		}
-
+	if validacionleer {
 		return c.JSON(&fiber.Map{
-			"data": "error al cargar archivo",
+			"data": "archivo cargado correctamente",
 		})
+	}
+
+	return c.JSON(&fiber.Map{
+		"data": "error al cargar archivo",
 	})
+})
 ```
 
 > ### Metodo para cargar empleados
@@ -261,250 +261,207 @@ func cargarJson(ruta string) bool {
 }
 ```
 
-> ### Metodo para cargar clientes
+> ### Petición Get para el reporte del arbol AVL
 >
-> Se crea una variable que obtendrá la ruta del archivo de imagenes csv, el cual será abierto de la misma manera como se explica en el metodo de cargar empleados, con la variacion que ahora los datos se insertan en la lista circular, ademas se crea una bandera de encabezado, para omitir el mismo, cuando se encuentre en el archivo.
+> A la variable arbol le mandamos a llamar al metodo Graficar, el cual creará cada el archivo jpg correspondiente al arbol, por lo que se debe de obtener el nombre de la imagen para convertirla en Bytes con ReadFile y así poder convertirla a base64 y que pueda ser accedida desde el frontend y ser mostrada, por lo que se retornará la respuesta a la petición con un json que contendrá la variable de la imagen en base64.
 >
 ```go
-func cargarClientes() {
-	var ruta string
-	fmt.Println("Ingrese la ruta del archivo: ")
-	fmt.Scanln(&ruta)
-
-	// Abre el archivo CSV
-	file, err := os.Open(ruta)
+app.Get("/Reportes", func(c *fiber.Ctx) error {
+	//return c.SendString("Hello, World!")
+	arbol.Graficar()
+	clientesCola.ReporteCola()
+	var imagen RespImagen = RespImagen{Nombre: "arbolAVL.jpg"}
+	//INICIO
+	imageBytes, err := ioutil.ReadFile(imagen.Nombre)
+	
 	if err != nil {
-		fmt.Println("Error al abrir el archivo:", err)
-		return
+		//fmt.Fprintf(w, "Imagen No Valida")
+		return c.JSON(&fiber.Map{
+			"data": "error en imagen",
+		})
 	}
-	defer file.Close()
+	// Codifica los bytes de la imagen en base64
+	imagen.Imagenbase64 = "data:image/jpg;base64," + base64.StdEncoding.EncodeToString(imageBytes)
 
-	// Crea un lector con transformador UTF-8
-	utf8Reader := transform.NewReader(file, unicode.UTF8.NewDecoder())
-
-	// Crea un nuevo lector CSV
-	reader := csv.NewReader(utf8Reader)
-	reader.Comma = ','
-	encabezado := true
-
-	for {
-		lines, err := reader.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			fmt.Println("Error al leer la linea del archivo")
-			continue
-		}
-		if encabezado {
-			encabezado = false
-			continue
-		}
-		listaCircular.Insertar(strings.TrimSpace(lines[0]), strings.TrimSpace(lines[1]))
-	}
-}
+	return c.JSON(&fiber.Map{
+		"data": imagen.Imagenbase64,
+	})
+})
 ```
 
-> ### Metodo para cargar clientes en cola
+> ### Petición Get para obtener los datos del cliente de la cola
 >
-> Se crea una variable que obtendrá la ruta del archivo de imagenes csv, el cual será abierto de la misma manera como se explica en el metodo de cargar empleados, con la variacion que ahora los datos se insertan en la cola, ademas se crea una bandera de encabezado, para omitir el mismo, cuando se encuentre en el archivo.
+> Obtenemos de la cola el id del cliente y el nombre de la imagen correspondiente al igual que la longitud de la cola, esas variables se devuelven como respuesta al frontend por medio de un json, y cuando la longitud de la cola sea 0, devolverá que ya no hay clientes por atender
 >
 ```go
-func cargarActualizarCola() {
-	var ruta string
-	fmt.Println("Ingrese la ruta del archivo: ")
-	fmt.Scanln(&ruta)
-
-	// Abre el archivo CSV
-	file, err := os.Open(ruta)
-	if err != nil {
-		fmt.Println("Error al abrir el archivo:", err)
-		return
+app.Get("/clienteObtener", func(c *fiber.Ctx) error {
+	idcolaClientes := clientesCola.ObtenerClienteId()
+	nameColaClientes := clientesCola.ObtenerClienteName()
+	longi := clientesCola.ObtenerLongitud()
+	if longi != 0 {
+		return c.JSON(&fiber.Map{
+			"data":   idcolaClientes,
+			"imagen": nameColaClientes,
+		})
 	}
-	defer file.Close()
+	return c.JSON(&fiber.Map{
+		"data": "sin clientes por atender",
+	})
 
-	// Crea un lector con transformador UTF-8
-	utf8Reader := transform.NewReader(file, unicode.UTF8.NewDecoder())
+})
+```
 
-	// Crea un nuevo lector CSV
-	reader := csv.NewReader(utf8Reader)
-	reader.Comma = ','
-	encabezado := true
+> ### Petición Get para borrar el dato actual de la cola 
+>
+> Accedemos al metodo Descolar correspondiente a la variable clientesCola, y devuelve al frontend el mensaje de cliente atendido haciendo referencia que ya no existe en la misma.
+>
+```go
+app.Get("/clienteBorrar", func(c *fiber.Ctx) error {
+	clientesCola.Descolar()
+	return c.JSON(&fiber.Map{
+		"data": "cliente atendido",
+	})
+})
+```
 
-	for {
-		lines, err := reader.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			fmt.Println("Error al leer la linea del archivo")
-			continue
-		}
-		if encabezado {
-			encabezado = false
-			continue
-		}
-		clientesCola.Encolar(strings.TrimSpace(lines[0]), strings.TrimSpace(lines[1]))
+> ### Petición para los filtros
+>
+> Se el Post con la ruta filtro que será accedida desde el frontend, este obtendrá desde el forntend el nombre de la imagen de cada cliente y el tipo de filtro que aplicará, porr lo que lee el json y si no existe niingun error, almacena los datos en las variables y luego los envía por parametro al metodo previaVisualización y devuelve como respuesta al frontend que ha sido cargado correctamente, haciendo referencia al funcionamiento correcto de la creación del filtro.
+>
+```go
+app.Post("/filtro", func(c *fiber.Ctx) error {
+	img := new(Filt)
+	if err := c.BodyParser(img); err != nil {
+		return err
 	}
-}
+	imgRecibida := img.Imagen
+	tipoRecibido := img.Tipo
+
+	previaVisualizacion(imgRecibida, tipoRecibido)
+
+	return c.JSON(&fiber.Map{
+		"data": "archivo cargado correctamente",
+	})
+})
 ```
 
-> ### Metodo para generar reportes
+> ### Función visualización previa
 >
-> Se crea
->
-```go
-```
-
-> ### Metodo para el menu de empleados
->
-> Se crea la variable opcion para manejar la entrada por consola escrita por el usuario, por lo tanto con el bucle for se indica que es diferente de la opcion cerrar sesión, para así poder regresar al menú principal ya que finaliza la ejecución del bucle, además con el switch verifica a que opción corresponde, las opciones se verán más adelante.
+> Se crea la variable de matriz, la cual inicializará los valores de la raiz hacia el nodo de la matriz, con los datos de posiciones en -1 debido a que todos los datos dentro de la matriz pueden iniciar con el nodo 0 e ir aumentando conforme sea necesario, y por esa razón tampoco se le indica un color en especifico, además se envía de manera inicial por medio de parametro la ruta correspondiente a la ubicación de la carpeta con las configuraciones para las imagenes, esta es csv más el nombre de la imagen recibida por parametro y el inicial.csv para la lectura de las capas que tendrá el archivo, y nuevamente se agrega el nombre de la imagen la cual será para la extensión del archivo css y html, se valida con if a que tipo de filtro corresponde y llama al metodo que corresponda para generar el archivo de la imagen, y luego simplemente se inicializa la matriz, para volver a generar otra imagen de ser necesario.
 >
 ```go
-func menuEmpleado(usuario string) {
-	var opcion int
-	for opcion != 4 {
-		fmt.Printf(`
---------- EDD Creative %s ---------
-1. Ver Imagenes Cargadas
-2. Realizar Pedido
-3. Capas
-4. Cerrar Sesion
------------------------------------------------------
-Seleccione una opción:`, usuario)
-
-		fmt.Scanln(&opcion)
-
-		switch opcion {
-		case 1:
-			nameImagen := visualizarImagenes()
-			fmt.Println("La imagen elegida fue: ", nameImagen, "\nMostrando visualizacion previa")
-			previaVisualizacion(nameImagen)
-		case 2:
-			realizarPedidos(usuario)
-			pedidosPila.ReportePila()
-			pedidosPila.ReporteJson()
-		case 3:
-			nameImagen := visualizarImagenes()
-			fmt.Println("La imagen elegida fue: ", nameImagen, "\nMostrando visualizacion previa")
-			realizarCapa(nameImagen)
-		}
-
-	}
-}
-```
-
-> ### Función para visualizar las imagenes
->
-> Se crea una opción para validar la entrada del usuario, luego se manda a llamar la lista de datos correspondiente a las imagenes, las cuales estan almacenadas en la lista doble, además despues de haber obtenido la opcion, esta se envia como parametro a traves de la funcion BuscarImagen, y devuelve el nombre de la imagen y luego retorna este nombre para almacenarla en la variable desde donde se realiza la invocación a la función.
->
-```go
-func visualizarImagenes() string {
-	var opcion int
-	fmt.Println("\n###################Listado de Imagenes###################")
-	listaDoble.ListarDatos()
-	fmt.Println("\n Seleccione una opción:")
-	fmt.Scanln(&opcion)
-	nameImagen := listaDoble.BuscarImagen(strconv.Itoa(opcion))
-	return nameImagen
-	//Falta la opcion de visualizar la imagen
-}
-```
-
-> ### Función para la primera opcion correspondiente a visualización previa
->
-> Se crea la variable de matriz, la cual inicializará los valores de la raiz hacia el nodo de la matriz, con los datos de posiciones en -1 debido a que todos los datos dentro de la matriz pueden iniciar con el nodo 0 e ir aumentando conforme sea necesario, y por esa razón tampoco se le indica un color en especifico, además se envía de manera inicial por medio de parametro la ruta correspondiente a la ubicación de la carpeta con las configuraciones para las imagenes, esta es csv más el nombre de la imagen recibida por parametro y el inicial.csv para la lectura de las capas que tendrá el archivo, y nuevamente se agrega el nombre de la imagen la cual será para la extensión del archivo css y html, por lo que se manda a llamar el metodo GenerarImagen, luego simplemente se inicializa la matriz, para volver a generar otra imagen de ser necesario.
->
-```go
-func previaVisualizacion(nameImagen string) {
+func previaVisualizacion(nameImagen string, tipoFiltro string) {
 	var matrizImages = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
 	matrizImages.LeerInicial("csv/"+nameImagen+"/inicial.csv", nameImagen)
-	matrizImages.GenerarImagen(nameImagen)
+
+	if tipoFiltro == "escalaGris" {
+		matrizImages.FiltroEscalaGris(nameImagen)
+	} else if tipoFiltro == "escalaNegativo" {
+		matrizImages.FiltroNegativo(nameImagen)
+	} else if tipoFiltro == "espejoX" {
+		matrizImages.EspejoX()
+		matrizImages.GenerarImagen(nameImagen, tipoFiltro)
+	} else if tipoFiltro == "espejoY" {
+		matrizImages.EspejoY()
+		matrizImages.GenerarImagen(nameImagen, tipoFiltro)
+	} else if tipoFiltro == "dobleEspejo" {
+		matrizImages.EspejoDoble()
+		matrizImages.GenerarImagen(nameImagen, tipoFiltro)
+	} else if tipoFiltro == "Original" {
+		matrizImages.GenerarImagen(nameImagen, "Original")
+	}
+
 	matrizImages = &estructura.Matriz{Raiz: nil}
 }
 ```
 
-> ### Metodo para realizar pedidos
+> ### Petición Post para la generación de la factura de pago
 >
-> Se crea un bucle infinito que sirve para obtener los datos actuales de la cola, en este caso el id y nombre del cliente, así como el tamaño de la misma, luego con un if se valida si la longitud de la cola es diferente de 0, esto para indicar que cuando sea igual a 0 se finaliza el bucle, luego se muestra un mensaje indicando cual es el cliente que se está atendiendo, se valida si el cliente no está registrado en la lista circular, por lo que se crea otro bucle dentro de la validación cuando sea igual a X, este bucle servirá para que se repita la generación del id en caso de que este exista, de esta forma aseguramos que solo existan id unicos en el sistema, luego se valida cuando el usuario no existe, entonces se muestran las imagenes disponibles en el sistema, por lo que el usuario puede elegir una imagen y luego se ingresa el cliente nuevo a la lista circular, además se agrega el id del cliente, el id del empleado y la imagen elegida a la pila, luego se indica por medio de un mensaje cual es el id para determinado cliente, y se saca de la cola al cliente atendido y se utiliza un break para romper el bucle, luego en el else correspondiente a la validación si es diferente de X, se vuelve a validar si el cliente se encuentra en el sistema, y se visualizan las imagenes, se agrega el usuario a la pila, y se elimina el usuario de la cola, luego si no existe el cliente, simplemente se agrega a la lista circular y se vuelven a realizar las asignaciones.
+> Obtiene los datos enviados desde el forntend en un json que contiene los datos del id del cliente, fecha, etc. estos datos se insertan en el blockchain, el cual se encarga de generar el id de la factura junto con la matriz de adyacencia y la tabla hash, por lo que el metodo retornará el bloque.
 >
 ```go
-func realizarPedidos(usuario string) {
-	for {
-		idcolaClientes := clientesCola.ObtenerClienteId()
-		nameColaClientes := clientesCola.ObtenerClienteName()
-		longi := clientesCola.ObtenerLongitud()
-		if longi != 0 {
-			fmt.Println("\nAtendiendo al cliente con id: ", idcolaClientes, " y nombre: ", nameColaClientes)
-
-			if strings.ToUpper(idcolaClientes) == "X" {
-				// CUANDO ES IGUAL A X VALIDAR UN ID RANDOM Y
-				for {
-					valor := (rand.Intn(10000)) + 1000
-
-					existe := listaCircular.ValidarRepetidos(strconv.Itoa(valor))
-					if existe == true {
-						//repetir el aleatorio y no guardar nada
-					} else {
-						// guardar el aleatorio como nuevo id y agregarlo a la lista circular junto al nombre del cliente
-						nombreImagenElegida := visualizarImagenes()
-						//Sino existe en la lista circular agregar al cliente en la lista circular
-						listaCircular.Insertar(strconv.Itoa(valor), nameColaClientes)
-						pedidosPila.Push(strconv.Itoa(valor), usuario, nombreImagenElegida)
-						//agregar el id del cliente, id del empleado, y nombre de la imagen elegida
-						fmt.Println("\nEl nuevo id: ", strconv.Itoa(valor), "corresponde al cliente: ", nameColaClientes)
-						clientesCola.Descolar()
-						break
-					}
-				}
-
-			} else {
-				existe := listaCircular.ValidarRepetidos(strings.TrimSpace(idcolaClientes))
-				if existe == true {
-					// si el cliente existe en la lista circular de clientes
-					nombreImagenElegida := visualizarImagenes()
-					pedidosPila.Push(idcolaClientes, usuario, nombreImagenElegida)
-					//agregar el id del cliente, id del empleado, y nombre de la imagen elegida
-					clientesCola.Descolar()
-				} else {
-					nombreImagenElegida := visualizarImagenes()
-					//Sino existe en la lista circular agregar al cliente en la lista circular
-					listaCircular.Insertar(idcolaClientes, nameColaClientes)
-					pedidosPila.Push(idcolaClientes, usuario, nombreImagenElegida)
-					//agregar el id del cliente, id del empleado, y nombre de la imagen elegida
-					clientesCola.Descolar()
-				}
-
-			}
-			fmt.Println("\nFinaliza atención a cliente actual y quedan:", strconv.Itoa(longi-1))
-		} else {
-			break
-		}
-	}
-}
+app.Post("/genFacturaPago", func(c *fiber.Ctx) error {
+	var nuevoN estructura.NodoBlockPet
+	c.BodyParser(&nuevoN)
+	blockchain.InsertarBloque(nuevoN.Timestamp, nuevoN.Biller, nuevoN.Customer, nuevoN.Payment)
+	nameColaClientes := clientesCola.ObtenerClienteName()
+	matrizAdy.InsertarValores(nuevoN.Biller, nuevoN.Customer, nameColaClientes, nuevoN.Filtros)
+	/*Ingresar al grafo, tomar los valores de nuevoBloque.Biller, nuevoBloque.Customer, PedidosCola.Primero.Pedido.Nombre_Imagen,Filtros_colocados */
+	tabHash.NewTablaHash()
+	blockchain.InsertTabla(tabHash, valorEmpleado)
+	/*
+		MatrizOriginal = &Matriz.Matriz{Raiz: &Matriz.NodoMatriz{PosX: -1, PosY: -1, Color: "Raiz"}}
+		MatrizFiltro = &Matriz.Matriz{Raiz: &Matriz.NodoMatriz{PosX: -1, PosY: -1, Color: "Raiz"}}
+	*/
+	return c.JSON(&fiber.Map{
+		"data": blockchain.Bloques_Creados,
+	})
+})
 ```
 
-> ### Metodo para generar las capas
+> ### Petición Get para obtener la tabla hash
 >
-> Se crea nuevamente la inicialización de la matriz, haciendo la creación del nodo raiz con las posiciones en -1 y color como raiz, luego se crea una lista simple para almacenar las capas, se envia por parametros al meotodo leerInicial1 la ruta del archivo con el nombre de la imagen, y la lista simple de capas, esto solamente sirve para obtener cada capa y luego poder seleccionar solamente una, entonces se vuelve a inicializar la matriz enviandole nulo a la raiz. Despues se crea una variable de opcion la cual servirá directamente para poder elegir la capa a visualizar, por lo que se listan las capas que corresponden a la imagen elegida, luego se busca el nombre de la capa en la lista simple, y se alamcena en la variable nameCapa, se inicia nuevamente la matriz, y se manda a llamar al metodo leer inicial y capa elegida, esto para enviarle el nombre de la imagen, la ruta de la imagen, y el nombre de la capa, y así generar el archivo correspondiente al reporte de la matriz por capas, luego se inicializa nuevamente la matriz.
+> Simplemente devuelve por medio de un json la variable de la tabla hash, la cual servirá en el frontend para poder mostrar los datos.
 >
 ```go
-func realizarCapa(nameImagen string) {
-	var matrizImages1 = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
-	var listaCapasMatriz = estructura.NewListaSimpleCapa()
-	matrizImages1.LeerInicial1("csv/"+nameImagen+"/inicial.csv", nameImagen, listaCapasMatriz)
-	matrizImages1 = &estructura.Matriz{Raiz: nil}
+app.Get("/obTabla", func(c *fiber.Ctx) error {
+	return c.JSON(&fiber.Map{
+		"status": 200,
+		"data":   tabHash.Tabla,
+	})
+})
+```
 
-	var opcion int
-	fmt.Println("\n=================Listado de Capas=================")
-	listaCapasMatriz.ListarDatosCapa()
-	fmt.Println("\n Seleccione una opción:")
-	fmt.Scanln(&opcion)
-	nameCapa := listaCapasMatriz.BuscarCapa(strconv.Itoa(opcion))
-	matrizImages1 = &estructura.Matriz{Raiz: &estructura.NodoMatriz{PosicionX: -1, PosicionY: -1, Color: "RAIZ"}}
-	matrizImages1.LeerInicialYCapaElegida("csv/"+nameImagen+"/inicial.csv", nameImagen, nameCapa)
-	matrizImages1 = &estructura.Matriz{Raiz: nil}
-}
+> ### Petición Get para obtener el reporte de pago
+>
+> se accede al metodo ReporteBloque, el cual creará la imagen para poder observar el funcionamiento del bloque que contiene los datos de hash, para ello se accede al nombre de la imagen creada, luego se convierte la imagen a base 64 para que pueda ser visualizada desde el fronten y así no ocurra ningun error, por lo que en respuesta al frontend se envia por medio del json la variable.
+>
+```go
+app.Get("/reporteBloquePago", func(c *fiber.Ctx) error {
+	blockchain.ReporteBloque()
+	var imagen RespImagen = RespImagen{Nombre: "bloquePagos.jpg"}
+	//INICIO
+	imageBytes, err := ioutil.ReadFile(imagen.Nombre)
+	fmt.Println(imagen.Nombre)
+	if err != nil {
+		//fmt.Fprintf(w, "Imagen No Valida")
+		return c.JSON(&fiber.Map{
+			"data": "error en imagen",
+		})
+	}
+	// Codifica los bytes de la imagen en base64
+	imagen.Imagenbase64 = "data:image/jpg;base64," + base64.StdEncoding.EncodeToString(imageBytes)
+
+	return c.JSON(&fiber.Map{
+		"data": imagen.Imagenbase64,
+	})
+})
+```
+
+> ### Petición Get para obtener el reporte del grafo
+>
+> se accede al metodo Reporte, correspondiente al grafo en la matriz de adyacencia, luego se obtiene el nombre de la imagen para así convertirla a base 64 y retornar a traves de un json la variable, y así evitar errores de visualización en el forntend. 
+>
+```go
+app.Get("/reporteGrafo", func(c *fiber.Ctx) error {
+	matrizAdy.Reporte()
+	var imagen RespImagen = RespImagen{Nombre: "grafo.jpg"}
+	//INICIO
+	imageBytes, err := ioutil.ReadFile(imagen.Nombre)
+	fmt.Println(imagen.Nombre)
+	if err != nil {
+		//fmt.Fprintf(w, "Imagen No Valida")
+		return c.JSON(&fiber.Map{
+			"data": "error en imagen",
+		})
+	}
+	// Codifica los bytes de la imagen en base64
+	imagen.Imagenbase64 = "data:image/jpg;base64," + base64.StdEncoding.EncodeToString(imageBytes)
+
+	return c.JSON(&fiber.Map{
+		"data": imagen.Imagenbase64,
+	})
+})
 ```
 
 > ### Lista Simple
@@ -593,4 +550,12 @@ func (lista *Lista_simple) Mostrar() {
 		aux = aux.siguiente
 	}
 }
+```
+
+> ### Matriz para los filtros
+>
+> se crean las estructuras, la primera es de tipo Empleado, esto indica que obtendrá los datos dentro del mismo, la segunda es de tipo nodo, el cual es de tipo Nodo, este nos sirve para almacenar la data el cual apunta hacia Empleado, luego el siguiente, sirve para apuntar al siguiente nodo, y la ultima parte de ListaSimple, indica que tendrá un inicio apuntando hacia nodo, y una longitud que servirá para saber el tamaño de la lista.
+>
+```go
+
 ```
