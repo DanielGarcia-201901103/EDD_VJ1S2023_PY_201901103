@@ -663,7 +663,7 @@ func (m *Matriz) EspejoY() {
 	for i := 0; i < m.ImageHeight; i++ {
 		for j := 0; j < m.ImageWidth; j++ {
 			if auxColumna != nil {
-				valorY := (m.ImageWidth - 1) - auxColumna.PosicionY
+				valorY := (m.ImageHeight - 1) - auxColumna.PosicionY
 				matrizFiltroEspY.Insertar_Elemento(auxColumna.PosicionX, valorY, auxColumna.Color)
 				auxColumna = auxColumna.Siguiente
 
