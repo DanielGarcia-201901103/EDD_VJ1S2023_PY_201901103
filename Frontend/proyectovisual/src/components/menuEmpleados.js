@@ -52,7 +52,7 @@ export const LoginEmpleados = () => {
                 'Content-Type': 'application/json'
             }
         })
-        setClienteAc("")
+        setClienteAc("Atención Finalizada")
     }
 
     /*

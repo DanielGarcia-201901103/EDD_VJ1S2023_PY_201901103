@@ -378,6 +378,11 @@ csv\empleados.csv
 4364,Maria Tux,Ventas,4364_Ventas
 */
 
+/*
+Imagenes en las que da error algunos filtros
+corrin -> espejo en y
+*/
+
 func cargarJson(ruta string) bool {
 	file, err := os.Open(ruta)
 	if err != nil {

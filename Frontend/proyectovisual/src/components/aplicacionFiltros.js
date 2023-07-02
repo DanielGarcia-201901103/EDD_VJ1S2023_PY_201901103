@@ -12,11 +12,10 @@ export const ApliFiltros = () => {
     var obtenIm = localStorage.getItem('nombreImagen');
     //var [filtrosElegidos, setFiltrosElegidos] = useState("");
     var filtrosElegidos = ""
-    localStorage.setItem('filtrosSeleccionados', filtrosElegidos);
     
     const apliNegativo = async (e) => {
-        console.log(imagenActual)
-        filtrosElegidos = filtrosElegidos + " Negativo "
+        filtrosElegidos += " Negativo "
+        localStorage.setItem('filtrosSeleccionados', filtrosElegidos);
         e.preventDefault();
         await fetch('http://localhost:5000/filtro', {
             method: 'POST',
@@ -33,7 +32,8 @@ export const ApliFiltros = () => {
     }
 
     const apliGrises = async (e) => {
-        filtrosElegidos = filtrosElegidos + " Grises "
+        filtrosElegidos  +=  " Grises "
+        localStorage.setItem('filtrosSeleccionados', filtrosElegidos);
         e.preventDefault();
         await fetch('http://localhost:5000/filtro', {
             method: 'POST',
@@ -50,7 +50,8 @@ export const ApliFiltros = () => {
     }
 
     const apliX = async (e) => {
-        filtrosElegidos = filtrosElegidos + " EspejoX "
+        filtrosElegidos +=  " EspejoX "
+        localStorage.setItem('filtrosSeleccionados', filtrosElegidos);
         e.preventDefault();
         await fetch('http://localhost:5000/filtro', {
             method: 'POST',
@@ -67,7 +68,8 @@ export const ApliFiltros = () => {
     }
 
     const apliY = async (e) => {
-        filtrosElegidos = filtrosElegidos + " EspejoY "
+        filtrosElegidos +=  " EspejoY "
+        localStorage.setItem('filtrosSeleccionados', filtrosElegidos);
         e.preventDefault();
         await fetch('http://localhost:5000/filtro', {
             method: 'POST',
@@ -84,7 +86,8 @@ export const ApliFiltros = () => {
     }
 
     const apliAmbos = async (e) => {
-        filtrosElegidos = filtrosElegidos + " EspejoDoble "
+        filtrosElegidos += " EspejoDoble "
+        localStorage.setItem('filtrosSeleccionados', filtrosElegidos);
         e.preventDefault();
         await fetch('http://localhost:5000/filtro', {
             method: 'POST',
@@ -280,7 +283,7 @@ export const ApliFiltros = () => {
                                 variant='dark'
                                 onClick={apliOriginal}
                             >
-                                Imagen Original
+                                Ver Imagen Original
                             </Button>
                         </Form>
 
