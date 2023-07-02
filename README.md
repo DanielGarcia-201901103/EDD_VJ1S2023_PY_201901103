@@ -7,42 +7,30 @@ EDD Creative es un proyecto que permite la interacción con el usuario a traves 
 > #### Login
 >
 > Cuando se inicia el programa solamente podrá acceder al menú administrador con el siguiente usuario: ADMIN_201901103 y con la contraseña: Admin.
-> Al momento de presionar enter, podrá visualizar el menú administrador, ver imagen en Administrador.
-> Cuenta con dos opciones, las cuales se muestran en la siguiente imagen.
+> Al momento de presionar en el botón, podrá visualizar el menú administrador, ver imagen en Administrador.
+> Cuenta con dos opciones para cargar los archivos y dos para mostrar reportes, las cuales se muestran en la siguiente imagen.
 >
-> ![menu login!](./imgManuales/login.jpg)
+> ![menu login!](./imgManuales/login.png)
 > *Menu principal.*
 >
 
 > #### Administrador
 >
-> Registra los empleados, las imagenes, los clientes registrados, y a los clientes que se atenderán, por medio de archivos csv, por lo que es necesario ingresar la url de la ubicación del archivo, como se muestra en las imagenes.
+> Registra los empleados y los pedidos, por medio de archivos csv y json respectivamente, por lo que es necesario ingresar la url de la ubicación del archivo, como se muestra en las imagenes.
 >
-> ![menu administrador!](./imgManuales/cargaEmpleados.jpg)
-> *Opción cargar empleados.*
+> ![menu administrador!](./imgManuales/cargarArchivos.png)
+> *Opción cargar empleados y pedidos.*
 >
-> ![menu administrador!](./imgManuales/cargaImagenes.jpg)
-> *Opción cargar imagenes.*
+> ![menu administrador!](./imgManuales/ReportesAdmin.png)
+> *Opción visualizar reportes, antes de presionar el boton muestra una imagen previa.*
 >
-> ![menu administrador!](./imgManuales/cargarUsuarios.jpg)
-> *Opción cargar clientes registrados.*
+> La opción de los reportes correspondientes a la estructura utilizada para almacenar cada uno de los datos de las opciones anteriores. ver las siguientes imagenes.
 >
-> ![menu administrador!](./imgManuales/actualizarCola.jpg)
-> *Opción cargar clientes a la cola.*
+> ![menu administrador!](./imgManuales/arbolAVL.jpg)
+> *Reporte arbol AVL, correspondiente a clientes con imagen.*
 >
-> La opción 5 permitirá la observación de la imagen de los reportes correspondientes a la estructura utilizada para almacenar cada uno de los datos de las opciones anteriores. ver las siguientes imagenes.
->
-> ![menu administrador!](./imgManuales/listadosimple.jpg)
-> *Reporte lista simple, correspondiente a empleados.*
->
-> ![menu administrador!](./imgManuales/listadoble.jpg)
-> *Reporte lista doblemente enlazada, correspondiente a imagenes.*
->
-> ![menu administrador!](./imgManuales/listadoCircularSimple.jpg)
-> *Reporte lista circular enlazada, correspondiente a clientes registrados.*
->
-> ![menu administrador!](./imgManuales/cola.jpg)
-> *Reporte cola, correspondiente a clientes a actualizar.*
+> ![menu administrador!](./imgManuales/bloquePagos.jpg)
+> *Reporte blockchain.*
 >
 
 > #### Menu Empleados
