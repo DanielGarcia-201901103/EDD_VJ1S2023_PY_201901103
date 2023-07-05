@@ -1,0 +1,38 @@
+body{
+ background: #636363; 
+ background: -webkit-linear-gradient(to right, #636363, #a2ab58);
+ background: linear-gradient(to right, #636363, #a2ab58);  
+ height: 100vh; 
+ display: flex; 
+ justify-content: center; 
+ align-items: center; 
+ } 
+.canvas{ 
+ width: 150px; 
+height: 300px; 
+ }.pixel{ 
+ width: 30px; 
+height: 30px; 
+ float: left; 
+ } 
+.pixel:nth-child(2) { background: rgb(255,255,255); }
+.pixel:nth-child(4) { background: rgb(0,0,0); }
+.pixel:nth-child(5) { background: rgb(0,0,0); }
+.pixel:nth-child(7) { background: rgb(255,255,255); }
+.pixel:nth-child(9) { background: rgb(0,0,0); }
+.pixel:nth-child(10) { background: rgb(0,0,0); }
+.pixel:nth-child(12) { background: rgb(255,255,255); }
+.pixel:nth-child(17) { background: rgb(255,255,255); }
+.pixel:nth-child(22) { background: rgb(255,255,255); }
+.pixel:nth-child(27) { background: rgb(255,255,255); }
+.pixel:nth-child(32) { background: rgb(255,255,255); }
+.pixel:nth-child(35) { background: rgb(255,255,255); }
+.pixel:nth-child(37) { background: rgb(255,255,255); }
+.pixel:nth-child(38) { background: rgb(255,255,255); }
+.pixel:nth-child(39) { background: rgb(255,255,255); }
+.pixel:nth-child(42) { background: rgb(255,255,255); }
+.pixel:nth-child(43) { background: rgb(255,255,255); }
+.pixel:nth-child(44) { background: rgb(255,255,255); }
+.pixel:nth-child(47) { background: rgb(255,255,255); }
+.pixel:nth-child(48) { background: rgb(255,255,255); }
+.pixel:nth-child(49) { background: rgb(255,255,255); }
