@@ -1,31 +1,27 @@
 graph grafoDirigido{ 
  rankdir=LR; 
  node [shape=box]; layout=neato; 
- nodo00[label="4269"]; 
+ nodo00[label="5236"]; 
 node [shape = ellipse]; 
-nodo01[label="4983" ]; 
-nodo11[label="ave" ]; 
-nodo21[label=" EspejoDoble " ]; 
-nodo02[label="4983" ]; 
-nodo03[label="5030" ]; 
-nodo13[label="mario" ]; 
-nodo23[label=" EspejoDoble " ]; 
-nodo04[label="5030" ]; 
-nodo05[label="5313" ]; 
-nodo15[label="hulk" ]; 
-nodo25[label=" Grises " ]; 
-nodo06[label="4364" ]; 
-nodo16[label="5407" ]; 
-nodo26[label="" ]; 
-nodo07[label="5407" ]; 
-nodo17[label="tux" ]; 
-nodo27[label=" Grises " ]; 
+nodo01[label="2480" ]; 
+nodo11[label="corrin" ]; 
+nodo21[label=" Grises " ]; 
+nodo02[label="3589" ]; 
+nodo12[label="letra_r" ]; 
+nodo22[label=" EspejoDoble " ]; 
+nodo03[label="4575" ]; 
+nodo13[label="letra_r" ]; 
+nodo23[label=" EspejoY " ]; 
+nodo04[label="4983" ]; 
+nodo14[label="mario" ]; 
+nodo24[label=" Negativo " ]; 
+nodo05[label="5030" ]; 
+nodo15[label="mario" ]; 
+nodo25[label=" EspejoX " ]; 
 nodo00 -- nodo01 -- nodo11 -- nodo21[len=1.00]; 
 nodo00 -- nodo02 -- nodo12 -- nodo22[len=1.00]; 
 nodo00 -- nodo03 -- nodo13 -- nodo23[len=1.00]; 
 nodo00 -- nodo04 -- nodo14 -- nodo24[len=1.00]; 
 nodo00 -- nodo05 -- nodo15 -- nodo25[len=1.00]; 
-nodo00 -- nodo06 -- nodo16 -- nodo26[len=1.00]; 
-nodo00 -- nodo07 -- nodo17 -- nodo27[len=1.00]; 
 
 }

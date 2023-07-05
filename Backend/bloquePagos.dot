@@ -1,10 +1,10 @@
 digraph Bloque{ 
  node [margin=0 fontcolor=black fontsize=25 shape=rectangle color=bisque3 style=filled margin = 0.3];
-nodo0[label="TimeStamp: 01-07-2023-::18:51:24\n Biller: 4269\n Customer: 4983\n PreviousHash: 0000"]; 
-nodo1[label="TimeStamp: 01-07-2023-::18:52:24\n Biller: 4269\n Customer: 4983\n PreviousHash: 386cc527d76329d8f6940532fac59a97ff168cb8bd9a4cbc01fb5ba8168ee605"]; 
-nodo2[label="TimeStamp: 01-07-2023-::18:53:17\n Biller: 4269\n Customer: 5030\n PreviousHash: 8b9d80b15aa2d7e42cec43b98525ffa2c8f688a5ab26e72428963025ae48fbf1"]; 
-nodo3[label="TimeStamp: 01-07-2023-::18:53:58\n Biller: 4269\n Customer: 5030\n PreviousHash: 644981ddaa54d6d8b195f7924f865392f542daa072d339e7da475f1f97fd792c"]; 
-nodo4[label="TimeStamp: 01-07-2023-::18:54:39\n Biller: 4269\n Customer: 5313\n PreviousHash: 9b84d0694da85371c6719554fd4a16453b6ccfffe04958699500130f993b218b"]; 
+nodo0[label="TimeStamp: 02-07-2023-::18:06:42\n Biller: 5236\n Customer: 2480\n PreviousHash: 0000"]; 
+nodo1[label="TimeStamp: 02-07-2023-::18:07:35\n Biller: 5236\n Customer: 3589\n PreviousHash: c76fc840f4eeddcc25f41399fb28b5fb63e703213d6379c465b3210c9c86487d"]; 
+nodo2[label="TimeStamp: 02-07-2023-::18:08:20\n Biller: 5236\n Customer: 4575\n PreviousHash: ca0dc3312c7b219fbcb3c03e7d29d4759830d788c389ef66fd3d9c8ab5ffcefa"]; 
+nodo3[label="TimeStamp: 02-07-2023-::18:08:54\n Biller: 5236\n Customer: 4983\n PreviousHash: 153833642723ed55a02c5082a6731dfd1a00f26f973477dfcafc67e9fb125a3d"]; 
+nodo4[label="TimeStamp: 02-07-2023-::18:09:28\n Biller: 5236\n Customer: 5030\n PreviousHash: 13ea7ae9c0d433484d05bdbf45590f88ffc88df2ba7cf334e4f43dd9ce92b45b"]; 
 nodo0->nodo1;
 nodo1->nodo2;
 nodo2->nodo3;

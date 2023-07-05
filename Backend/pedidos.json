@@ -2,7 +2,7 @@
 	"pedidos":[
 		{
 			"id_cliente": 4983,
-			"imagen": "ave"
+			"imagen": "mario"
 		},
 		{
 			"id_cliente": 3589,
@@ -18,7 +18,7 @@
 		},
 		{
 			"id_cliente": 6676,
-			"imagen": "ironman"
+			"imagen": "bmo"
 		},
 		{
 			"id_cliente": 5313,
@@ -42,7 +42,7 @@
 		},
 		{
 			"id_cliente": 7667,
-			"imagen": "ave"
+			"imagen": "tux"
 		},
 		{
 			"id_cliente": 4575,

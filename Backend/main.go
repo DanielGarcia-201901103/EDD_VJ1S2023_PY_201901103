@@ -361,9 +361,6 @@ pedidos.json
 
 csv\empleados.csv
 
-
-4269,Paula Fuentes,Ventas,2576_Ventas
-4364,Maria Tux,Ventas,4364_Ventas
 */
 
 /*
